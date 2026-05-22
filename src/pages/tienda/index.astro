@@ -13,12 +13,15 @@ const categoriaSlug = url.searchParams.get('categoria') || '';
 const sortParam = url.searchParams.get('sort') || 'default';
 const stockParam = url.searchParams.get('stock') || '';
 const viewParam = url.searchParams.get('view') || 'grid';
+const pageParam = parseInt(url.searchParams.get('page') || '1', 10);
+
+const PRODUCTS_PER_PAGE = 12;
 
 let productos: ProductoWC[] = [];
 let categorias: Array<{ id: number; name: string; slug: string; parent: number; count: number }> = [];
 try {
   [productos, categorias] = await Promise.all([
-    fetchProductos({ perPage: 50 }),
+    fetchProductos({ perPage: 200 }),
     fetchCategorias(),
   ]);
 } catch {
@@ -47,6 +50,34 @@ if (sortParam === 'name-asc') {
 } else if (sortParam === 'stock') {
   filteredProducts.sort((a, b) => (a.stock_status === 'instock' ? -1 : 1) - (b.stock_status === 'instock' ? -1 : 1));
 }
+
+const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE));
+const currentPage = Math.min(Math.max(1, pageParam), totalPages);
+const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
+const paginatedProducts = filteredProducts.slice(startIndex, startIndex + PRODUCTS_PER_PAGE);
+
+function getPageUrl(page: number): string {
+  const p = new URLSearchParams();
+  if (categoriaSlug) p.set('categoria', categoriaSlug);
+  if (searchQuery) p.set('search', searchQuery);
+  if (sortParam !== 'default') p.set('sort', sortParam);
+  if (stockParam === 'available') p.set('stock', stockParam);
+  if (viewParam !== 'grid') p.set('view', viewParam);
+  if (page > 1) p.set('page', String(page));
+  const qs = p.toString();
+  return '/tienda' + (qs ? '?' + qs : '');
+}
+
+interface PageItem { type: 'page'; page: number }
+interface PageItemDots { type: 'dots' }
+type PageNavItem = PageItem | PageItemDots;
+
+const pageNavItems: PageNavItem[] = [];
+const visiblePages = Array.from({ length: totalPages }, (_, i) => i + 1).filter(p => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1);
+visiblePages.forEach((page, idx) => {
+  if (idx > 0 && page - visiblePages[idx - 1] > 1) pageNavItems.push({ type: 'dots' });
+  pageNavItems.push({ type: 'page', page });
+});
 
 const pageTitle = searchQuery ? `Búsqueda: "${searchQuery}"` : categoriaSlug ? `Categoría: ${categoriaSlug}` : 'Tienda';
 const pageDesc = searchQuery
@@ -188,7 +219,8 @@ function buildFilterUrl(params: Record<string, string>): string {
               <!-- Toolbar -->
               <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 bg-white rounded-xl border border-gray-200 p-4">
                 <p class="text-sm text-gray-500">
-                  <span class="font-semibold text-[#111]">{filteredProducts.length}</span> producto{filteredProducts.length !== 1 ? 's' : ''} encontrado{filteredProducts.length !== 1 ? 's' : ''}
+                  <span class="font-semibold text-[#111]">{paginatedProducts.length}</span> producto{paginatedProducts.length !== 1 ? 's' : ''} en esta página
+                  <span class="text-gray-400"> de {filteredProducts.length} total{filteredProducts.length !== 1 ? 'es' : ''}</span>
                   {searchQuery && <span class="text-gray-400 ml-1">para "<span class="font-medium">{searchQuery}</span>"</span>}
                 </p>
                 <div class="flex items-center gap-3">
@@ -217,7 +249,7 @@ function buildFilterUrl(params: Record<string, string>): string {
 
               <!-- Grid view -->
               <div id="products-grid" class:list={['grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5 lg:gap-6', viewParam === 'list' ? 'hidden' : '']}>
-                {filteredProducts.map(prod => (
+                {paginatedProducts.map(prod => (
                   <div class="shop-card group">
                     <div class="inner-box bg-white rounded-xl border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-[var(--theme-color)]/30">
                       <figure class="relative overflow-hidden">
@@ -262,7 +294,7 @@ function buildFilterUrl(params: Record<string, string>): string {
 
               <!-- List view -->
               <div id="products-list" class:list={['space-y-3', viewParam !== 'list' ? 'hidden' : '']}>
-                {filteredProducts.map(prod => (
+                {paginatedProducts.map(prod => (
                   <a href={`/producto/${prod.slug}`} class="group flex items-center gap-4 p-4 bg-white rounded-xl border border-gray-200 hover:border-[var(--theme-color)]/30 hover:shadow-lg transition-all">
                     <div class="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-50">
                       {prod.images[0] ? (
@@ -290,6 +322,23 @@ function buildFilterUrl(params: Record<string, string>): string {
                   </a>
                 ))}
               </div>
+
+              <!-- Pagination -->
+              {totalPages > 1 && (
+                <nav class="flex items-center justify-center gap-1.5 mt-10" aria-label="Paginación">
+                  <a href={getPageUrl(currentPage - 1)} class:list={['flex items-center justify-center w-10 h-10 rounded-lg text-sm font-medium transition-all', currentPage > 1 ? 'bg-white border border-gray-200 text-[#111] hover:bg-[var(--theme-color)] hover:text-white hover:border-[var(--theme-color)]' : 'bg-gray-100 text-gray-300 cursor-not-allowed pointer-events-none']}>
+                    <i class="fas fa-chevron-left text-xs"></i>
+                  </a>
+                  {pageNavItems.map(item => item.type === 'dots' ? (
+                    <span class="w-10 h-10 flex items-center justify-center text-gray-400">...</span>
+                  ) : (
+                    <a href={getPageUrl(item.page)} class:list={['flex items-center justify-center w-10 h-10 rounded-lg text-sm font-medium transition-all', item.page === currentPage ? 'bg-[var(--theme-color)] text-white shadow-sm' : 'bg-white border border-gray-200 text-[#111] hover:bg-[var(--theme-color)] hover:text-white hover:border-[var(--theme-color)]']} aria-current={item.page === currentPage ? 'page' : undefined}>{item.page}</a>
+                  ))}
+                  <a href={getPageUrl(currentPage + 1)} class:list={['flex items-center justify-center w-10 h-10 rounded-lg text-sm font-medium transition-all', currentPage < totalPages ? 'bg-white border border-gray-200 text-[#111] hover:bg-[var(--theme-color)] hover:text-white hover:border-[var(--theme-color)]' : 'bg-gray-100 text-gray-300 cursor-not-allowed pointer-events-none']}>
+                    <i class="fas fa-chevron-right text-xs"></i>
+                  </a>
+                </nav>
+              )}
             </>
           ) : (
             <div class="text-center py-16 bg-white rounded-2xl border border-gray-200">
@@ -336,6 +385,7 @@ function buildFilterUrl(params: Record<string, string>): string {
     const view = overrides.view !== undefined ? overrides.view : (p.view || 'grid');
     const search = overrides.search !== undefined ? overrides.search : p.search;
     const categoria = overrides.categoria !== undefined ? overrides.categoria : p.categoria;
+    const page = overrides.page !== undefined ? overrides.page : 1;
 
     const params = new URLSearchParams();
     if (categoria) params.set('categoria', categoria);
@@ -343,6 +393,7 @@ function buildFilterUrl(params: Record<string, string>): string {
     if (sort && sort !== 'default') params.set('sort', sort);
     if (stock) params.set('stock', stock);
     if (view && view !== 'grid') params.set('view', view);
+    if (page > 1) params.set('page', String(page));
 
     const qs = params.toString();
     return '/tienda' + (qs ? '?' + qs : '');
