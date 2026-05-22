@@ -8,6 +8,8 @@ import Footer from '../../components/Footer.vue';
 import { fetchProductoBySlug, fetchProductosPorCategoria, fetchCategorias } from '../../lib/woocommerce';
 import type { ProductoWC } from '../../lib/types';
 
+export const prerender = false;
+
 let categorias: Array<{ id: number; name: string; slug: string; parent: number }> = [];
 try { categorias = await fetchCategorias(); } catch { categorias = []; }
 
