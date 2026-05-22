@@ -23,19 +23,20 @@
           :href="`/categoria/${cat.slug}`"
           class="flex-shrink-0 w-[200px] sm:w-[240px] md:w-[280px] snap-start group cursor-pointer"
         >
-          <div class="relative h-48 sm:h-56 md:h-64 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 group-hover:-translate-y-1">
-            <img
-              v-if="cat.image"
-              :src="cat.image"
-              :alt="cat.name"
-              loading="lazy"
-              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-            />
-            <div v-else class="w-full h-full bg-gradient-to-br from-[var(--theme-color)] to-[var(--theme-color-2)]"></div>
-            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
-            <div class="absolute bottom-0 left-0 right-0 p-4">
-              <h3 class="text-white font-bold text-lg leading-tight">{{ cat.name }}</h3>
-              <span v-if="cat.count > 0" class="text-white/80 text-xs">{{ cat.count }} productos</span>
+          <div class="flex flex-col rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1 bg-white border border-gray-100">
+            <div class="h-40 sm:h-48 md:h-56 bg-gray-50 flex items-center justify-center p-4">
+              <img
+                v-if="cat.image"
+                :src="cat.image"
+                :alt="cat.name"
+                loading="lazy"
+                class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+              />
+              <div v-else class="w-full h-full bg-gradient-to-br from-[var(--theme-color)] to-[var(--theme-color-2)] rounded-lg"></div>
+            </div>
+            <div class="p-3 text-center">
+              <h3 class="text-[#111] font-bold text-sm sm:text-base leading-tight">{{ cat.name }}</h3>
+              <span v-if="cat.count > 0" class="text-gray-400 text-xs">{{ cat.count }} productos</span>
             </div>
           </div>
         </a>

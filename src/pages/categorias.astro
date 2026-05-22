@@ -18,11 +18,11 @@ const parentCategories = categorias.filter(c => c.parent === 0);
     <HeaderLower client:only="vue" />
   </header>
 
-  <section class="bg-gradient-to-r from-[#1e523d] to-[#2D6A4F] py-12">
+  <section class="bg-gradient-to-br from-[#2D6A4F]/5 via-white to-[#52B788]/5 py-10 border-b border-[#2D6A4F]/10">
     <div class="large-container">
-      <div class="text-center text-white">
+      <div class="text-center text-[#111]">
         <h1 class="text-4xl md:text-5xl font-bold font-['Rethink_Sans',sans-serif] mb-4 animate-fade-in-up">Categorías</h1>
-        <p class="text-lg text-white/80 max-w-2xl mx-auto animate-fade-in-up stagger-1">Explora nuestra gama completa de productos agrícolas organizados por categoría.</p>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto animate-fade-in-up stagger-1">Explora nuestra gama completa de productos agrícolas organizados por categoría.</p>
       </div>
     </div>
   </section>
@@ -40,7 +40,7 @@ const parentCategories = categorias.filter(c => c.parent === 0);
                 style={`animation-delay: ${i * 0.1}s`}
               >
                 <div class="p-6">
-                  <div class="w-14 h-14 rounded-full bg-gradient-to-br from-[var(--theme-color)] to-[#1e523d] flex items-center justify-center mb-4 transition-transform duration-500 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-[var(--theme-color)]/30">
+                  <div class="w-14 h-14 rounded-full bg-gradient-to-br from-[var(--theme-color)] to-[var(--theme-color-2)] flex items-center justify-center mb-4 transition-transform duration-500 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-[var(--theme-color)]/30">
                     <i class="fas fa-tag text-white text-xl"></i>
                   </div>
                   <h3 class="text-lg font-bold text-[#111] mb-2 group-hover:text-[var(--theme-color)] transition-colors">{cat.name}</h3>

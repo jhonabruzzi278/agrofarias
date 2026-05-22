@@ -78,13 +78,13 @@ function buildFilterUrl(params: Record<string, string>): string {
     <HeaderLower client:only="vue" />
   </header>
 
-  <section class="bg-gradient-to-r from-[#1e523d] to-[#2D6A4F] py-12">
+  <section class="bg-gradient-to-br from-[#2D6A4F]/5 via-white to-[#52B788]/5 py-10 border-b border-[#2D6A4F]/10">
     <div class="large-container">
-      <div class="text-center text-white">
+      <div class="text-center text-[#111]">
         <h1 class="text-4xl md:text-5xl font-bold font-['Rethink_Sans',sans-serif] mb-4 animate-fade-in-up">
           {searchQuery ? `Resultados para "${searchQuery}"` : 'Tienda'}
         </h1>
-        <p class="text-lg text-white/80 max-w-2xl mx-auto animate-fade-in-up stagger-1">
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto animate-fade-in-up stagger-1">
           {searchQuery ? `Productos que coinciden con tu búsqueda` : 'Explora todos nuestros productos agrícolas'}
         </p>
       </div>
