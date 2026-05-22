@@ -1,9 +1,5 @@
 <template>
   <section class="banner-style-eight" aria-label="Carrusel de banners" aria-roledescription="carrusel">
-    <div class="parallax-scene" aria-hidden="true">
-      <span class="pattern-layer" style="background-image: url(/assets/images/shape/shape-21.png);"></span>
-    </div>
-
     <div class="banner-carousel relative">
       <div
         v-for="(banner, index) in displayBanners"
@@ -13,23 +9,6 @@
         :class="{ active: currentSlide === index }"
       >
         <div class="bg-layer" :style="{ backgroundImage: `url(${banner.imagenUrl})` }"></div>
-        <div class="overlay"></div>
-        <div class="large-container">
-          <div class="content-box">
-            <span class="upper-text">{{ banner.titulo }}</span>
-            <h2>{{ banner.subtitulo }}</h2>
-            <p class="description">Insumos, herramientas y soluciones agrícolas con atención personalizada y despacho confiable.</p>
-            <div class="btn-box">
-              <a :href="banner.urlBoton" class="theme-btn btn-one">
-                {{ banner.textoBoton }}
-                <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-              </a>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -44,12 +23,12 @@
     </div>
 
     <button @click="prevSlide" class="nav-btn prev" aria-label="Slide anterior">
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="15 18 9 12 15 6"></polyline>
       </svg>
     </button>
     <button @click="nextSlide" class="nav-btn next" aria-label="Siguiente slide">
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="9 18 15 12 9 6"></polyline>
       </svg>
     </button>
@@ -148,34 +127,14 @@ onUnmounted(() => {
   background-color: #f8f9fa;
 }
 
-.parallax-scene {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.pattern-layer {
-  position: absolute;
-  right: -50px;
-  top: -50px;
-  width: 300px;
-  height: 300px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  opacity: 0.06;
-}
-
 .banner-carousel {
   position: relative;
 }
 
 .slide-item {
   position: relative;
-  padding: 100px 0;
-  min-height: 600px;
-  display: flex;
-  align-items: center;
+  width: 100%;
+  height: 500px;
 }
 
 .bg-layer {
@@ -183,135 +142,16 @@ onUnmounted(() => {
   inset: 0;
   background-size: cover;
   background-position: center;
-  transform: scale(1);
   transition: transform 8000ms linear;
 }
 
 .slide-item.active .bg-layer {
-  transform: scale(1.08);
-}
-
-.overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0.3) 100%);
-  z-index: 1;
-}
-
-.large-container {
-  position: relative;
-  z-index: 2;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
-.content-box {
-  max-width: 640px;
-}
-
-.upper-text {
-  display: inline-block;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: #fff;
-  background: #C02332;
-  border-radius: 50px;
-  padding: 0.35rem 1.25rem;
-  margin-bottom: 1.5rem;
-  opacity: 0;
-  transform: translateY(-20px);
-  transition: all 800ms ease;
-}
-
-.slide-item.active .upper-text {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 600ms;
-}
-
-.content-box h2 {
-  font-size: 3.25rem;
-  line-height: 1.2;
-  font-weight: 800;
-  color: #00286F;
-  margin-bottom: 1rem;
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 800ms ease;
-  font-family: 'Rethink Sans', sans-serif;
-}
-
-.slide-item.active .content-box h2 {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 900ms;
-}
-
-.description {
-  font-size: 1.125rem;
-  line-height: 1.7;
-  color: #444;
-  margin-bottom: 2rem;
-  max-width: 520px;
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 800ms ease;
-}
-
-.slide-item.active .description {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 1100ms;
-}
-
-.btn-box {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 800ms ease;
-}
-
-.slide-item.active .btn-box {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 1300ms;
-}
-
-.btn-box :deep(.theme-btn) {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 1rem 2.25rem;
-  background: var(--theme-color);
-  color: #fff;
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 8px;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  border: 2px solid var(--theme-color);
-}
-
-.btn-box :deep(.theme-btn:hover) {
-  background: transparent;
-  color: var(--theme-color);
-}
-
-.arrow-icon {
-  width: 1.25rem;
-  height: 1.25rem;
-  transition: transform 0.3s ease;
-}
-
-.btn-box :deep(.theme-btn:hover .arrow-icon) {
-  transform: translateX(4px);
+  transform: scale(1.05);
 }
 
 .dots-box {
   position: absolute;
-  bottom: 2rem;
+  bottom: 1.5rem;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -323,7 +163,7 @@ onUnmounted(() => {
   width: 0.625rem;
   height: 0.625rem;
   border-radius: 50%;
-  background: rgba(0, 40, 111, 0.25);
+  background: rgba(255,255,255,0.5);
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -337,7 +177,7 @@ onUnmounted(() => {
 }
 
 .dot:hover {
-  background: var(--theme-color);
+  background: rgba(255,255,255,0.8);
 }
 
 .nav-btn {
@@ -365,55 +205,15 @@ onUnmounted(() => {
   border-color: var(--theme-color);
 }
 
-.nav-btn.prev {
-  left: 1.5rem;
-}
-
-.nav-btn.next {
-  right: 1.5rem;
-}
+.nav-btn.prev { left: 1.5rem; }
+.nav-btn.next { right: 1.5rem; }
 
 @media (max-width: 1024px) {
-  .slide-item {
-    min-height: 500px;
-    padding: 80px 0;
-  }
-
-  .content-box h2 {
-    font-size: 2.5rem;
-  }
-
-  .overlay {
-    background: rgba(255,255,255,0.85);
-  }
+  .slide-item { height: 400px; }
 }
 
 @media (max-width: 767px) {
-  .slide-item {
-    min-height: 400px;
-    padding: 60px 0;
-  }
-
-  .content-box h2 {
-    font-size: 1.75rem;
-  }
-
-  .description {
-    font-size: 1rem;
-  }
-
-  .nav-btn {
-    display: none;
-  }
-
-  .upper-text {
-    font-size: 0.75rem;
-    padding: 0.25rem 1rem;
-  }
-
-  .btn-box :deep(.theme-btn) {
-    padding: 0.75rem 1.5rem;
-    font-size: 0.875rem;
-  }
+  .slide-item { height: 280px; }
+  .nav-btn { display: none; }
 }
 </style>
