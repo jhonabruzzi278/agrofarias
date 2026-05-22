@@ -1,0 +1,89 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import HeaderUpper from '../../components/HeaderUpper.vue';
+import HeaderLower from '../../components/HeaderLower.vue';
+import ProductGrid from '../../components/ProductGrid.vue';
+import Footer from '../../components/Footer.vue';
+import { fetchProductosPorCategoria, fetchCategorias } from '../../lib/woocommerce';
+import type { ProductoWC } from '../../lib/types';
+
+export async function getStaticPaths() {
+  try {
+    const cats = await fetchCategorias();
+    return cats.filter(c => c.slug).map(c => ({ params: { slug: c.slug } }));
+  } catch { return []; }
+}
+
+let categorias: Array<{ id: number; name: string; slug: string; parent: number }> = [];
+let categoriaActual: { id: number; name: string; slug: string } | null = null;
+
+try {
+  categorias = await fetchCategorias();
+} catch { categorias = []; }
+
+const { slug } = Astro.params;
+const catData = categorias.find(c => c.slug === slug);
+if (catData) {
+  categoriaActual = { id: catData.id, name: catData.name, slug: catData.slug };
+}
+
+let productos: ProductoWC[] = [];
+if (categoriaActual) {
+  try {
+    productos = await fetchProductosPorCategoria(categoriaActual.id);
+  } catch { productos = []; }
+}
+
+const pageTitle = categoriaActual ? categoriaActual.name : 'Categoría';
+const pageCanonical = categoriaActual ? `https://agrofarias.cl/categoria/${categoriaActual.slug}` : 'https://agrofarias.cl/categorias';
+---
+
+<Layout title={pageTitle} description={`Productos de ${categoriaActual?.name || 'la categoría'} en Agro Farías. Encuentra insumos y herramientas agrícolas.`} canonical={pageCanonical}>
+  <header class="main-header">
+    <HeaderUpper client:only="vue" categorias={categorias} />
+    <HeaderLower client:only="vue" />
+  </header>
+
+  <section class="bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] py-12">
+    <div class="large-container">
+      <div class="text-center text-white">
+        <h1 class="text-4xl md:text-5xl font-bold font-['Rethink_Sans',sans-serif] mb-4 animate-fade-in-up">{categoriaActual?.name || 'Categoría'}</h1>
+        <p class="text-lg text-white/80 animate-fade-in-up stagger-1">
+          <a href="/" class="text-white/60 hover:text-white transition-colors">Inicio</a>
+          <span class="mx-2 text-white/40">/</span>
+          <a href="/tienda" class="text-white/60 hover:text-white transition-colors">Tienda</a>
+          {categoriaActual && <><span class="mx-2 text-white/40">/</span><span>{categoriaActual.name}</span></>}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <main class="py-12 min-h-[50vh]">
+    <div class="large-container">
+      {productos.length > 0 ? (
+        <>
+          <div class="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <p class="text-sm text-gray-500">
+              <span class="font-semibold text-[#111]">{productos.length}</span> producto{productos.length !== 1 ? 's' : ''} en {categoriaActual?.name || 'esta categoría'}
+            </p>
+            <a href={`/tienda?categoria=${categoriaActual?.slug || ''}`} class="inline-flex items-center gap-2 text-sm font-medium text-[var(--theme-color)] hover:text-[var(--theme-color-3)] transition-colors">
+              <i class="fas fa-sliders-h text-xs" aria-hidden="true"></i>
+              Refinar resultados en tienda
+              <i class="fas fa-arrow-right text-xs" aria-hidden="true"></i>
+            </a>
+          </div>
+          <ProductGrid client:only="vue" productos={productos} title="" showAllLink={false} />
+        </>
+      ) : (
+        <div class="text-center py-16 bg-white rounded-2xl border border-gray-200">
+          <i class="fas fa-box-open text-5xl text-gray-300 block mb-4"></i>
+          <p class="text-lg text-gray-500 mb-2">No hay productos en esta categoría</p>
+          <p class="text-sm text-gray-500 mb-6">Pronto estaremos agregando nuevos productos.</p>
+          <a href="/tienda" class="theme-btn btn-one inline-flex">Ver todos los productos</a>
+        </div>
+      )}
+    </div>
+  </main>
+
+  <Footer client:only="vue" />
+</Layout>

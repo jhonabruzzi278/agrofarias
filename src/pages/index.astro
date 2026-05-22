@@ -1,0 +1,48 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HeaderUpper from '../components/HeaderUpper.vue';
+import HeaderLower from '../components/HeaderLower.vue';
+import BannerCarousel from '../components/BannerCarousel.vue';
+import CategoryGrid from '../components/CategoryGrid.vue';
+import PromoBanners from '../components/PromoBanners.astro';
+import ProductGrid from '../components/ProductGrid.vue';
+import CTASection from '../components/CTASection.astro';
+import Footer from '../components/Footer.vue';
+import { fetchProductos, fetchCategorias } from '../lib/woocommerce';
+import { fetchBanners } from '../lib/sanity';
+import type { ProductoWC } from '../lib/types';
+
+let productos: ProductoWC[] = [];
+let categorias: Array<{ id: number; name: string; slug: string; parent: number }> = [];
+let banners: Array<{ _id: string; titulo: string; subtitulo: string; textoBoton: string; urlBoton: string; orden: number; imagenUrl: string }> = [];
+try {
+  [productos, categorias] = await Promise.all([
+    fetchProductos({ perPage: 12 }),
+    fetchCategorias(),
+  ]);
+  try {
+    banners = await fetchBanners();
+  } catch { banners = []; }
+} catch {
+  productos = [];
+}
+---
+
+<Layout>
+  <header class="main-header">
+    <HeaderUpper client:only="vue" categorias={categorias} />
+    <HeaderLower client:only="vue" />
+  </header>
+
+  <BannerCarousel client:only="vue" banners={banners} />
+
+  <CategoryGrid client:only="vue" categorias={categorias} />
+
+  <PromoBanners />
+
+  <ProductGrid client:only="vue" productos={productos} title="Productos Destacados" />
+
+  <CTASection />
+
+  <Footer client:only="vue" />
+</Layout>

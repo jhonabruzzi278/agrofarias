@@ -1,0 +1,141 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HeaderUpper from '../components/HeaderUpper.vue';
+import HeaderLower from '../components/HeaderLower.vue';
+import Footer from '../components/Footer.vue';
+import { fetchCategorias } from '../lib/woocommerce';
+
+let categorias: Array<{ id: number; name: string; slug: string; parent: number }> = [];
+try { categorias = await fetchCategorias(); } catch { categorias = []; }
+---
+
+<Layout title="Contacto" description="Contáctanos para recibir atención personalizada. Estamos en Melipilla, Región Metropolitana. Lunes a Viernes 8:00-18:00." canonical="https://agrofarias.cl/contacto">
+  <header class="main-header">
+    <HeaderUpper client:only="vue" categorias={categorias} />
+    <HeaderLower client:only="vue" />
+  </header>
+
+  <section class="bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] py-12">
+    <div class="large-container">
+      <div class="text-center text-white">
+        <h1 class="text-4xl md:text-5xl font-bold font-['Rethink_Sans',sans-serif] mb-4 animate-fade-in-up">Contacto</h1>
+        <p class="text-lg text-white/80 max-w-2xl mx-auto animate-fade-in-up stagger-1">Estamos aquí para ayudarte. Contáctanos por los siguientes canales.</p>
+      </div>
+    </div>
+  </section>
+
+  <main class="py-16 min-h-[60vh]">
+    <div class="large-container">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <div class="lg:col-span-2">
+          <div class="bg-white rounded-2xl border border-gray-200 p-8">
+            <h2 class="text-2xl font-bold font-['Rethink_Sans',sans-serif] text-[#111] mb-2">Envíanos un mensaje</h2>
+            <p class="text-gray-500 mb-8">Completa el formulario y te responderemos a la brevedad.</p>
+
+            <form action="/api/contacto" method="POST" class="space-y-6">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label for="nombre" class="block mb-1.5 font-medium text-gray-700 text-sm">Nombre completo *</label>
+                  <input id="nombre" name="nombre" type="text" required placeholder="Ej: Juan Pérez" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-[var(--theme-color)] focus:outline-none focus:ring-2 focus:ring-[var(--theme-color)]/20 transition-colors" />
+                </div>
+                <div>
+                  <label for="email" class="block mb-1.5 font-medium text-gray-700 text-sm">Email *</label>
+                  <input id="email" name="email" type="email" required placeholder="Ej: juan@ejemplo.com" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-[var(--theme-color)] focus:outline-none focus:ring-2 focus:ring-[var(--theme-color)]/20 transition-colors" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label for="telefono" class="block mb-1.5 font-medium text-gray-700 text-sm">Teléfono</label>
+                  <input id="telefono" name="telefono" type="tel" placeholder="Ej: +56912345678" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-[var(--theme-color)] focus:outline-none focus:ring-2 focus:ring-[var(--theme-color)]/20 transition-colors" />
+                </div>
+                <div>
+                  <label for="asunto" class="block mb-1.5 font-medium text-gray-700 text-sm">Asunto *</label>
+                  <input id="asunto" name="asunto" type="text" required placeholder="Ej: Consulta sobre productos" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-[var(--theme-color)] focus:outline-none focus:ring-2 focus:ring-[var(--theme-color)]/20 transition-colors" />
+                </div>
+              </div>
+
+              <div>
+                <label for="mensaje" class="block mb-1.5 font-medium text-gray-700 text-sm">Mensaje *</label>
+                <textarea id="mensaje" name="mensaje" rows="5" required placeholder="Cuéntanos tu consulta o proyecto..." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-[var(--theme-color)] focus:outline-none focus:ring-2 focus:ring-[var(--theme-color)]/20 transition-colors resize-none"></textarea>
+              </div>
+
+              <button type="submit" class="theme-btn btn-one w-full sm:w-auto px-10 py-3.5 text-base">
+                <i class="fas fa-paper-plane" aria-hidden="true"></i> Enviar mensaje
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          <div class="bg-white rounded-2xl border border-gray-200 p-6">
+            <h3 class="text-lg font-bold font-['Rethink_Sans',sans-serif] text-[#111] mb-5 flex items-center gap-2">
+              <i class="fas fa-info-circle text-[var(--theme-color)]"></i> Información de contacto
+            </h3>
+            <ul class="space-y-5">
+              <li class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-[var(--theme-color)]/10 flex items-center justify-center flex-shrink-0">
+                  <i class="fas fa-map-marker-alt text-[var(--theme-color)] text-sm"></i>
+                </div>
+                <div>
+                  <p class="font-medium text-[#111] text-sm">Dirección</p>
+                  <p class="text-gray-500 text-sm">Ruta 66 km 95850,<br />San Pedro, Melipilla,<br />Región Metropolitana</p>
+                </div>
+              </li>
+              <li class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-[var(--theme-color)]/10 flex items-center justify-center flex-shrink-0">
+                  <i class="fas fa-phone text-[var(--theme-color)] text-sm"></i>
+                </div>
+                <div>
+                  <p class="font-medium text-[#111] text-sm">Teléfono</p>
+                  <a href="tel:+56912345678" class="text-[var(--theme-color)] hover:underline text-sm font-medium">+56 9 1234 5678</a>
+                </div>
+              </li>
+              <li class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-[var(--theme-color)]/10 flex items-center justify-center flex-shrink-0">
+                  <i class="fas fa-envelope text-[var(--theme-color)] text-sm"></i>
+                </div>
+                <div>
+                  <p class="font-medium text-[#111] text-sm">Email</p>
+                  <a href="mailto:contacto@agrofarias.cl" class="text-[var(--theme-color)] hover:underline text-sm font-medium">contacto@agrofarias.cl</a>
+                </div>
+              </li>
+              <li class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-[var(--theme-color)]/10 flex items-center justify-center flex-shrink-0">
+                  <i class="fas fa-clock text-[var(--theme-color)] text-sm"></i>
+                </div>
+                <div>
+                  <p class="font-medium text-[#111] text-sm">Horario</p>
+                  <p class="text-gray-500 text-sm">Lunes a Viernes: 8:00 - 18:00<br />Sábados: 9:00 - 13:00</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="bg-white rounded-2xl border border-gray-200 p-6">
+            <h3 class="text-lg font-bold font-['Rethink_Sans',sans-serif] text-[#111] mb-4">Síguenos</h3>
+            <div class="flex gap-3">
+              <a href="https://facebook.com/agrofarias" target="_blank" rel="noopener noreferrer" class="w-11 h-11 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-[var(--theme-color)] hover:text-white transition-all duration-300" aria-label="Facebook">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="https://instagram.com/agrofarias" target="_blank" rel="noopener noreferrer" class="w-11 h-11 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-[var(--theme-color)] hover:text-white transition-all duration-300" aria-label="Instagram">
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a href="https://wa.me/56912345678" target="_blank" rel="noopener noreferrer" class="w-11 h-11 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-[var(--theme-color)] hover:text-white transition-all duration-300" aria-label="WhatsApp">
+                <i class="fab fa-whatsapp"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="bg-gradient-to-br from-[#1B4332] to-[#2D6A4F] rounded-2xl p-6 text-center">
+            <i class="fas fa-truck text-4xl text-[#F5B020] block mb-3"></i>
+            <h3 class="text-lg font-bold text-white mb-2">Despacho a tu domicilio</h3>
+            <p class="text-sm text-white/70">Realiza tu pedido y te lo llevamos directo a tu campo o casa.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer client:only="vue" />
+</Layout>

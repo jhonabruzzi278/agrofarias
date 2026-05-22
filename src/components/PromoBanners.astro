@@ -1,0 +1,89 @@
+---
+import { fetchPromoBanners } from '../lib/sanity'
+
+interface PromoBanner {
+  _id: string
+  titulo: string
+  subtitulo: string
+  precio: string
+  textoBoton: string
+  urlBoton: string
+  orden: number
+  imagenUrl: string
+}
+
+const fallbackBanners: PromoBanner[] = [
+  {
+    _id: 'fallback-1',
+    titulo: 'Nutrición Vegetal',
+    subtitulo: 'Nutrición completa',
+    precio: 'Desde $25.990',
+    textoBoton: 'Fertilizantes',
+    urlBoton: '/categoria/fertilizantes',
+    orden: 1,
+    imagenUrl: '',
+  },
+  {
+    _id: 'fallback-2',
+    titulo: 'Herramientas y Repuestos',
+    subtitulo: 'Línea Profesional',
+    precio: 'Desde $34.990',
+    textoBoton: 'Herramientas',
+    urlBoton: '/categoria/herramientas',
+    orden: 2,
+    imagenUrl: '',
+  },
+  {
+    _id: 'fallback-3',
+    titulo: 'Seguridad Agrícola',
+    subtitulo: 'EPP Certificado',
+    precio: 'Desde $15.990',
+    textoBoton: 'Protección',
+    urlBoton: '/categoria/seguridad-agricola',
+    orden: 3,
+    imagenUrl: '',
+  },
+]
+
+let banners: PromoBanner[] = []
+
+try {
+  const data = await fetchPromoBanners()
+  banners = data && data.length > 0 ? data : fallbackBanners
+} catch {
+  banners = fallbackBanners
+}
+---
+
+<section class="promo-section py-16 bg-gray-50">
+  <div class="large-container">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {
+        banners.map((banner) => (
+          <div class="promo-block group">
+            <a href={banner.urlBoton} class="block inner-box relative bg-[var(--theme-color-3)] rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+              {
+                banner.imagenUrl && (
+                  <div class="image overflow-hidden">
+                    <img src={banner.imagenUrl} alt={banner.titulo} loading="lazy" class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105" />
+                  </div>
+                )
+              }
+              <div class="text p-6 text-white">
+                <span class="text-sm text-white/70 uppercase tracking-wide">{banner.subtitulo}</span>
+                <h2 class="text-xl font-bold font-['Rethink_Sans',sans-serif] mt-1 mb-2"><a href={banner.urlBoton} class="text-white hover:text-[var(--accent-color)] transition-colors">{banner.titulo}</a></h2>
+                <h4 class="text-lg font-semibold text-[var(--accent-color)] mb-4">{banner.precio}</h4>
+                <div class="link-box">
+                  <a href={banner.urlBoton} class="inline-flex items-center gap-2 text-sm font-medium text-white hover:text-[var(--accent-color)] transition-colors">
+                    {banner.textoBoton}
+                    <i class="fas fa-arrow-right"></i>
+                  </a>
+                </div>
+              </div>
+            </a>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

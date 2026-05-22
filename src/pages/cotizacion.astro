@@ -1,0 +1,35 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HeaderUpper from '../components/HeaderUpper.vue';
+import HeaderLower from '../components/HeaderLower.vue';
+import QuotePage from '../components/QuotePage.vue';
+import Footer from '../components/Footer.vue';
+import { fetchCategorias } from '../lib/woocommerce';
+
+let categorias: Array<{ id: number; name: string; slug: string; parent: number }> = [];
+try { categorias = await fetchCategorias(); } catch { categorias = []; }
+---
+
+<Layout title="Tu Cotización" description="Revisa los productos de tu cotización antes de solicitar presupuesto." canonical="https://agrofarias.cl/cotizacion">
+  <header class="main-header">
+    <HeaderUpper client:only="vue" categorias={categorias} />
+    <HeaderLower client:only="vue" />
+  </header>
+
+  <section class="bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] py-12">
+    <div class="large-container">
+      <div class="text-center text-white">
+        <h1 class="text-4xl font-bold font-['Rethink_Sans',sans-serif] mb-4 animate-fade-in-up">Tu Cotización</h1>
+        <p class="text-lg text-white/80 animate-fade-in-up stagger-1">Revisa los productos agregados y solicita tu presupuesto.</p>
+      </div>
+    </div>
+  </section>
+
+  <main class="py-12 min-h-[60vh]">
+    <div class="large-container">
+      <QuotePage client:only="vue" />
+    </div>
+  </main>
+
+  <Footer client:only="vue" />
+</Layout>

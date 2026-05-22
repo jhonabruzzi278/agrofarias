@@ -1,0 +1,79 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HeaderUpper from '../components/HeaderUpper.vue';
+import HeaderLower from '../components/HeaderLower.vue';
+import Footer from '../components/Footer.vue';
+import { fetchCategorias } from '../lib/woocommerce';
+import type { CategoriaWC } from '../lib/types';
+
+let categorias: CategoriaWC[] = [];
+try { categorias = await fetchCategorias(); } catch { categorias = []; }
+
+const parentCategories = categorias.filter(c => c.parent === 0);
+---
+
+<Layout title="Categorías" description="Explora nuestras categorías de productos agrícolas: fertilizantes, herbicidas, insecticidas, semillas y más." canonical="https://agrofarias.cl/categorias">
+  <header class="main-header">
+    <HeaderUpper client:only="vue" categorias={categorias} />
+    <HeaderLower client:only="vue" />
+  </header>
+
+  <section class="bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] py-12">
+    <div class="large-container">
+      <div class="text-center text-white">
+        <h1 class="text-4xl md:text-5xl font-bold font-['Rethink_Sans',sans-serif] mb-4 animate-fade-in-up">Categorías</h1>
+        <p class="text-lg text-white/80 max-w-2xl mx-auto animate-fade-in-up stagger-1">Explora nuestra gama completa de productos agrícolas organizados por categoría.</p>
+      </div>
+    </div>
+  </section>
+
+  <main class="py-16 min-h-[50vh]">
+    <div class="large-container">
+      {parentCategories.length > 0 ? (
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {parentCategories.map((cat, i) => {
+            const subcats = categorias.filter(c => c.parent === cat.id);
+            return (
+              <a
+                href={`/categoria/${cat.slug}`}
+                class="group bg-white rounded-2xl border border-gray-200 overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[var(--theme-color)]/15"
+                style={`animation-delay: ${i * 0.1}s`}
+              >
+                <div class="p-6">
+                  <div class="w-14 h-14 rounded-full bg-gradient-to-br from-[var(--theme-color)] to-[#1B4332] flex items-center justify-center mb-4 transition-transform duration-500 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-[var(--theme-color)]/30">
+                    <i class="fas fa-tag text-white text-xl"></i>
+                  </div>
+                  <h3 class="text-lg font-bold text-[#111] mb-2 group-hover:text-[var(--theme-color)] transition-colors">{cat.name}</h3>
+                  <p class="text-sm text-gray-500 mb-3">{cat.count} producto{cat.count !== 1 ? 's' : ''}</p>
+                  {subcats.length > 0 && (
+                    <div class="flex flex-wrap gap-1.5 mt-3">
+                      {subcats.slice(0, 4).map(sub => (
+                        <span class="text-xs px-2.5 py-1 bg-gray-100 text-gray-600 rounded-full">{sub.name}</span>
+                      ))}
+                      {subcats.length > 4 && (
+                        <span class="text-xs px-2.5 py-1 bg-gray-100 text-[var(--theme-color)] rounded-full">+{subcats.length - 4}</span>
+                      )}
+                    </div>
+                  )}
+                </div>
+                <div class="px-6 pb-5">
+                  <span class="inline-flex items-center gap-2 text-sm font-semibold text-[var(--theme-color)] group-hover:gap-3 transition-all">
+                    Ver productos
+                    <i class="fas fa-arrow-right text-xs"></i>
+                  </span>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      ) : (
+        <div class="text-center py-16">
+          <i class="fas fa-folder-open text-5xl text-gray-300 block mb-4"></i>
+          <p class="text-lg text-gray-500">No hay categorías disponibles.</p>
+        </div>
+      )}
+    </div>
+  </main>
+
+  <Footer client:only="vue" />
+</Layout>
