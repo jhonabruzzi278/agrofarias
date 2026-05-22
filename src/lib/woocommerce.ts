@@ -18,14 +18,13 @@ function getFetchHeaders(): HeadersInit {
 }
 
 export async function fetchProductos(params?: { categoria?: string; perPage?: number }): Promise<ProductoWC[]> {
-  let url = `${WC_API}/products?per_page=${params?.perPage || 50}&status=publish`
+  let url = `${WC_API}/products?per_page=${params?.perPage || 100}&status=publish`
   if (params?.categoria) {
     url += `&category=${params.categoria}`
   }
   const res = await fetch(url, { headers: getFetchHeaders() })
   if (!res.ok) throw new Error(`WooCommerce API error: ${res.status} ${res.statusText}`)
-  const data = await res.json()
-  return data
+  return res.json()
 }
 
 export async function fetchCategorias(): Promise<CategoriaWC[]> {

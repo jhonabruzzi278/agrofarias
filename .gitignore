@@ -27,3 +27,5 @@ pnpm-debug.log*
 
 # sanity studio build
 studio-agro-farias/dist/
+
+.vercel
