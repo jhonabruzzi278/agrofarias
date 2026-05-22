@@ -1,7 +1,7 @@
 <template>
   <button
     class="quote-btn inline-flex items-center gap-1.5 px-4 py-2.5 bg-[var(--theme-color)] text-white text-sm font-medium rounded-lg border border-[var(--theme-color)] hover:bg-[var(--theme-color-3)] hover:border-[var(--theme-color-3)] transition-all duration-200 cursor-pointer"
-    :class="{ 'bg-white text-[var(--theme-color)] hover:bg-[#f0faf4]': isInQuote }"
+    :class="{ 'bg-[#111] text-white border-[#111] hover:bg-[#333] hover:border-[#333]': isInQuote }"
     @click="handleClick"
     :aria-label="isInQuote ? `Ver cotización de ${productName}` : `Agregar ${productName} a cotización`"
   >
