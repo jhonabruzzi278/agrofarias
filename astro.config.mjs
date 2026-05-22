@@ -6,11 +6,13 @@ import sanity from '@sanity/astro';
 import vercel from '@astrojs/vercel';
 import sitemap from '@astrojs/sitemap';
 
-// https://astro.build/config
 export default defineConfig({
   site: 'https://agrofarias.cl',
   trailingSlash: 'never',
-  adapter: vercel(),
+  adapter: vercel({
+    webAnalytics: { enabled: true },
+    isr: { expiration: 300 },
+  }),
   vite: {
     plugins: [tailwindcss()],
   },

@@ -1,9 +1,25 @@
-import type { ProductoWC, CategoriaWC, SolicitudCotizacion } from './types'
+import type { ProductoWC, CategoriaWC } from './types'
 
 const WP_URL = import.meta.env.WORDPRESS_URL
 const WC_KEY = import.meta.env.WC_CONSUMER_KEY
 const WC_SECRET = import.meta.env.WC_CONSUMER_SECRET
 const WC_API = `${WP_URL}/wp-json/wc/v3`
+
+const CACHE_TTL = 5 * 60 * 1000
+const cache = new Map<string, { data: unknown; expiresAt: number }>()
+
+function getCached<T>(key: string): T | null {
+  const entry = cache.get(key)
+  if (entry && Date.now() < entry.expiresAt) {
+    return entry.data as T
+  }
+  if (entry) cache.delete(key)
+  return null
+}
+
+function setCache(key: string, data: unknown): void {
+  cache.set(key, { data, expiresAt: Date.now() + CACHE_TTL })
+}
 
 function getFetchHeaders(): HeadersInit {
   return {
@@ -12,19 +28,25 @@ function getFetchHeaders(): HeadersInit {
   }
 }
 
+async function wcFetch(url: string): Promise<Response> {
+  const res = await fetch(url, { headers: getFetchHeaders(), next: { revalidate: 300 } })
+  if (!res.ok) throw new Error(`WooCommerce API error: ${res.status} ${res.statusText}`)
+  return res
+}
+
 export async function fetchProductos(params?: { categoria?: string; perPage?: number; page?: number }): Promise<ProductoWC[]> {
   const page = params?.page || 1
   const perPage = Math.min(params?.perPage || 100, 100)
   let url = `${WC_API}/products?per_page=${perPage}&page=${page}&status=publish`
-  if (params?.categoria) {
-    url += `&category=${params.categoria}`
-  }
-  const res = await fetch(url, { headers: getFetchHeaders() })
-  if (!res.ok) throw new Error(`WooCommerce API error: ${res.status} ${res.statusText}`)
-  return res.json()
+  if (params?.categoria) url += `&category=${params.categoria}`
+  return (await wcFetch(url)).json()
 }
 
 export async function fetchAllProductos(params?: { categoria?: string }): Promise<ProductoWC[]> {
+  const cacheKey = `all_products_${params?.categoria || 'all'}`
+  const cached = getCached<ProductoWC[]>(cacheKey)
+  if (cached) return cached
+
   const allProducts: ProductoWC[] = []
   let page = 1
   const perPage = 100
@@ -35,36 +57,30 @@ export async function fetchAllProductos(params?: { categoria?: string }): Promis
     if (batch.length < perPage) break
     page++
   }
+  setCache(cacheKey, allProducts)
   return allProducts
 }
 
 export async function fetchCategorias(): Promise<CategoriaWC[]> {
+  const cached = getCached<CategoriaWC[]>('categorias')
+  if (cached) return cached
+
   const url = `${WC_API}/products/categories?per_page=50`
-  const res = await fetch(url, { headers: getFetchHeaders() })
-  if (!res.ok) throw new Error(`WooCommerce API error: ${res.status} ${res.statusText}`)
-  const data = await res.json()
+  const data = await (await wcFetch(url)).json()
+  setCache('categorias', data)
   return data
 }
 
 export async function fetchProductoBySlug(slug: string): Promise<ProductoWC[]> {
-  const url = `${WC_API}/products?slug=${slug}&status=publish`
-  const res = await fetch(url, { headers: getFetchHeaders() })
-  if (!res.ok) throw new Error(`WooCommerce API error: ${res.status} ${res.statusText}`)
-  return res.json()
+  return (await wcFetch(`${WC_API}/products?slug=${slug}&status=publish`)).json()
 }
 
 export async function fetchProductoById(id: number): Promise<ProductoWC> {
-  const url = `${WC_API}/products/${id}`
-  const res = await fetch(url, { headers: getFetchHeaders() })
-  if (!res.ok) throw new Error(`WooCommerce API error: ${res.status} ${res.statusText}`)
-  return res.json()
+  return (await wcFetch(`${WC_API}/products/${id}`)).json()
 }
 
 export async function fetchProductosPorCategoria(categoriaId: number, perPage = 50): Promise<ProductoWC[]> {
-  const url = `${WC_API}/products?category=${categoriaId}&per_page=${perPage}&status=publish`
-  const res = await fetch(url, { headers: getFetchHeaders() })
-  if (!res.ok) throw new Error(`WooCommerce API error: ${res.status} ${res.statusText}`)
-  return res.json()
+  return (await wcFetch(`${WC_API}/products?category=${categoriaId}&per_page=${perPage}&status=publish`)).json()
 }
 
 export async function submitCotizacion(data: SolicitudCotizacion): Promise<{ success?: boolean; id?: number; error?: string }> {
