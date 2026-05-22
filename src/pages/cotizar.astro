@@ -7,7 +7,7 @@ import Footer from '../components/Footer.vue';
 import { fetchCategorias } from '../lib/woocommerce';
 
 let categorias: Array<{ id: number; name: string; slug: string; parent: number }> = [];
-try { categorias = await fetchCategorias(); } catch { categorias = []; }
+try { categorias = await fetchCategorias(); } catch (e) { console.error('[cotizar] Failed to fetch categories:', e); categorias = []; }
 ---
 
 <Layout title="Solicitar Presupuesto" description="Completa el formulario para solicitar un presupuesto personalizado de productos agrícolas. Te responderemos en máximo 24 horas." canonical="https://agrofarias.cl/cotizar">

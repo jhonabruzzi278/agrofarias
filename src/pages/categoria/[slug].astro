@@ -14,7 +14,10 @@ let categoriaActual: { id: number; name: string; slug: string } | null = null;
 
 try {
   categorias = await fetchCategorias();
-} catch { categorias = []; }
+} catch (e) {
+  console.error('[categoria] Failed to fetch categories:', e)
+  categorias = [];
+}
 
 const { slug } = Astro.params;
 const normalizedSlug = slug?.toLowerCase().trim();
@@ -27,7 +30,10 @@ let productos: ProductoWC[] = [];
 if (categoriaActual) {
   try {
     productos = await fetchProductosPorCategoria(categoriaActual.id);
-  } catch { productos = []; }
+  } catch (e) {
+    console.error('[categoria] Failed to fetch products for category:', categoriaActual.id, e)
+    productos = [];
+  }
 }
 
 const pageTitle = categoriaActual ? categoriaActual.name : 'Categoría';

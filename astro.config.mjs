@@ -24,7 +24,19 @@ export default defineConfig({
     }),
     sitemap({
       serialize(item) {
-        item.lastmod = new Date().toISOString().split('T')[0];
+        if (item.url.includes('/producto/')) {
+          item.priority = 0.8;
+          item.changefreq = 'weekly';
+        } else if (item.url.includes('/categoria/')) {
+          item.priority = 0.7;
+          item.changefreq = 'weekly';
+        } else if (item.url === 'https://agrofarias.cl/') {
+          item.priority = 1.0;
+          item.changefreq = 'daily';
+        } else {
+          item.priority = 0.5;
+          item.changefreq = 'monthly';
+        }
         return item;
       },
     }),

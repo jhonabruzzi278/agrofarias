@@ -2,6 +2,7 @@ export const prerender = false;
 
 import {
   checkRateLimit,
+  recordRequest,
   getClientIP,
   sanitize,
   sanitizePhone,
@@ -11,13 +12,44 @@ import {
   successResponse,
 } from '../../lib/security';
 
+const ALLOWED_ORIGINS = [
+  'https://agrofarias.cl',
+  'https://www.agrofarias.cl',
+]
+
+function validateOrigin(request: Request): boolean {
+  const origin = request.headers.get('origin')
+  const referer = request.headers.get('referer')
+
+  if (!origin && !referer) return false
+
+  const checkUrl = origin || referer
+  if (!checkUrl) return false
+
+  try {
+    const url = new URL(checkUrl)
+    const hostname = url.hostname
+    return ALLOWED_ORIGINS.some(allowed => {
+      const allowedUrl = new URL(allowed)
+      return hostname === allowedUrl.hostname || hostname.endsWith('.' + allowedUrl.hostname.replace(/^https?:\/\//, ''))
+    })
+  } catch {
+    return false
+  }
+}
+
 export async function POST({ request }: { request: Request }) {
   try {
+    if (!validateOrigin(request)) {
+      return errorResponse('Origen no permitido', 403)
+    }
+
     const ip = getClientIP(request);
-    const { allowed, remaining } = checkRateLimit(ip);
+    const { allowed, remaining } = await checkRateLimit(ip);
     if (!allowed) {
       return errorResponse('Demasiadas solicitudes. Intenta en 1 minuto.', 429);
     }
+    await recordRequest(ip);
 
     let data: Record<string, unknown>;
     try {
@@ -46,10 +78,16 @@ export async function POST({ request }: { request: Request }) {
     }
 
     const wpUrl = import.meta.env.WORDPRESS_URL as string;
+    const wpApiKey = import.meta.env.WP_CONTACT_API_KEY as string;
+
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    if (wpApiKey) {
+      headers['X-API-Key'] = wpApiKey
+    }
 
     const res = await fetch(`${wpUrl}/wp-json/custom/v1/contacto`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({
         nombre,
         email,
@@ -65,8 +103,10 @@ export async function POST({ request }: { request: Request }) {
     }
 
     const errorText = await res.text();
+    console.error('[contacto] WordPress API error:', res.status, errorText)
     return errorResponse('El servicio de contacto no está disponible. Intenta nuevamente más tarde.', 502);
-  } catch {
+  } catch (e) {
+    console.error('[contacto] Unhandled error:', e)
     return errorResponse('Error interno del servidor', 500);
   }
 }

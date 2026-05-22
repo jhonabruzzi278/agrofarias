@@ -2,6 +2,7 @@ export const prerender = false;
 
 import {
   checkRateLimit,
+  recordRequest,
   getClientIP,
   sanitize,
   sanitizePhone,
@@ -13,13 +14,44 @@ import {
   successResponse,
 } from '../../lib/security';
 
+const ALLOWED_ORIGINS = [
+  'https://agrofarias.cl',
+  'https://www.agrofarias.cl',
+]
+
+function validateOrigin(request: Request): boolean {
+  const origin = request.headers.get('origin')
+  const referer = request.headers.get('referer')
+
+  if (!origin && !referer) return false
+
+  const checkUrl = origin || referer
+  if (!checkUrl) return false
+
+  try {
+    const url = new URL(checkUrl)
+    const hostname = url.hostname
+    return ALLOWED_ORIGINS.some(allowed => {
+      const allowedUrl = new URL(allowed)
+      return hostname === allowedUrl.hostname || hostname.endsWith('.' + allowedUrl.hostname.replace(/^https?:\/\//, ''))
+    })
+  } catch {
+    return false
+  }
+}
+
 export async function POST({ request }: { request: Request }) {
   try {
+    if (!validateOrigin(request)) {
+      return errorResponse('Origen no permitido', 403)
+    }
+
     const ip = getClientIP(request);
-    const { allowed, remaining } = checkRateLimit(ip);
+    const { allowed, remaining } = await checkRateLimit(ip);
     if (!allowed) {
       return errorResponse('Demasiadas solicitudes. Intenta en 1 minuto.', 429);
     }
+    await recordRequest(ip);
 
     let data: Record<string, unknown>;
     try {
@@ -70,13 +102,20 @@ export async function POST({ request }: { request: Request }) {
     const wpUrl = import.meta.env.WORDPRESS_URL as string;
     const wcKey = import.meta.env.WC_CONSUMER_KEY as string;
     const wcSecret = import.meta.env.WC_CONSUMER_SECRET as string;
+
+    if (!wcKey || !wcSecret) {
+      console.error('[cotizar] WooCommerce credentials not configured')
+      return errorResponse('Servicio de cotización no disponible', 503)
+    }
+
     const auth = btoa(`${wcKey}:${wcSecret}`);
 
+    const nombreParts = nombre.trim().split(/\s+/)
     const orderBody = {
       status: 'pending',
       billing: {
-        first_name: nombre.split(' ')[0],
-        last_name: nombre.split(' ').slice(1).join(' ') || nombre,
+        first_name: nombreParts[0] || nombre,
+        last_name: nombreParts.slice(1).join(' ') || nombreParts[0] || '',
         email,
         phone: telefono,
         company: empresa,
@@ -101,12 +140,15 @@ export async function POST({ request }: { request: Request }) {
 
     if (orderRes.ok) {
       const order = JSON.parse(orderText);
+      console.log(`[cotizar] Order created: ${order.id} for ${email}`)
       return successResponse({ success: true, id: order.id, via: 'woocommerce', orderNumber: order.number });
     }
 
+    console.error('[cotizar] WooCommerce order creation failed:', orderRes.status, orderText)
     const errMsg = (() => { try { return JSON.parse(orderText).message || 'Error al crear la orden'; } catch { return 'Error al crear la orden'; } })();
     return errorResponse(errMsg, 502);
-  } catch {
+  } catch (e) {
+    console.error('[cotizar] Unhandled error:', e)
     return errorResponse('Error interno del servidor', 500);
   }
 }

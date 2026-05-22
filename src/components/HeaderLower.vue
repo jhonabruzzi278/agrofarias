@@ -33,14 +33,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 const mobileMenuOpen = ref(false)
+const currentPath = ref('/')
 
 function isActive(path: string): boolean {
-  if (typeof window === 'undefined') return path === '/'
-  return window.location.pathname === path
+  return currentPath.value === path
 }
+
+onMounted(() => {
+  currentPath.value = window.location.pathname
+})
 </script>
 
 <style scoped>

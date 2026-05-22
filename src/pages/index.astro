@@ -22,8 +22,12 @@ try {
   ]);
   try {
     banners = await fetchBanners();
-  } catch { banners = []; }
-} catch {
+  } catch (e) {
+    console.error('[index] Failed to fetch banners:', e)
+    banners = [];
+  }
+} catch (e) {
+  console.error('[index] Failed to fetch products or categories:', e)
   productos = [];
 }
 ---

@@ -15,7 +15,7 @@ export interface ProductoWC {
     cultivo_aplicable?: string
     dosis_recomendada?: string
   }
-  stock_status: string
+  stock_status: 'instock' | 'outofstock' | 'onbackorder'
   stock_quantity: number | null
 }
 

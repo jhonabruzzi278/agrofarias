@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import WhatsAppButton from '../components/WhatsAppButton.vue';
 import Toast from '../components/Toast.vue';
+import { SITE_CONFIG } from '../lib/config';
 
 export interface Props {
   title?: string
@@ -13,7 +14,7 @@ export interface Props {
 }
 const { title = 'Agro Farías', description = 'Insumos, herramientas y soluciones agrícolas con atención personalizada y despacho confiable.', image = '/logo-agrofarias.png', canonical, noindex = false, type = 'website' } = Astro.props;
 const fullTitle = `${title} | Agro Farías — Insumos Agrícolas`;
-const siteUrl = 'https://agrofarias.cl';
+const siteUrl = SITE_CONFIG.url;
 const pageUrl = canonical || (Astro.url ? Astro.url.href : siteUrl);
 ---
 
@@ -65,7 +66,7 @@ const pageUrl = canonical || (Astro.url ? Astro.url.href : siteUrl);
       },
       "contactPoint": {
         "@type": "ContactPoint",
-        "telephone": "+56-9-1234-5678",
+        "telephone": SITE_CONFIG.phone.replace(/ /g, '-').replace('+', ''),
         "contactType": "customer service",
         "availableLanguage": ["es"]
       },

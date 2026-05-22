@@ -118,68 +118,34 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { computed } from 'vue'
+import { useQuote } from '../stores/useQuote'
 
-interface QuoteItem {
-  id: number
-  name: string
-  slug: string
-  image?: string
-  cantidad: number
-}
-
-const items = ref<QuoteItem[]>([])
+const { items, removeItem, updateQuantity, clearQuote } = useQuote()
 
 const totalUnits = computed(() =>
   items.value.reduce((sum, item) => sum + item.cantidad, 0)
 )
 
-function loadFromStorage() {
-  try {
-    const saved = localStorage.getItem('agrofarias-quote')
-    if (saved) {
-      items.value = JSON.parse(saved)
-    }
-  } catch {
-    items.value = []
-  }
-}
-
-function saveToStorage() {
-  try {
-    localStorage.setItem('agrofarias-quote', JSON.stringify(items.value))
-  } catch {}
-}
-
 function incrementQty(id: number) {
   const item = items.value.find(i => i.id === id)
   if (item && item.cantidad < 99) {
-    item.cantidad++
-    saveToStorage()
+    updateQuantity(id, item.cantidad + 1)
   }
 }
 
 function decrementQty(id: number) {
   const item = items.value.find(i => i.id === id)
   if (item && item.cantidad > 1) {
-    item.cantidad--
-    saveToStorage()
+    updateQuantity(id, item.cantidad - 1)
   }
-}
-
-function removeItem(id: number) {
-  items.value = items.value.filter(i => i.id !== id)
-  saveToStorage()
 }
 
 function clearAll() {
   if (confirm('¿Estás seguro de que quieres vaciar tu cotización?')) {
-    items.value = []
-    saveToStorage()
+    clearQuote()
   }
 }
-
-onMounted(() => loadFromStorage())
 </script>
 
 <style scoped>

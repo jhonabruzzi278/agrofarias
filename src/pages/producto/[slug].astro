@@ -6,19 +6,20 @@ import QuoteButton from '../../components/QuoteButton.vue';
 import ProductCard from '../../components/ProductCard.vue';
 import Footer from '../../components/Footer.vue';
 import { fetchProductoBySlug, fetchProductosPorCategoria, fetchCategorias } from '../../lib/woocommerce';
+import { sanitizeHTML } from '../../lib/html-sanitizer';
 import type { ProductoWC } from '../../lib/types';
 
 export const prerender = false;
 
 let categorias: Array<{ id: number; name: string; slug: string; parent: number }> = [];
-try { categorias = await fetchCategorias(); } catch { categorias = []; }
+try { categorias = await fetchCategorias(); } catch (e) { console.error('[producto] Failed to fetch categories:', e); categorias = []; }
 
 const { slug } = Astro.params;
 let producto: ProductoWC | null = null;
 try {
   const results = await fetchProductoBySlug(slug!);
   producto = results[0] || null;
-} catch { producto = null; }
+} catch (e) { console.error('[producto] Failed to fetch product:', slug, e); producto = null; }
 
 if (!producto) {
   return new Response(null, { status: 404, statusText: 'Not Found' });
@@ -30,13 +31,13 @@ const prodCanonical = `https://agrofarias.cl/producto/${producto.slug}`;
 
 // Fetch related products from same category (excluding current)
 let relacionados: ProductoWC[] = [];
-try {
-  const catId = producto.categories?.[0]?.id;
-  if (catId) {
-    const todos = await fetchProductosPorCategoria(catId);
-    relacionados = todos.filter(p => p.id !== producto!.id).slice(0, 4);
-  }
-} catch { relacionados = []; }
+  try {
+    const catId = producto.categories?.[0]?.id;
+    if (catId) {
+      const todos = await fetchProductosPorCategoria(catId, 20);
+      relacionados = todos.filter(p => p.id !== producto!.id).slice(0, 4);
+    }
+  } catch (e) { console.error('[producto] Failed to fetch related products:', e); relacionados = []; }
 
 // Parse attributes for specs tab
 const atributos = producto.attributes || [];
@@ -71,7 +72,7 @@ const atributos = producto.attributes || [];
         <div class="animate-fade-in-left">
           <div class="bg-white rounded-2xl border border-gray-200 p-6 lg:p-10 sticky top-24">
             {producto.images.length > 0 ? (
-              <img src={producto.images[0].src} alt={producto.name} class="w-full rounded-xl object-contain max-h-[500px] hover:scale-[1.02] transition-transform duration-500" loading="eager" />
+              <img src={producto.images[0].src} alt={producto.name} width="800" height="600" class="w-full rounded-xl object-contain max-h-[500px] hover:scale-[1.02] transition-transform duration-500" loading="eager" />
             ) : (
               <div class="w-full h-[400px] bg-gray-50 rounded-xl flex items-center justify-center text-gray-400">
                 <i class="fas fa-image text-6xl"></i>
@@ -106,7 +107,7 @@ const atributos = producto.attributes || [];
 
           <!-- Short desc -->
           {producto.short_description && (
-            <div class="mb-6 text-gray-600 leading-relaxed" set:html={producto.short_description} />
+            <div class="mb-6 text-gray-600 leading-relaxed" set:html={sanitizeHTML(producto.short_description)} />
           )}
 
           <!-- Stock status -->
@@ -165,12 +166,12 @@ const atributos = producto.attributes || [];
       <!-- Tabs Section -->
       <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden mb-16">
         <!-- Tab headers -->
-        <div class="flex border-b border-gray-200" role="tablist">
-          <button id="tab-desc" class="tab-btn flex-1 py-4 px-6 text-sm font-semibold text-[var(--theme-color)] border-b-2 border-[var(--theme-color)] bg-[var(--theme-color)]/5 transition-colors" role="tab" aria-selected="true" onclick="switchTab('desc')">
+        <div class="flex border-b border-gray-200" role="tablist" aria-label="Información del producto">
+          <button id="tab-desc" class="tab-btn flex-1 py-4 px-6 text-sm font-semibold text-[var(--theme-color)] border-b-2 border-[var(--theme-color)] bg-[var(--theme-color)]/5 transition-colors" role="tab" aria-selected="true" aria-controls="panel-desc" tabindex="0" onclick="switchTab('desc')" onkeydown="handleTabKey(event)">
             <i class="fas fa-align-left mr-2"></i>Descripción
           </button>
           {atributos.length > 0 && (
-            <button id="tab-specs" class="tab-btn flex-1 py-4 px-6 text-sm font-semibold text-gray-500 border-b-2 border-transparent hover:text-[#111] transition-colors" role="tab" aria-selected="false" onclick="switchTab('specs')">
+            <button id="tab-specs" class="tab-btn flex-1 py-4 px-6 text-sm font-semibold text-gray-500 border-b-2 border-transparent hover:text-[#111] transition-colors" role="tab" aria-selected="false" aria-controls="panel-specs" tabindex="-1" onclick="switchTab('specs')" onkeydown="handleTabKey(event)">
               <i class="fas fa-list-ul mr-2"></i>Especificaciones
             </button>
           )}
@@ -178,9 +179,9 @@ const atributos = producto.attributes || [];
 
         <!-- Tab panels -->
         <div class="p-6 lg:p-10">
-          <div id="panel-desc" class="tab-panel" role="tabpanel">
+          <div id="panel-desc" class="tab-panel" role="tabpanel" aria-labelledby="tab-desc" tabindex="0">
             {producto.description ? (
-              <div class="prose prose-agro max-w-none" set:html={producto.description} />
+              <div class="prose prose-agro max-w-none" set:html={sanitizeHTML(producto.description)} />
             ) : (
               <div class="text-center py-12">
                 <i class="fas fa-file-alt text-4xl text-gray-200 mb-4"></i>
@@ -190,7 +191,7 @@ const atributos = producto.attributes || [];
           </div>
 
           {atributos.length > 0 && (
-            <div id="panel-specs" class="tab-panel hidden" role="tabpanel">
+            <div id="panel-specs" class="tab-panel hidden" role="tabpanel" aria-labelledby="tab-specs" tabindex="0">
               <div class="max-w-2xl">
                 {atributos.map(attr => (
                   <div class="flex py-3 border-b border-gray-100 last:border-0">
@@ -254,6 +255,7 @@ function switchTab(tabId) {
     b.classList.remove('text-[var(--theme-color)]', 'border-[var(--theme-color)]', 'bg-[var(--theme-color)]/5');
     b.classList.add('text-gray-500', 'border-transparent');
     b.setAttribute('aria-selected', 'false');
+    b.setAttribute('tabindex', '-1');
   });
   
   const panel = document.getElementById('panel-' + tabId);
@@ -264,7 +266,35 @@ function switchTab(tabId) {
     btn.classList.remove('text-gray-500', 'border-transparent');
     btn.classList.add('text-[var(--theme-color)]', 'border-[var(--theme-color)]', 'bg-[var(--theme-color)]/5');
     btn.setAttribute('aria-selected', 'true');
+    btn.setAttribute('tabindex', '0');
+    btn.focus();
   }
+}
+
+function handleTabKey(e) {
+  const tabs = Array.from(document.querySelectorAll('.tab-btn'));
+  const currentIndex = tabs.indexOf(e.target);
+  let newIndex;
+  
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+    e.preventDefault();
+    newIndex = (currentIndex + 1) % tabs.length;
+  } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    newIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+  } else if (e.key === 'Home') {
+    e.preventDefault();
+    newIndex = 0;
+  } else if (e.key === 'End') {
+    e.preventDefault();
+    newIndex = tabs.length - 1;
+  } else {
+    return;
+  }
+  
+  const newTab = tabs[newIndex];
+  const tabId = newTab.id.replace('tab-', '');
+  switchTab(tabId);
 }
 </script>
 

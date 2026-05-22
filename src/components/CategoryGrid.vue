@@ -16,7 +16,7 @@
         </div>
       </div>
 
-      <div ref="carouselRef" class="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide" @scroll="onScroll">
+      <div ref="carouselRef" class="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
         <a
           v-for="cat in categories"
           :key="cat.id"
@@ -66,13 +66,13 @@ const categories = ref<Category[]>([])
 const carouselRef = ref<HTMLElement | null>(null)
 
 const catImages: Record<string, string> = {
-  'nutricion-vegetal': '/nutricion vegetal.png',
-  'proteccion-fitosanitaria': '/proteccion fitosanitaria.png',
-  'coadyuvantes-agricolas': '/coadyuvantes agricolas.png',
-  'control-de-plagas': '/control de plagas.png',
-  'herramientas-y-repuestos': '/herramientasrepuestos.png',
-  'riego-y-equipamiento': '/riego y equipamiento.png',
-  'seguridad-agricola': '/seguridad agricola.png',
+  'nutricion-vegetal': encodeURI('/nutricion vegetal.png'),
+  'proteccion-fitosanitaria': encodeURI('/proteccion fitosanitaria.png'),
+  'coadyuvantes-agricolas': encodeURI('/coadyuvantes agricolas.png'),
+  'control-de-plagas': encodeURI('/control de plagas.png'),
+  'herramientas-y-repuestos': encodeURI('/herramientasrepuestos.png'),
+  'riego-y-equipamiento': encodeURI('/riego y equipamiento.png'),
+  'seguridad-agricola': encodeURI('/seguridad agricola.png'),
 }
 
 function scrollPrev() {
@@ -84,8 +84,6 @@ function scrollNext() {
   if (!carouselRef.value) return
   carouselRef.value.scrollBy({ left: 240, behavior: 'smooth' })
 }
-
-function onScroll() {}
 
 onMounted(() => {
   if (props.categorias && props.categorias.length > 0) {

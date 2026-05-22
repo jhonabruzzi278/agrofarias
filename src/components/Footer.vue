@@ -14,15 +14,15 @@
                 <i class="fas fa-phone text-[#2D6A4F] text-sm"></i>
               </div>
               <div>
-                <a :href="'tel:' + telefono" class="text-white font-bold text-base hover:text-[var(--accent-color)] transition-colors block">{{ telefono }}</a>
+                <a :href="SITE_CONFIG.phoneHref" class="text-white font-bold text-base hover:text-[var(--accent-color)] transition-colors block">{{ SITE_CONFIG.phone }}</a>
                 <span class="text-white/70 text-xs">Lunes a Viernes 8-18</span>
               </div>
             </div>
 
             <ul class="flex gap-2">
-              <li><a href="#" class="w-9 h-9 bg-white/10 rounded-full flex items-center justify-center hover:bg-[var(--accent-color)] hover:text-white transition-all duration-300" aria-label="Facebook"><i class="fab fa-facebook-f text-sm"></i></a></li>
-              <li><a href="#" class="w-9 h-9 bg-white/10 rounded-full flex items-center justify-center hover:bg-[var(--accent-color)] hover:text-white transition-all duration-300" aria-label="Instagram"><i class="fab fa-instagram text-sm"></i></a></li>
-              <li><a href="#" class="w-9 h-9 bg-white/10 rounded-full flex items-center justify-center hover:bg-[var(--accent-color)] hover:text-white transition-all duration-300" aria-label="WhatsApp"><i class="fab fa-whatsapp text-sm"></i></a></li>
+              <li><a :href="SITE_CONFIG.social.facebook" target="_blank" rel="noopener noreferrer" class="w-9 h-9 bg-white/10 rounded-full flex items-center justify-center hover:bg-[var(--accent-color)] hover:text-white transition-all duration-300" aria-label="Facebook"><i class="fab fa-facebook-f text-sm"></i></a></li>
+              <li><a :href="SITE_CONFIG.social.instagram" target="_blank" rel="noopener noreferrer" class="w-9 h-9 bg-white/10 rounded-full flex items-center justify-center hover:bg-[var(--accent-color)] hover:text-white transition-all duration-300" aria-label="Instagram"><i class="fab fa-instagram text-sm"></i></a></li>
+              <li><a :href="SITE_CONFIG.social.whatsapp" target="_blank" rel="noopener noreferrer" class="w-9 h-9 bg-white/10 rounded-full flex items-center justify-center hover:bg-[var(--accent-color)] hover:text-white transition-all duration-300" aria-label="WhatsApp"><i class="fab fa-whatsapp text-sm"></i></a></li>
             </ul>
           </div>
 
@@ -75,11 +75,11 @@
 
             <div class="mt-4 p-3 bg-white/10 rounded-lg space-y-2">
               <p class="text-white/80 text-sm flex items-start gap-2">
-                <i class="fas fa-map-marker-alt text-[var(--accent-color)] mt-0.5 text-xs"></i>{{ direccion }}
+                <i class="fas fa-map-marker-alt text-[var(--accent-color)] mt-0.5 text-xs"></i>{{ SITE_CONFIG.address }}
               </p>
               <p class="text-white/80 text-sm flex items-center gap-2">
                 <i class="fas fa-envelope text-[var(--accent-color)] text-xs"></i>
-                <a :href="'mailto:' + email" class="hover:text-white transition-colors">{{ email }}</a>
+                <a :href="SITE_CONFIG.emailHref" class="hover:text-white transition-colors">{{ SITE_CONFIG.email }}</a>
               </p>
             </div>
           </div>
@@ -98,6 +98,8 @@
 </template>
 
 <script setup lang="ts">
+import { SITE_CONFIG } from '../lib/config'
+
 const categorias = [
   { slug: 'foliares', name: 'Foliares' },
   { slug: 'fertilizantes', name: 'Fertilizantes' },
@@ -106,7 +108,4 @@ const categorias = [
   { slug: 'insecticidas', name: 'Insecticidas' },
   { slug: 'herramientas-y-repuestos', name: 'Herramientas' },
 ]
-const telefono = '+56 9 1234 5678'
-const direccion = 'Ruta 66 km 95850, San Pedro, Melipilla, Región Metropolitana'
-const email = 'contacto@agrofarias.cl'
 </script>

@@ -24,7 +24,8 @@ try {
     fetchProductos({ perPage: 200 }),
     fetchCategorias(),
   ]);
-} catch {
+} catch (e) {
+  console.error('[tienda] Failed to fetch products or categories:', e)
   productos = [];
 }
 
@@ -255,7 +256,7 @@ function buildFilterUrl(params: Record<string, string>): string {
                       <figure class="relative overflow-hidden">
                         <a href={`/producto/${prod.slug}`}>
                           {prod.images[0] ? (
-                            <img src={prod.images[0].src} alt={prod.name} loading="lazy" class="w-full h-44 sm:h-52 lg:h-48 xl:h-44 object-cover transition-transform duration-500 group-hover:scale-105" />
+                            <img src={prod.images[0].src} alt={prod.name} width="400" height="300" loading="lazy" class="w-full h-44 sm:h-52 lg:h-48 xl:h-44 object-cover transition-transform duration-500 group-hover:scale-105" />
                           ) : (
                             <div class="w-full h-44 sm:h-52 lg:h-48 xl:h-44 bg-gray-100 flex items-center justify-center">
                               <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#9ca3af" stroke-width="1.5">
@@ -298,7 +299,7 @@ function buildFilterUrl(params: Record<string, string>): string {
                   <a href={`/producto/${prod.slug}`} class="group flex items-center gap-4 p-4 bg-white rounded-xl border border-gray-200 hover:border-[var(--theme-color)]/30 hover:shadow-lg transition-all">
                     <div class="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-50">
                       {prod.images[0] ? (
-                        <img src={prod.images[0].src} alt={prod.name} class="w-full h-full object-contain p-2 group-hover:scale-110 transition-transform duration-500" loading="lazy" />
+                        <img src={prod.images[0].src} alt={prod.name} width="80" height="80" class="w-full h-full object-contain p-2 group-hover:scale-110 transition-transform duration-500" loading="lazy" />
                       ) : (
                         <div class="w-full h-full flex items-center justify-center text-gray-300"><i class="fas fa-image text-xl"></i></div>
                       )}

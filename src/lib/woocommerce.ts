@@ -5,11 +5,6 @@ const WC_KEY = import.meta.env.WC_CONSUMER_KEY
 const WC_SECRET = import.meta.env.WC_CONSUMER_SECRET
 const WC_API = `${WP_URL}/wp-json/wc/v3`
 
-const authHeaders = {
-  'Authorization': 'Basic ' + btoa(`${WC_KEY}:${WC_SECRET}`),
-  'Content-Type': 'application/json',
-}
-
 function getFetchHeaders(): HeadersInit {
   return {
     'Authorization': 'Basic ' + btoa(`${WC_KEY}:${WC_SECRET}`),
@@ -49,8 +44,8 @@ export async function fetchProductoById(id: number): Promise<ProductoWC> {
   return res.json()
 }
 
-export async function fetchProductosPorCategoria(categoriaId: number): Promise<ProductoWC[]> {
-  const url = `${WC_API}/products?category=${categoriaId}&per_page=50&status=publish`
+export async function fetchProductosPorCategoria(categoriaId: number, perPage = 50): Promise<ProductoWC[]> {
+  const url = `${WC_API}/products?category=${categoriaId}&per_page=${perPage}&status=publish`
   const res = await fetch(url, { headers: getFetchHeaders() })
   if (!res.ok) throw new Error(`WooCommerce API error: ${res.status} ${res.statusText}`)
   return res.json()

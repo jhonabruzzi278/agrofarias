@@ -13,13 +13,14 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { SITE_CONFIG } from '../lib/config'
 
 const props = defineProps<{
   phone?: string
   message?: string
 }>()
 
-const phone = props.phone || '56912345678'
+const phone = props.phone || SITE_CONFIG.whatsapp
 const message = encodeURIComponent(props.message || 'Hola, quisiera consultar sobre sus productos agrícolas.')
 
 const whatsappLink = computed(() => `https://wa.me/${phone}?text=${message}`)

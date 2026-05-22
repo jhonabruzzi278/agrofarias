@@ -59,7 +59,7 @@
               <i class="fas fa-phone text-white text-base"></i>
             </div>
             <div class="hidden lg:block">
-              <a :href="'tel:' + telefono" class="text-white font-semibold text-sm hover:text-[var(--accent-color)] transition-colors block">{{ telefono }}</a>
+              <a :href="SITE_CONFIG.phoneHref" class="text-white font-semibold text-sm hover:text-[var(--accent-color)] transition-colors block">{{ SITE_CONFIG.phone }}</a>
               <p class="text-white/70 text-xs">Lun-Vie 8-18</p>
             </div>
           </div>
@@ -70,8 +70,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { useQuote } from '../stores/useQuote'
+import { SITE_CONFIG } from '../lib/config'
 
 const quote = useQuote()
 
@@ -79,7 +80,6 @@ const props = defineProps<{ categorias: Array<{ id: number; name: string; slug: 
 const parentCats = computed(() => (props.categorias || []).filter(c => c.parent === 0))
 const selectedCategory = ref('')
 const searchQuery = ref('')
-const telefono = '+56 9 1234 5678'
 
 function onCategoryChange(event: Event) {
   const slug = (event.target as HTMLSelectElement).value
@@ -91,6 +91,4 @@ function handleSearch() {
   if (!searchQuery.value.trim()) return
   window.location.href = '/tienda?search=' + encodeURIComponent(searchQuery.value.trim())
 }
-
-onMounted(() => quote.loadFromStorage())
 </script>

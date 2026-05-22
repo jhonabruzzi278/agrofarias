@@ -18,7 +18,7 @@
         <p class="text-lg font-medium">No se encontraron productos</p>
       </div>
 
-      <div v-else ref="gridRef" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 lg:gap-8">
+      <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 lg:gap-8">
         <ProductCard
           v-for="producto in productos"
           :key="producto.id"
@@ -41,7 +41,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from 'vue'
 import ProductCard from './ProductCard.vue'
 
 interface Producto {
@@ -61,11 +60,5 @@ const props = withDefaults(defineProps<{
 }>(), {
   title: '',
   showAllLink: true,
-})
-
-const gridRef = ref<HTMLElement | null>(null)
-
-onMounted(async () => {
-  await nextTick()
 })
 </script>

@@ -34,12 +34,12 @@ describe('ProductCard', () => {
     expect(wrapper.text()).toContain('Test Category');
   });
 
-  it('should show "En Stock" when inStock is true', () => {
+  it('should show "Disponible" when inStock is true', () => {
     const wrapper = mount(ProductCard, {
       props: { ...defaultProps, inStock: true },
     });
 
-    expect(wrapper.text()).toContain('En Stock');
+    expect(wrapper.text()).toContain('Disponible');
   });
 
   it('should show "Consultar" when inStock is false', () => {

@@ -7,7 +7,7 @@ import Footer from '../components/Footer.vue';
 import { fetchCategorias } from '../lib/woocommerce';
 
 let categorias: Array<{ id: number; name: string; slug: string; parent: number }> = [];
-try { categorias = await fetchCategorias(); } catch { categorias = []; }
+try { categorias = await fetchCategorias(); } catch (e) { console.error('[cotizacion] Failed to fetch categories:', e); categorias = []; }
 ---
 
 <Layout title="Tu Cotización" description="Revisa los productos de tu cotización antes de solicitar presupuesto." canonical="https://agrofarias.cl/cotizacion">

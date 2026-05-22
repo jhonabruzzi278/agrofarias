@@ -1,12 +1,5 @@
 import { ref, computed } from 'vue'
-
-export interface QuoteItem {
-  id: number
-  name: string
-  slug: string
-  image?: string
-  cantidad: number
-}
+import type { QuoteItem } from '../lib/types'
 
 const items = ref<QuoteItem[]>([])
 const isLoaded = ref(false)
@@ -21,9 +14,17 @@ function loadFromStorage() {
   try {
     const saved = localStorage.getItem('agrofarias-quote')
     if (saved) {
-      items.value = JSON.parse(saved)
+      const parsed = JSON.parse(saved)
+      if (Array.isArray(parsed)) {
+        items.value = parsed.filter((item: unknown) => {
+          if (!item || typeof item !== 'object') return false
+          const i = item as Record<string, unknown>
+          return typeof i.id === 'number' && typeof i.name === 'string' && typeof i.slug === 'string' && (i.cantidad === undefined || typeof i.cantidad === 'number')
+        }) as QuoteItem[]
+      }
     }
-  } catch {
+  } catch (e) {
+    console.error('[useQuote] Failed to load from localStorage:', e)
     items.value = []
   }
 }
@@ -31,7 +32,9 @@ function loadFromStorage() {
 function saveToStorage() {
   try {
     localStorage.setItem('agrofarias-quote', JSON.stringify(items.value))
-  } catch {}
+  } catch (e) {
+    console.error('[useQuote] Failed to save to localStorage:', e)
+  }
 }
 
 function addItem(producto: { id: number; name: string; slug: string; image?: string }) {

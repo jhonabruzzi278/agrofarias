@@ -22,7 +22,7 @@
           :src="banner.imagenUrl"
           :alt="banner.titulo || 'Banner promocional'"
           class="w-full h-full object-center object-contain bg-gray-100"
-          loading="eager"
+          :loading="index === 0 ? 'eager' : 'lazy'"
           draggable="false"
         />
       </div>

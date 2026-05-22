@@ -4,9 +4,10 @@ import HeaderUpper from '../components/HeaderUpper.vue';
 import HeaderLower from '../components/HeaderLower.vue';
 import Footer from '../components/Footer.vue';
 import { fetchCategorias } from '../lib/woocommerce';
+import { SITE_CONFIG } from '../lib/config';
 
 let categorias: Array<{ id: number; name: string; slug: string; parent: number }> = [];
-try { categorias = await fetchCategorias(); } catch { categorias = []; }
+try { categorias = await fetchCategorias(); } catch (e) { console.error('[contacto] Failed to fetch categories:', e); categorias = []; }
 ---
 
 <Layout title="Contacto" description="Contáctanos para recibir atención personalizada. Estamos en Melipilla, Región Metropolitana. Lunes a Viernes 8:00-18:00." canonical="https://agrofarias.cl/contacto">
@@ -88,7 +89,7 @@ try { categorias = await fetchCategorias(); } catch { categorias = []; }
                 </div>
                 <div>
                   <p class="font-medium text-[#111] text-sm">Teléfono</p>
-                  <a href="tel:+56912345678" class="text-[var(--theme-color)] hover:underline text-sm font-medium">+56 9 1234 5678</a>
+                  <a :href="SITE_CONFIG.phoneHref" class="text-[var(--theme-color)] hover:underline text-sm font-medium">{SITE_CONFIG.phone}</a>
                 </div>
               </li>
               <li class="flex items-start gap-4">
