@@ -12,14 +12,30 @@ function getFetchHeaders(): HeadersInit {
   }
 }
 
-export async function fetchProductos(params?: { categoria?: string; perPage?: number }): Promise<ProductoWC[]> {
-  let url = `${WC_API}/products?per_page=${params?.perPage || 100}&status=publish`
+export async function fetchProductos(params?: { categoria?: string; perPage?: number; page?: number }): Promise<ProductoWC[]> {
+  const page = params?.page || 1
+  const perPage = Math.min(params?.perPage || 100, 100)
+  let url = `${WC_API}/products?per_page=${perPage}&page=${page}&status=publish`
   if (params?.categoria) {
     url += `&category=${params.categoria}`
   }
   const res = await fetch(url, { headers: getFetchHeaders() })
   if (!res.ok) throw new Error(`WooCommerce API error: ${res.status} ${res.statusText}`)
   return res.json()
+}
+
+export async function fetchAllProductos(params?: { categoria?: string }): Promise<ProductoWC[]> {
+  const allProducts: ProductoWC[] = []
+  let page = 1
+  const perPage = 100
+  while (true) {
+    const batch = await fetchProductos({ ...params, perPage, page })
+    if (batch.length === 0) break
+    allProducts.push(...batch)
+    if (batch.length < perPage) break
+    page++
+  }
+  return allProducts
 }
 
 export async function fetchCategorias(): Promise<CategoriaWC[]> {

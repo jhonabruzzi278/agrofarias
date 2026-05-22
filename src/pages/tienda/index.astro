@@ -4,7 +4,7 @@ import HeaderUpper from '../../components/HeaderUpper.vue';
 import HeaderLower from '../../components/HeaderLower.vue';
 import QuoteButton from '../../components/QuoteButton.vue';
 import Footer from '../../components/Footer.vue';
-import { fetchProductos, fetchCategorias } from '../../lib/woocommerce';
+import { fetchAllProductos, fetchCategorias } from '../../lib/woocommerce';
 import type { ProductoWC } from '../../lib/types';
 
 export const prerender = false;
@@ -23,7 +23,7 @@ let productos: ProductoWC[] = [];
 let categorias: Array<{ id: number; name: string; slug: string; parent: number; count: number }> = [];
 try {
   [productos, categorias] = await Promise.all([
-    fetchProductos({ perPage: 200 }),
+    fetchAllProductos(),
     fetchCategorias(),
   ]);
 } catch (e) {
