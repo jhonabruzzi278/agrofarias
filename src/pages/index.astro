@@ -12,6 +12,8 @@ import { fetchProductos, fetchCategorias } from '../lib/woocommerce';
 import { fetchBanners } from '../lib/sanity';
 import type { ProductoWC } from '../lib/types';
 
+export const prerender = false;
+
 let productos: ProductoWC[] = [];
 let categorias: Array<{ id: number; name: string; slug: string; parent: number }> = [];
 let banners: Array<{ _id: string; titulo: string; subtitulo: string; textoBoton: string; urlBoton: string; orden: number; imagenUrl: string }> = [];

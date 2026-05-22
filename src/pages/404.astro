@@ -5,6 +5,8 @@ import HeaderLower from '../components/HeaderLower.vue';
 import Footer from '../components/Footer.vue';
 import { fetchCategorias } from '../lib/woocommerce';
 
+export const prerender = false;
+
 let categorias: Array<{ id: number; name: string; slug: string; parent: number }> = [];
 try { categorias = await fetchCategorias(); } catch (e) { console.error('[404] Failed to fetch categories:', e); categorias = []; }
 ---

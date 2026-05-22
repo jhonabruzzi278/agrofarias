@@ -6,6 +6,8 @@ import Footer from '../components/Footer.vue';
 import { fetchCategorias } from '../lib/woocommerce';
 import { SITE_CONFIG } from '../lib/config';
 
+export const prerender = false;
+
 let categorias: Array<{ id: number; name: string; slug: string; parent: number }> = [];
 try { categorias = await fetchCategorias(); } catch (e) { console.error('[contacto] Failed to fetch categories:', e); categorias = []; }
 ---

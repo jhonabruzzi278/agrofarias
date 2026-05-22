@@ -6,8 +6,10 @@ import Footer from '../components/Footer.vue';
 import { fetchCategorias } from '../lib/woocommerce';
 import type { CategoriaWC } from '../lib/types';
 
+export const prerender = false;
+
 let categorias: CategoriaWC[] = [];
-try { categorias = await fetchCategorias(); } catch { categorias = []; }
+try { categorias = await fetchCategorias(); } catch (e) { console.error('[categorias] Failed to fetch categories:', e); categorias = []; }
 
 const parentCategories = categorias.filter(c => c.parent === 0);
 ---

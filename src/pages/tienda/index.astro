@@ -7,6 +7,8 @@ import Footer from '../../components/Footer.vue';
 import { fetchProductos, fetchCategorias } from '../../lib/woocommerce';
 import type { ProductoWC } from '../../lib/types';
 
+export const prerender = false;
+
 const { url } = Astro;
 const searchQuery = url.searchParams.get('search') || '';
 const categoriaSlug = url.searchParams.get('categoria') || '';
