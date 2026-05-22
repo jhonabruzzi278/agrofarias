@@ -21,20 +21,24 @@
           v-for="cat in categories"
           :key="cat.id"
           :href="`/categoria/${cat.slug}`"
-          class="flex-shrink-0 w-[200px] sm:w-[240px] md:w-[280px] snap-start group cursor-pointer"
+          class="flex-shrink-0 w-[180px] sm:w-[220px] md:w-[260px] snap-start group cursor-pointer"
         >
-          <div class="relative rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1 h-44 sm:h-52 md:h-60 bg-gradient-to-br from-[#e8f5e9] to-[#c8e6c9]">
-            <img
-              v-if="cat.image"
-              :src="cat.image"
-              :alt="cat.name"
-              loading="lazy"
-              class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-            />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"></div>
-            <div class="absolute bottom-0 left-0 right-0 p-4">
-              <h3 class="text-white font-bold text-sm sm:text-base leading-tight drop-shadow-sm">{{ cat.name }}</h3>
-              <span v-if="cat.count > 0" class="text-white/80 text-xs">{{ cat.count }} productos</span>
+          <div class="bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
+            <div class="h-40 sm:h-48 flex items-center justify-center p-4 bg-gradient-to-br from-gray-50 to-green-50">
+              <img
+                v-if="cat.image"
+                :src="cat.image"
+                :alt="cat.name"
+                loading="lazy"
+                class="max-w-full max-h-full object-contain"
+              />
+              <div v-else class="w-16 h-16 rounded-full bg-gradient-to-br from-[var(--theme-color)] to-[var(--theme-color-2)] flex items-center justify-center">
+                <i class="fas fa-leaf text-white text-xl"></i>
+              </div>
+            </div>
+            <div class="p-3 text-center border-t border-gray-100">
+              <h3 class="text-[#111] font-bold text-sm leading-tight">{{ cat.name }}</h3>
+              <span v-if="cat.count > 0" class="text-gray-400 text-xs">{{ cat.count }} productos</span>
             </div>
           </div>
         </a>
@@ -73,12 +77,12 @@ const catImages: Record<string, string> = {
 
 function scrollPrev() {
   if (!carouselRef.value) return
-  carouselRef.value.scrollBy({ left: -260, behavior: 'smooth' })
+  carouselRef.value.scrollBy({ left: -240, behavior: 'smooth' })
 }
 
 function scrollNext() {
   if (!carouselRef.value) return
-  carouselRef.value.scrollBy({ left: 260, behavior: 'smooth' })
+  carouselRef.value.scrollBy({ left: 240, behavior: 'smooth' })
 }
 
 function onScroll() {}
