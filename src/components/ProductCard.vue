@@ -4,8 +4,8 @@
       <div class="image-box relative">
         <figure class="image relative overflow-hidden">
           <a :href="`/producto/${slug}`">
-            <img v-if="image" :src="image" :alt="name" loading="lazy" class="w-full h-48 sm:h-56 object-cover transition-transform duration-500 group-hover:scale-105" />
-            <div v-else class="w-full h-48 sm:h-56 bg-gray-100 flex items-center justify-center">
+            <img v-if="image" :src="image" :alt="name" loading="lazy" class="w-full h-48 sm:h-56 md:h-52 lg:h-48 object-cover transition-transform duration-500 group-hover:scale-105" />
+            <div v-else class="w-full h-48 sm:h-56 md:h-52 lg:h-48 bg-gray-100 flex items-center justify-center">
               <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#9ca3af" stroke-width="1.5">
                 <rect x="3" y="3" width="18" height="18" rx="2" />
                 <circle cx="8.5" cy="8.5" r="1.5" />
