@@ -37,8 +37,8 @@
               </div>
             </div>
             <div class="p-3 text-center border-t border-gray-100">
-              <h3 class="text-[#111] font-bold text-sm leading-tight">{{ cat.name }}</h3>
-              <span v-if="cat.count > 0" class="text-gray-400 text-xs">{{ cat.count }} productos</span>
+              <h3 class="text-black font-bold text-sm leading-tight">{{ cat.name }}</h3>
+              <span v-if="cat.count > 0" class="text-gray-500 text-xs">{{ cat.count }} productos</span>
             </div>
           </div>
         </a>
