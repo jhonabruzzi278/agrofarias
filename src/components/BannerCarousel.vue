@@ -82,7 +82,16 @@ const fallbackBanners: Banner[] = [
     textoBoton: 'Ver Productos',
     urlBoton: '/tienda',
     orden: 1,
-    imagenUrl: '/assets/images/banner/banner-img-1.png',
+    imagenUrl: '/banner.png',
+  },
+  {
+    _id: 'fallback-2',
+    titulo: 'Soluciones para tu Cultivo',
+    subtitulo: 'Fertilizantes, fitosanitarios y herramientas para toda la temporada',
+    textoBoton: 'Explorar Categorías',
+    urlBoton: '/categorias',
+    orden: 2,
+    imagenUrl: '/banner2.png',
   },
 ]
 

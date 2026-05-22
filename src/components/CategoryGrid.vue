@@ -73,6 +73,16 @@ const fallbackCategories: Category[] = [
   { id: 'fb-8', name: 'Herramientas', slug: 'herramientas', image: null, count: 0 },
 ]
 
+const catImages: Record<string, string> = {
+  'nutricion-vegetal': '/nutricion vegetal.png',
+  'proteccion-fitosanitaria': '/proteccion fitosanitaria.png',
+  'coadyuvantes-agricolas': '/coadyuvantes agricolas.png',
+  'control-de-plagas': '/control de plagas.png',
+  'herramientas-y-repuestos': '/herramientasrepuestos.png',
+  'riego-y-equipamiento': '/riego y equipamiento.png',
+  'seguridad-agricola': '/seguridad agricola.png',
+}
+
 onMounted(() => {
   if (props.categorias && props.categorias.length > 0) {
     categories.value = props.categorias
@@ -82,7 +92,7 @@ onMounted(() => {
         id: String(c.id),
         name: c.name,
         slug: c.slug,
-        image: null,
+        image: catImages[c.slug] || null,
         count: c.count || 0,
       }))
   } else {
