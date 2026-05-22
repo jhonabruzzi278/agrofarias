@@ -27,7 +27,7 @@
           </div>
 
           <div class="footer-column">
-            <h4 class="text-base font-bold mb-5 relative">
+            <h4 class="text-base font-bold mb-5 relative font-title">
               Categorías
               <span class="absolute -bottom-2 left-0 w-8 h-0.5 bg-[var(--accent-color)]"></span>
             </h4>
@@ -41,7 +41,7 @@
           </div>
 
           <div class="footer-column">
-            <h4 class="text-base font-bold mb-5 relative">
+            <h4 class="text-base font-bold mb-5 relative font-title">
               Enlaces Rápidos
               <span class="absolute -bottom-2 left-0 w-8 h-0.5 bg-[var(--accent-color)]"></span>
             </h4>
@@ -54,7 +54,7 @@
           </div>
 
           <div class="footer-column">
-            <h4 class="text-base font-bold mb-5 relative">
+            <h4 class="text-base font-bold mb-5 relative font-title">
               Horario de Atención
               <span class="absolute -bottom-2 left-0 w-8 h-0.5 bg-[var(--accent-color)]"></span>
             </h4>

@@ -3,7 +3,7 @@
     <div class="large-container">
       <div class="flex items-center justify-between mb-12" v-if="title">
         <div class="sec-title mb-0">
-          <h2 class="text-3xl md:text-4xl font-bold font-['Rethink_Sans',sans-serif] text-[#111]">{{ title }}</h2>
+          <h2 class="text-3xl md:text-4xl font-bold font-title text-[#111]">{{ title }}</h2>
         </div>
         <a v-if="showAllLink" href="/tienda" class="hidden sm:inline-flex theme-btn btn-one">
           Ver todos

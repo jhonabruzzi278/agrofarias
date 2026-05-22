@@ -24,6 +24,7 @@
   --color-secondary: rgba(17, 17, 17, 1);
   --color-text: rgba(17, 17, 17, 1);
   --color-title: rgba(17, 17, 17, 1);
+
   --font-text: 'Roboto', sans-serif;
   --font-title: 'Rethink Sans', sans-serif;
 }
@@ -52,6 +53,7 @@ p {
   color: #111;
 }
 
+/* Containers */
 .large-container {
   max-width: 1400px;
   margin: 0 auto;
@@ -70,7 +72,9 @@ p {
   padding: 0 1.5rem;
 }
 
-.prose {
+/* Prose overrides */
+.prose,
+.prose-agro {
   --tw-prose-body: #333;
   --tw-prose-headings: #111;
   --tw-prose-links: #2D6A4F;
@@ -81,13 +85,6 @@ p {
 }
 
 .prose-agro {
-  --tw-prose-body: #333;
-  --tw-prose-headings: #111;
-  --tw-prose-links: #2D6A4F;
-  --tw-prose-bold: #111;
-  --tw-prose-code: #111;
-  --tw-prose-quotes: #111;
-  --tw-prose-quote-borders: #F5B020;
   font-size: 1.0625rem;
   line-height: 1.8;
 }
@@ -102,6 +99,7 @@ p {
   margin-bottom: 1.25rem;
 }
 
+/* Animations */
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
@@ -131,6 +129,7 @@ p {
   animation: pulse-soft 2s ease-in-out infinite;
 }
 
+/* Input utilities */
 .input-field {
   width: 100%;
   padding: 0.75rem 1rem;
@@ -158,4 +157,53 @@ p {
   font-weight: 500;
   color: #111;
   font-size: 0.875rem;
+}
+
+/* Line clamp utilities */
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Scrollbar hide */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Aspect ratio helpers for hero/carousels */
+.aspect-hero {
+  aspect-ratio: 21 / 9;
+}
+
+@media (max-width: 1024px) {
+  .aspect-hero {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+@media (max-width: 640px) {
+  .aspect-hero {
+    aspect-ratio: 4 / 3;
+  }
 }

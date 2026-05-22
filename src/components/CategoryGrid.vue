@@ -4,7 +4,7 @@
       <div class="flex items-end justify-between mb-10 gap-4">
         <div>
           <span class="text-sm font-bold text-[var(--theme-color)] uppercase tracking-widest mb-2 block">Catálogo</span>
-          <h2 class="text-3xl md:text-4xl font-bold font-['Rethink_Sans',sans-serif] text-[#111]">Categorías</h2>
+          <h2 class="text-3xl md:text-4xl font-bold font-title text-[#111]">Categorías</h2>
         </div>
         <div class="hidden sm:flex items-center gap-2">
           <button @click="scrollPrev" class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center hover:bg-[var(--theme-color)] hover:text-white hover:border-[var(--theme-color)] transition-all" aria-label="Anterior">
@@ -103,6 +103,4 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.scrollbar-hide::-webkit-scrollbar { display: none; }
-.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 </style>

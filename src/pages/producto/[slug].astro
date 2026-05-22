@@ -100,7 +100,7 @@ const atributos = producto.attributes || [];
             </a>
           )}
 
-          <h1 class="font-['Rethink_Sans',sans-serif] text-3xl md:text-4xl font-bold mb-4 text-[#111] leading-tight">
+          <h1 class="font-title text-3xl md:text-4xl font-bold mb-4 text-[#111] leading-tight">
             {producto.name}
           </h1>
 
@@ -208,7 +208,7 @@ const atributos = producto.attributes || [];
       {relacionados.length > 0 && (
         <section class="mb-16">
           <div class="flex items-center justify-between mb-8">
-            <h2 class="text-2xl font-bold text-[#111] font-['Rethink_Sans',sans-serif]">Productos relacionados</h2>
+            <h2 class="text-2xl font-bold text-[#111] font-title">Productos relacionados</h2>
             <a href={`/categoria/${producto.categories?.[0]?.slug || 'tienda'}`} class="text-sm font-semibold text-[var(--theme-color)] hover:underline flex items-center gap-1">
               Ver todos <i class="fas fa-arrow-right text-xs"></i>
             </a>

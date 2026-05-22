@@ -59,13 +59,6 @@ defineProps<{
 .inner-box { display: flex; flex-direction: column; height: 100%; }
 .lower-content { display: flex; flex-direction: column; flex: 1; }
 
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
 @media (max-width: 640px) {
   .inner-box { min-height: auto; }
 }

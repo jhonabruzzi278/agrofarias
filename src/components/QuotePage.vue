@@ -5,7 +5,7 @@
       <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-50 flex items-center justify-center">
         <i class="fas fa-shopping-cart text-4xl text-gray-300"></i>
       </div>
-      <h2 class="text-2xl font-bold text-[#111] mb-3 font-['Rethink_Sans',sans-serif]">Tu cotización está vacía</h2>
+      <h2 class="text-2xl font-bold text-[#111] mb-3 font-title">Tu cotización está vacía</h2>
       <p class="text-gray-500 mb-8 max-w-md mx-auto">Agrega productos desde la tienda para solicitar un presupuesto personalizado.</p>
       <a href="/tienda" class="theme-btn btn-one inline-flex px-8 py-4 text-lg">
         <i class="fas fa-store mr-2" aria-hidden="true"></i> Explorar productos
@@ -17,7 +17,7 @@
       <!-- Product list column -->
       <div class="lg:col-span-2 space-y-4">
         <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-bold text-[#111] font-['Rethink_Sans',sans-serif]">
+          <h2 class="text-2xl font-bold text-[#111] font-title">
             Productos en cotización
             <span class="ml-2 text-sm font-normal text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full">{{ items.length }}</span>
           </h2>
@@ -83,7 +83,7 @@
       <!-- Summary sidebar -->
       <div class="lg:col-span-1">
         <div class="bg-white rounded-xl border border-gray-200 p-6 sticky top-24">
-          <h3 class="text-lg font-bold text-[#111] font-['Rethink_Sans',sans-serif] mb-4">Resumen</h3>
+          <h3 class="text-lg font-bold text-[#111] font-title mb-4">Resumen</h3>
 
           <div class="space-y-3 mb-6">
             <div class="flex justify-between text-sm">
@@ -183,13 +183,6 @@ onMounted(() => loadFromStorage())
 </script>
 
 <style scoped>
-.line-clamp-1 {
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }
