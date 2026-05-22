@@ -105,6 +105,7 @@ function buildFilterUrl(params: Record<string, string>): string {
                 <input
                   type="search"
                   name="search"
+                  id="search-input"
                   value={searchQuery}
                   placeholder="Buscar productos..."
                   class="w-full h-10 pl-9 pr-4 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--theme-color)]/20 focus:border-[var(--theme-color)] placeholder-gray-400"
@@ -126,7 +127,7 @@ function buildFilterUrl(params: Record<string, string>): string {
                 </a>
                 {parentCats.map(cat => (
                   <a
-                    href={'/categoria/' + cat.slug}
+                    href={'/tienda?categoria=' + cat.slug}
                     class:list={['px-3 py-2 text-sm rounded-lg font-medium transition-all duration-200 flex items-center justify-between', categoriaSlug === cat.slug ? 'bg-[var(--theme-color)] text-white shadow-sm' : 'bg-gray-50 text-gray-700 hover:bg-gray-100']}
                   >
                     <span>{cat.name}</span>
@@ -314,6 +315,8 @@ function buildFilterUrl(params: Record<string, string>): string {
   const listBtn = document.getElementById('view-list');
   const gridView = document.getElementById('products-grid');
   const listView = document.getElementById('products-list');
+  const searchForm = document.getElementById('search-form');
+  const searchInput = document.getElementById('search-input');
 
   function getCurrentParams() {
     const u = new URL(window.location.href);
@@ -326,27 +329,27 @@ function buildFilterUrl(params: Record<string, string>): string {
     };
   }
 
-  function applyFilters() {
+  function buildUrl(overrides) {
     const p = getCurrentParams();
-    const sort = sortSelect ? sortSelect.value : 'default';
-    const stock = stockCheckbox && stockCheckbox.checked ? 'available' : '';
-    const view = getCurrentView();
+    const sort = overrides.sort !== undefined ? overrides.sort : (sortSelect ? sortSelect.value : p.sort);
+    const stock = overrides.stock !== undefined ? overrides.stock : (stockCheckbox && stockCheckbox.checked ? 'available' : '');
+    const view = overrides.view !== undefined ? overrides.view : (p.view || 'grid');
+    const search = overrides.search !== undefined ? overrides.search : p.search;
+    const categoria = overrides.categoria !== undefined ? overrides.categoria : p.categoria;
 
     const params = new URLSearchParams();
-    if (p.categoria) params.set('categoria', p.categoria);
-    if (p.search) params.set('search', p.search);
-    if (sort !== 'default') params.set('sort', sort);
+    if (categoria) params.set('categoria', categoria);
+    if (search) params.set('search', search);
+    if (sort && sort !== 'default') params.set('sort', sort);
     if (stock) params.set('stock', stock);
-    if (view !== 'grid') params.set('view', view);
+    if (view && view !== 'grid') params.set('view', view);
 
     const qs = params.toString();
-    window.location.href = '/tienda' + (qs ? '?' + qs : '');
+    return '/tienda' + (qs ? '?' + qs : '');
   }
 
-  function getCurrentView() {
-    if (gridBtn && gridBtn.getAttribute('data-active') === 'true') return 'grid';
-    if (listBtn && listBtn.getAttribute('data-active') === 'true') return 'list';
-    return 'grid';
+  function applyFilters() {
+    window.location.href = buildUrl({});
   }
 
   function setView(view) {
@@ -372,9 +375,18 @@ function buildFilterUrl(params: Record<string, string>): string {
     }
   }
 
-  // Init view toggle
+  // Init view toggle based on URL param
   const curView = getCurrentParams().view;
   setView(curView === 'list' ? 'list' : 'grid');
+
+  // Search form: preserve all existing filters
+  if (searchForm && searchInput) {
+    searchForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const query = searchInput.value.trim();
+      window.location.href = buildUrl({ search: query });
+    });
+  }
 
   if (gridBtn) gridBtn.addEventListener('click', function() { setView('grid'); applyFilters(); });
   if (listBtn) listBtn.addEventListener('click', function() { setView('list'); applyFilters(); });
