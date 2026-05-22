@@ -5,15 +5,8 @@ import HeaderLower from '../../components/HeaderLower.vue';
 import QuoteButton from '../../components/QuoteButton.vue';
 import ProductCard from '../../components/ProductCard.vue';
 import Footer from '../../components/Footer.vue';
-import { fetchProductoBySlug, fetchProductos, fetchProductosPorCategoria, fetchCategorias } from '../../lib/woocommerce';
+import { fetchProductoBySlug, fetchProductosPorCategoria, fetchCategorias } from '../../lib/woocommerce';
 import type { ProductoWC } from '../../lib/types';
-
-export async function getStaticPaths() {
-  try {
-    const productos = await fetchProductos({ perPage: 50 });
-    return productos.filter(p => p.slug).map(p => ({ params: { slug: p.slug } }));
-  } catch { return []; }
-}
 
 let categorias: Array<{ id: number; name: string; slug: string; parent: number }> = [];
 try { categorias = await fetchCategorias(); } catch { categorias = []; }

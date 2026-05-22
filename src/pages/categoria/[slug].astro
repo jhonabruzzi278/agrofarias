@@ -7,13 +7,6 @@ import Footer from '../../components/Footer.vue';
 import { fetchProductosPorCategoria, fetchCategorias } from '../../lib/woocommerce';
 import type { ProductoWC } from '../../lib/types';
 
-export async function getStaticPaths() {
-  try {
-    const cats = await fetchCategorias();
-    return cats.filter(c => c.slug).map(c => ({ params: { slug: c.slug } }));
-  } catch { return []; }
-}
-
 let categorias: Array<{ id: number; name: string; slug: string; parent: number }> = [];
 let categoriaActual: { id: number; name: string; slug: string } | null = null;
 
