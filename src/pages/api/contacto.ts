@@ -77,7 +77,10 @@ export async function POST({ request }: { request: Request }) {
       return errorResponse('Mensaje inválido', 400);
     }
 
-    const wpUrl = import.meta.env.WORDPRESS_URL as string;
+    const wpUrl = import.meta.env.WORDPRESS_URL as string | undefined;
+    if (!wpUrl) {
+      return errorResponse('Configuración no disponible', 503);
+    }
     const wpApiKey = import.meta.env.WP_CONTACT_API_KEY as string;
 
     const headers: Record<string, string> = { 'Content-Type': 'application/json' }

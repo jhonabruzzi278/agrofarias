@@ -37,7 +37,11 @@ if (categoriaActual) {
 }
 
 const pageTitle = categoriaActual ? categoriaActual.name : 'Categoría';
-const pageCanonical = categoriaActual ? `https://agrofarias.cl/categoria/${categoriaActual.slug}` : 'https://agrofarias.cl/categorias';
+const pageCanonical = categoriaActual ? `https://agrofarias.cl/categoria/${categoriaActual.slug}` : 'https://agrofarias.cl/tienda';
+
+if (!categoriaActual) {
+  return Astro.redirect('/tienda', 301);
+}
 ---
 
 <Layout title={pageTitle} description={`Productos de ${categoriaActual?.name || 'la categoría'} en Agro Farías. Encuentra insumos y herramientas agrícolas.`} canonical={pageCanonical}>
@@ -67,7 +71,7 @@ const pageCanonical = categoriaActual ? `https://agrofarias.cl/categoria/${categ
           <i class="fas fa-folder-open text-5xl text-gray-300 block mb-4"></i>
           <p class="text-lg text-gray-500 mb-2">Categoría no encontrada</p>
           <p class="text-sm text-gray-500 mb-6">La categoría que buscas no existe o fue removida.</p>
-          <a href="/categorias" class="theme-btn btn-one inline-flex">Ver todas las categorías</a>
+          <a href="/tienda" class="theme-btn btn-one inline-flex">Ver todas las categorías</a>
         </div>
       ) : productos.length > 0 ? (
         <>

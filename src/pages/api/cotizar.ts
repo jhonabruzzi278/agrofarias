@@ -99,7 +99,10 @@ export async function POST({ request }: { request: Request }) {
       return errorResponse('Productos inválidos', 400);
     }
 
-    const wpUrl = import.meta.env.WORDPRESS_URL as string;
+    const wpUrl = import.meta.env.WORDPRESS_URL as string | undefined;
+    if (!wpUrl) {
+      return errorResponse('Configuración de WooCommerce no disponible', 503);
+    }
     const wcKey = import.meta.env.WC_CONSUMER_KEY as string;
     const wcSecret = import.meta.env.WC_CONSUMER_SECRET as string;
 

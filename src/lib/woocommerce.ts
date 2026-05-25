@@ -1,4 +1,4 @@
-import type { ProductoWC, CategoriaWC } from './types'
+import type { ProductoWC, CategoriaWC, SolicitudCotizacion } from './types'
 
 const WP_URL = import.meta.env.WORDPRESS_URL
 const WC_KEY = import.meta.env.WC_CONSUMER_KEY
@@ -29,7 +29,7 @@ function getFetchHeaders(): HeadersInit {
 }
 
 async function wcFetch(url: string): Promise<Response> {
-  const res = await fetch(url, { headers: getFetchHeaders(), next: { revalidate: 300 } })
+  const res = await fetch(url, { headers: getFetchHeaders() })
   if (!res.ok) throw new Error(`WooCommerce API error: ${res.status} ${res.statusText}`)
   return res
 }

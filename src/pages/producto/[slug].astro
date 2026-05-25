@@ -5,7 +5,7 @@ import HeaderLower from '../../components/HeaderLower.vue';
 import QuoteButton from '../../components/QuoteButton.vue';
 import ProductCard from '../../components/ProductCard.vue';
 import Footer from '../../components/Footer.vue';
-import { fetchProductoBySlug, fetchProductosPorCategoria, fetchCategorias } from '../../lib/woocommerce';
+import { fetchProductoBySlug, fetchProductosPorCategoria, fetchProductos, fetchCategorias } from '../../lib/woocommerce';
 import { sanitizeHTML } from '../../lib/html-sanitizer';
 import type { ProductoWC } from '../../lib/types';
 
@@ -221,7 +221,7 @@ const atributos = producto.attributes || [];
         <section class="mb-16">
           <div class="flex items-center justify-between mb-8">
             <h2 class="text-2xl font-bold text-[#111] font-title">Productos relacionados</h2>
-            <a href={`/categoria/${producto.categories?.[0]?.slug || 'tienda'}`} class="text-sm font-semibold text-[var(--theme-color)] hover:underline flex items-center gap-1">
+            <a href={producto.categories?.[0]?.slug ? `/categoria/${producto.categories[0].slug}` : '/tienda'} class="text-sm font-semibold text-[var(--theme-color)] hover:underline flex items-center gap-1">
               Ver todos <i class="fas fa-arrow-right text-xs"></i>
             </a>
           </div>

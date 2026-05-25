@@ -2,8 +2,8 @@ const RATE_LIMIT_WINDOW_MS = 60000
 const RATE_LIMIT_MAX = 10
 
 interface RateLimitStore {
-  check(ip: string): { allowed: boolean; remaining: number }
-  record(ip: string): void
+  check(ip: string): { allowed: boolean; remaining: number } | Promise<{ allowed: boolean; remaining: number }>
+  record(ip: string): void | Promise<void>
 }
 
 class InMemoryStore implements RateLimitStore {
@@ -32,6 +32,8 @@ class InMemoryStore implements RateLimitStore {
   }
 }
 
+const fallbackStore = new InMemoryStore()
+
 class VercelKVStore implements RateLimitStore {
   private kv: any
 
@@ -49,8 +51,7 @@ class VercelKVStore implements RateLimitStore {
 
   async check(ip: string): Promise<{ allowed: boolean; remaining: number }> {
     if (!this.isAvailable()) {
-      const fallback = new InMemoryStore()
-      return fallback.check(ip)
+      return fallbackStore.check(ip) as { allowed: boolean; remaining: number }
     }
 
     try {
@@ -68,12 +69,15 @@ class VercelKVStore implements RateLimitStore {
 
       return { allowed: true, remaining: RATE_LIMIT_MAX - data.count }
     } catch {
-      return { allowed: true, remaining: RATE_LIMIT_MAX }
+      return fallbackStore.check(ip) as { allowed: boolean; remaining: number }
     }
   }
 
   async record(ip: string): Promise<void> {
-    if (!this.isAvailable()) return
+    if (!this.isAvailable()) {
+      fallbackStore.record(ip)
+      return
+    }
 
     try {
       const key = `ratelimit:${ip}`
@@ -87,7 +91,7 @@ class VercelKVStore implements RateLimitStore {
         await this.kv.set(key, JSON.stringify(data), { ex: Math.ceil(RATE_LIMIT_WINDOW_MS / 1000) })
       }
     } catch {
-      // Fail open - allow request if KV is unavailable
+      fallbackStore.record(ip)
     }
   }
 }

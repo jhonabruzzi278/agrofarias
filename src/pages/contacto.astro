@@ -91,7 +91,7 @@ try { categorias = await fetchCategorias(); } catch (e) { console.error('[contac
                 </div>
                 <div>
                   <p class="font-medium text-[#111] text-sm">Teléfono</p>
-                  <a :href="SITE_CONFIG.phoneHref" class="text-[var(--theme-color)] hover:underline text-sm font-medium">{SITE_CONFIG.phone}</a>
+                  <a href={SITE_CONFIG.phoneHref} class="text-[var(--theme-color)] hover:underline text-sm font-medium">{SITE_CONFIG.phone}</a>
                 </div>
               </li>
               <li class="flex items-start gap-4">
