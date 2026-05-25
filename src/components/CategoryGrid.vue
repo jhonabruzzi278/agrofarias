@@ -69,6 +69,7 @@ const carouselRef = ref<HTMLElement | null>(null)
 
 const catImages: Record<string, string> = {
   'acaricidas': '/imagenes optimizadas/acaricidas.webp',
+  'adherentes': '/imagenes optimizadas/adherentes.webp',
   'coadyuvantes-agricolas': '/imagenes optimizadas/coadyuvantes agricolas.webp',
   'control-de-plagas': '/imagenes optimizadas/control de plagas.webp',
   'fertilizantes': '/imagenes optimizadas/fertilizantes.webp',
@@ -81,8 +82,11 @@ const catImages: Record<string, string> = {
   'nutricion-vegetal': '/imagenes optimizadas/nutricion vegetal.webp',
   'proteccion-fitosanitaria': '/imagenes optimizadas/proteccion fitosanitaria.webp',
   'riego-y-equipamiento': '/imagenes optimizadas/riego y equipamiento.webp',
+  'rodenticidas': '/imagenes optimizadas/rodenticidaS.webp',
   'seguridad-agricola': '/imagenes optimizadas/seguridad agricola.webp',
   'semillas-y-jardin': '/imagenes optimizadas/semillas y jardin.webp',
+  'victorinox': '/imagenes optimizadas/Victorinox-Logo.webp',
+  'wayu': '/imagenes optimizadas/logo-wayu1.webp',
 }
 
 function getOptimizedSrc(slug: string, fallback: string): string {
