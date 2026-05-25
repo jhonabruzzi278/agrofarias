@@ -371,9 +371,9 @@ function buildFilterUrl(params: Record<string, string>): string {
                             <i class="fas fa-tag text-[8px]"></i> {prod.categories[0].name}
                           </span>
                         )}
-                        <h4 class="mb-1.5">
-                          <a href={`/producto/${prod.slug}`} class="text-sm font-bold text-[#111] hover:text-[var(--theme-color)] transition-colors line-clamp-2 leading-snug">{prod.name}</a>
-                        </h4>
+                        <h3 class="mb-1.5">
+                          <a href={`/producto/${prod.slug}`} class="text-sm font-bold text-[#111] hover:text-[var(--theme-color)] transition-colors line-clamp-2 leading-snug" aria-label={prod.name}>{prod.name}</a>
+                        </h3>
                         <div class="flex items-center gap-2 mb-1">
                           {prod.stock_status === 'instock' ? (
                             <div class="flex items-center gap-1.5">

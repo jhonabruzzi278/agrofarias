@@ -27,10 +27,10 @@
           </div>
 
           <div class="footer-column">
-            <h4 class="text-base font-bold mb-5 relative font-title">
+            <h2 class="text-base font-bold mb-5 relative font-title">
               Categorías
               <span class="absolute -bottom-2 left-0 w-8 h-0.5 bg-[var(--accent-color)]"></span>
-            </h4>
+            </h2>
             <ul class="space-y-2.5">
               <li v-for="cat in categorias" :key="cat.slug">
                 <a :href="`/categoria/${cat.slug}`" class="text-white/80 text-sm hover:text-white hover:pl-1 transition-all duration-200 flex items-center gap-2">
@@ -41,10 +41,10 @@
           </div>
 
           <div class="footer-column">
-            <h4 class="text-base font-bold mb-5 relative font-title">
+            <h2 class="text-base font-bold mb-5 relative font-title">
               Enlaces Rápidos
               <span class="absolute -bottom-2 left-0 w-8 h-0.5 bg-[var(--accent-color)]"></span>
-            </h4>
+            </h2>
             <ul class="space-y-2.5">
               <li><a href="/tienda" class="text-white/80 text-sm hover:text-white hover:pl-1 transition-all duration-200 flex items-center gap-2"><i class="fas fa-chevron-right text-[6px] text-[var(--accent-color)]"></i>Tienda</a></li>
               <li><a href="/cotizacion" class="text-white/80 text-sm hover:text-white hover:pl-1 transition-all duration-200 flex items-center gap-2"><i class="fas fa-chevron-right text-[6px] text-[var(--accent-color)]"></i>Cotización</a></li>
@@ -54,10 +54,10 @@
           </div>
 
           <div class="footer-column">
-            <h4 class="text-base font-bold mb-5 relative font-title">
+            <h2 class="text-base font-bold mb-5 relative font-title">
               Horario de Atención
               <span class="absolute -bottom-2 left-0 w-8 h-0.5 bg-[var(--accent-color)]"></span>
-            </h4>
+            </h2>
             <ul class="space-y-2">
               <li class="flex items-center justify-between p-3 bg-white/10 rounded-lg">
                 <span class="text-white/80 text-sm">Lun a Vie</span>

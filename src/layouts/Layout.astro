@@ -50,6 +50,10 @@ const pageUrl = canonical || (Astro.url ? Astro.url.href : siteUrl);
     <link href="/assets/css/font-awesome-all.css" rel="stylesheet" />
     <link href="/assets/css/flaticon.css" rel="stylesheet" />
 
+    <style>
+      @font-face { font-display: swap; }
+    </style>
+
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Store",
@@ -82,9 +86,9 @@ const pageUrl = canonical || (Astro.url ? Astro.url.href : siteUrl);
   </head>
   <body>
     <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
-    <div id="main-content">
+    <main id="main-content">
       <slot />
-    </div>
+    </main>
     <WhatsAppButton client:only="vue" />
     <Toast client:only="vue" />
   </body>

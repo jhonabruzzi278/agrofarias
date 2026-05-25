@@ -3,7 +3,7 @@
     <div class="inner-box bg-white rounded-xl border border-gray-100 overflow-hidden transition-all duration-500 hover:-translate-y-1 hover:shadow-lg hover:shadow-[var(--theme-color)]/8 hover:border-[var(--theme-color)]/20">
       <div class="image-box relative overflow-hidden">
         <figure class="image relative overflow-hidden">
-          <a :href="`/producto/${slug}`" class="block">
+          <a :href="`/producto/${slug}`" class="block" :aria-label="`Ver producto ${name}`">
             <img
               v-if="image"
               :src="image"
@@ -39,12 +39,13 @@
           </span>
         </div>
 
-        <h4 class="mb-1.5">
+        <h3 class="mb-1.5">
           <a
             :href="`/producto/${slug}`"
+            :aria-label="name"
             class="text-sm font-bold text-[#111] hover:text-[var(--theme-color)] transition-colors line-clamp-2 leading-snug"
           >{{ name }}</a>
-        </h4>
+        </h3>
 
         <div class="flex items-center gap-2 mb-1">
           <div v-if="inStock" class="flex items-center gap-1.5">
