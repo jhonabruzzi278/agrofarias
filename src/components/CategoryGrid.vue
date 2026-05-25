@@ -27,7 +27,7 @@
             <div class="h-40 sm:h-48 flex items-center justify-center p-4 bg-gradient-to-br from-gray-50 to-green-50">
               <img
                 v-if="cat.image"
-                :src="cat.image"
+                :src="getOptimizedSrc(cat.slug, cat.image.src || cat.image)"
                 :alt="cat.name"
                 width="260"
                 height="192"
@@ -68,13 +68,25 @@ const categories = ref<Category[]>([])
 const carouselRef = ref<HTMLElement | null>(null)
 
 const catImages: Record<string, string> = {
-  'nutricion-vegetal': encodeURI('/nutricion vegetal.png'),
-  'proteccion-fitosanitaria': encodeURI('/proteccion fitosanitaria.png'),
-  'coadyuvantes-agricolas': encodeURI('/coadyuvantes agricolas.png'),
-  'control-de-plagas': encodeURI('/control de plagas.png'),
-  'herramientas-y-repuestos': encodeURI('/herramientasrepuestos.png'),
-  'riego-y-equipamiento': encodeURI('/riego y equipamiento.png'),
-  'seguridad-agricola': encodeURI('/seguridad agricola.png'),
+  'acaricidas': '/imagenes optimizadas/acaricidas.webp',
+  'coadyuvantes-agricolas': '/imagenes optimizadas/coadyuvantes agricolas.webp',
+  'control-de-plagas': '/imagenes optimizadas/control de plagas.webp',
+  'fertilizantes': '/imagenes optimizadas/fertilizantes.webp',
+  'foliares': '/imagenes optimizadas/foliares.webp',
+  'fungicidas': '/imagenes optimizadas/fungicidas.webp',
+  'herbicidas': '/imagenes optimizadas/herbicidas.webp',
+  'herramientas-y-repuestos': '/imagenes optimizadas/herramientasrepuestos.webp',
+  'insecticidas': '/imagenes optimizadas/insecticidas.webp',
+  'molusquicidas': '/imagenes optimizadas/molusquicidas.webp',
+  'nutricion-vegetal': '/imagenes optimizadas/nutricion vegetal.webp',
+  'proteccion-fitosanitaria': '/imagenes optimizadas/proteccion fitosanitaria.webp',
+  'riego-y-equipamiento': '/imagenes optimizadas/riego y equipamiento.webp',
+  'seguridad-agricola': '/imagenes optimizadas/seguridad agricola.webp',
+  'semillas-y-jardin': '/imagenes optimizadas/semillas y jardin.webp',
+}
+
+function getOptimizedSrc(slug: string, fallback: string): string {
+  return catImages[slug] || fallback
 }
 
 function scrollPrev() {

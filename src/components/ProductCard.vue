@@ -53,7 +53,7 @@
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
             </span>
-            <span class="text-[11px] font-semibold text-green-600">Disponible</span>
+            <span class="text-[11px] font-semibold text-green-700">Disponible</span>
           </div>
           <div v-else class="flex items-center gap-1.5">
             <span class="w-1.5 h-1.5 bg-red-400 rounded-full"></span>

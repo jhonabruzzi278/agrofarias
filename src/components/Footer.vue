@@ -5,7 +5,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
           <div class="footer-column">
             <a href="/" class="inline-block mb-4">
-              <img src="/logo-agrofarias.png" alt="Agro Farías" class="h-10 brightness-0 invert" />
+              <img src="/logo-agrofarias.png" alt="Agro Farías" width="58" height="40" class="h-10 brightness-0 invert" />
             </a>
             <p class="text-white text-sm leading-relaxed mb-4">Insumos, herramientas y soluciones agrícolas con atención personalizada y despacho confiable para productores chilenos.</p>
 
@@ -69,7 +69,7 @@
               </li>
               <li class="flex items-center justify-between p-3 bg-white/10 rounded-lg">
                 <span class="text-white/80 text-sm">Domingos</span>
-                <span class="text-white/50 font-bold text-sm">Cerrado</span>
+                <span class="text-white/70 font-bold text-sm">Cerrado</span>
               </li>
             </ul>
 
@@ -87,7 +87,7 @@
       </div>
 
       <div class="border-t border-white/10 py-5 flex flex-col md:flex-row items-center justify-between gap-3">
-        <p class="text-white/60 text-sm">&copy; 2026 Agro Farías. Todos los derechos reservados.</p>
+        <p class="text-white/80 text-sm">&copy; 2026 Agro Farías. Todos los derechos reservados.</p>
         <div class="flex items-center gap-5 text-sm text-white/60">
           <a href="#" class="hover:text-white transition-colors">Términos</a>
           <a href="#" class="hover:text-white transition-colors">Privacidad</a>
