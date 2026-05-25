@@ -225,7 +225,7 @@ const atributos = producto.attributes || [];
               Ver todos <i class="fas fa-arrow-right text-xs"></i>
             </a>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {relacionados.map(prod => (
               <ProductCard product={prod} client:load />
             ))}
