@@ -15,7 +15,7 @@ import {
 
 async function parseBody(request: Request): Promise<Record<string, unknown>> {
   const contentType = request.headers.get('content-type') || '';
-  if (contentType.includes('application/x-www-form-urlencoded')) {
+  if (contentType.includes('urlencoded') || contentType.includes('multipart')) {
     const formData = await request.formData();
     const data: Record<string, unknown> = {};
     formData.forEach((value, key) => {
