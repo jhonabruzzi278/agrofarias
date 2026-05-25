@@ -29,6 +29,8 @@
                 v-if="cat.image"
                 :src="cat.image"
                 :alt="cat.name"
+                width="260"
+                height="192"
                 loading="lazy"
                 class="max-w-full max-h-full object-contain"
               />

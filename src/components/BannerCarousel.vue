@@ -22,6 +22,8 @@
           :src="banner.imagenUrl"
           :alt="banner.titulo || 'Banner promocional'"
           class="w-full h-full object-center object-contain bg-gray-100"
+          width="1536"
+          height="1024"
           :loading="index === 0 ? 'eager' : 'lazy'"
           draggable="false"
         />
