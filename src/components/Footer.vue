@@ -5,7 +5,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
           <div class="footer-column">
             <a href="/" class="inline-block mb-4">
-              <img src="/logo-agrofarias.png" alt="Agro Farías" width="58" height="40" class="h-10 brightness-0 invert" />
+              <img src="/logo-agrofarias.png" alt="Agro Farías" width="427" height="412" class="h-10 brightness-0 invert" />
             </a>
             <p class="text-white text-sm leading-relaxed mb-4">Insumos, herramientas y soluciones agrícolas con atención personalizada y despacho confiable para productores chilenos.</p>
 

@@ -5,7 +5,7 @@
         <!-- Logo -->
         <figure class="logo-box flex-shrink-0 group">
           <a href="/" aria-label="Ir al inicio - Agro Farías" class="flex items-center gap-3">
-            <img src="/logo-agrofarias.png" alt="Logo Agro Farías" width="58" height="56" class="h-12 lg:h-14 transition-transform duration-300 group-hover:scale-105" />
+            <img src="/logo-agrofarias.png" alt="Logo Agro Farías" width="427" height="412" class="h-12 lg:h-14 transition-transform duration-300 group-hover:scale-105" />
             <div class="hidden xl:block">
               <span class="text-white font-title font-bold text-lg leading-tight block">Agro Farías</span>
               <span class="text-white/60 text-[11px] tracking-wider">Insumos Agrícolas</span>
