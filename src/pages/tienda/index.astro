@@ -37,7 +37,7 @@ let filteredProducts = productos.filter(p => {
   }
   if (searchQuery) {
     const q = searchQuery.toLowerCase();
-    return p.name.toLowerCase().includes(q) || p.short_description?.toLowerCase().includes(q);
+    return p.name.toLowerCase().includes(q) || stripHtml(p.short_description).toLowerCase().includes(q);
   }
   return true;
 });
@@ -51,60 +51,32 @@ if (sortParam === 'name-asc') {
 } else if (sortParam === 'name-desc') {
   filteredProducts.sort((a, b) => b.name.localeCompare(a.name));
 } else if (sortParam === 'stock') {
-  filteredProducts.sort((a, b) => (a.stock_status === 'instock' ? -1 : 1) - (b.stock_status === 'instock' ? -1 : 1));
+  filteredProducts.sort((a, b) => {
+    if (a.stock_status === 'instock' && b.stock_status !== 'instock') return -1;
+    if (a.stock_status !== 'instock' && b.stock_status === 'instock') return 1;
+    return 0;
+  });
 }
 
-const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE));
-const currentPage = Math.min(Math.max(1, pageParam), totalPages);
-const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
-const paginatedProducts = filteredProducts.slice(startIndex, startIndex + PRODUCTS_PER_PAGE);
-
-function getPageUrl(page: number): string {
-  const p = new URLSearchParams();
-  if (categoriaSlug) p.set('categoria', categoriaSlug);
-  if (searchQuery) p.set('search', searchQuery);
-  if (sortParam !== 'default') p.set('sort', sortParam);
-  if (stockParam === 'available') p.set('stock', stockParam);
-  if (viewParam !== 'grid') p.set('view', viewParam);
-  if (page > 1) p.set('page', String(page));
-  const qs = p.toString();
-  return '/tienda' + (qs ? '?' + qs : '');
-}
-
-interface PageItem { type: 'page'; page: number }
-interface PageItemDots { type: 'dots' }
-type PageNavItem = PageItem | PageItemDots;
-
-const pageNavItems: PageNavItem[] = [];
-const visiblePages = Array.from({ length: totalPages }, (_, i) => i + 1).filter(p => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1);
-visiblePages.forEach((page, idx) => {
-  if (idx > 0 && page - visiblePages[idx - 1] > 1) pageNavItems.push({ type: 'dots' });
-  pageNavItems.push({ type: 'page', page });
-});
-
-const pageTitle = searchQuery ? `Búsqueda: "${searchQuery}"` : categoriaSlug ? `Categoría: ${categoriaSlug}` : 'Tienda';
-const pageDesc = searchQuery
-  ? `Resultados de búsqueda para "${searchQuery}" en Agro Farías.`
-  : 'Explora nuestra gama completa de productos agrícolas, fertilizantes, herbicidas, insecticidas y más.';
-
-const parentCats = categorias.filter(c => c.parent === 0);
-
-function buildFilterUrl(params: Record<string, string>): string {
-  const p = new URLSearchParams();
-  const cat = params.categoria || categoriaSlug;
-  const search = params.search || searchQuery;
-  const sort = params.sort || sortParam;
-  const stock = params.stock || stockParam;
-  const view = params.view || viewParam;
-  if (cat) p.set('categoria', cat);
-  if (search) p.set('search', search);
-  if (sort !== 'default') p.set('sort', sort);
-  if (stock === 'available') p.set('stock', stock);
-  if (view !== 'grid') p.set('view', view);
-  const qs = p.toString();
-  return '/tienda' + (qs ? '?' + qs : '');
+function stripHtml(html?: string): string {
+  if (!html) return ''
+  return html.replace(/<[^>]*>/g, '')
 }
 ---
+
+<script is:inline>
+(function() {
+  var cur = new URL(location.href).searchParams.get('view');
+  if (!cur) {
+    var saved = (localStorage.getItem('agro-view') || 'grid');
+    if (saved === 'list') {
+      var u = new URL(location.href);
+      u.searchParams.set('view', 'list');
+      location.replace(u.toString());
+    }
+  }
+})();
+</script>
 
 <Layout title={pageTitle} description={pageDesc}>
   <header class="main-header">
@@ -502,9 +474,11 @@ function buildFilterUrl(params: Record<string, string>): string {
       listBtn.classList.remove('text-gray-500', 'hover:text-[#111]');
       gridBtn.classList.remove('bg-white', 'shadow-sm', 'text-[var(--theme-color)]');
       gridBtn.classList.add('text-gray-500', 'hover:text-[#111]');
-      listView.classList.remove('hidden');
       gridView.classList.add('hidden');
+      listView.classList.remove('hidden');
     }
+    try { localStorage.setItem('agro-view', view); } catch (_) {}
+  }
   }
 
   const curView = getCurrentParams().view;
