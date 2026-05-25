@@ -64,5 +64,5 @@ try { categorias = await fetchCategorias(); } catch (e) { console.error('[404] F
     </div>
   </section>
 
-  <Footer client:only="vue" />
+  <Footer client:only="vue" categorias={categorias} />
 </Layout>

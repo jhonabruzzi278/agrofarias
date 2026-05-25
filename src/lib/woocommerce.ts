@@ -82,8 +82,9 @@ export async function fetchCategorias(): Promise<CategoriaWC[]> {
   return data
 }
 
-export async function fetchProductoBySlug(slug: string): Promise<ProductoWC[]> {
-  return (await wcFetch(`${WC_API}/products?slug=${slug}&status=publish`)).json()
+export async function fetchProductoBySlug(slug: string): Promise<ProductoWC | null> {
+  const results = await (await wcFetch(`${WC_API}/products?slug=${slug}&status=publish`)).json()
+  return results[0] || null
 }
 
 export async function fetchProductoById(id: number): Promise<ProductoWC> {

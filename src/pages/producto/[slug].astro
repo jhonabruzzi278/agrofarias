@@ -17,15 +17,15 @@ try { categorias = await fetchCategorias(); } catch (e) { console.error('[produc
 const { slug } = Astro.params;
 let producto: ProductoWC | null = null;
 try {
-  const results = await fetchProductoBySlug(slug!);
-  producto = results[0] || null;
+  producto = await fetchProductoBySlug(slug!);
 } catch (e) { console.error('[producto] Failed to fetch product:', slug, e); producto = null; }
 
 if (!producto) {
   return new Response(null, { status: 404, statusText: 'Not Found' });
 }
 
-const cleanDesc = producto.short_description?.replace(/<[^>]*>/g, '').slice(0, 160) || '';
+const rawDesc = producto.short_description?.replace(/<[^>]*>/g, '') || '';
+const cleanDesc = rawDesc.length > 160 ? rawDesc.slice(0, rawDesc.lastIndexOf(' ', 157)) + '...' : rawDesc;
 const prodImage = producto.images[0]?.src || '/logo-agrofarias.png';
 const prodCanonical = `https://agrofarias.cl/producto/${producto.slug}`;
 
@@ -253,7 +253,7 @@ const atributos = producto.attributes || [];
     </div>
   </main>
 
-  <Footer client:only="vue" />
+  <Footer client:only="vue" categorias={categorias} />
 </Layout>
 
 <script is:inline>

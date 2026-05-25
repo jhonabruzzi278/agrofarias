@@ -33,5 +33,5 @@ try { categorias = await fetchCategorias(); } catch (e) { console.error('[cotiza
     </div>
   </main>
 
-  <Footer client:only="vue" />
+  <Footer client:only="vue" categorias={categorias} />
 </Layout>

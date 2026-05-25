@@ -32,7 +32,7 @@ const pageUrl = canonical || (Astro.url ? Astro.url.href : siteUrl);
 
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={`${siteUrl}${image}`} />
+    <meta property="og:image" content={image.startsWith('http') ? image : `${siteUrl}${image}`} />
     <meta property="og:url" content={pageUrl} />
     <meta property="og:type" content={type} />
     <meta property="og:site_name" content="Agro Farías" />
@@ -41,7 +41,7 @@ const pageUrl = canonical || (Astro.url ? Astro.url.href : siteUrl);
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={`${siteUrl}${image}`} />
+    <meta name="twitter:image" content={image.startsWith('http') ? image : `${siteUrl}${image}`} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -75,8 +75,8 @@ const pageUrl = canonical || (Astro.url ? Astro.url.href : siteUrl);
         { "@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "09:00", "closes": "13:00" }
       ],
       "sameAs": [
-        "https://facebook.com/agrofarias",
-        "https://instagram.com/agrofarias"
+        SITE_CONFIG.social.facebook,
+        SITE_CONFIG.social.instagram
       ]
     })} />
   </head>

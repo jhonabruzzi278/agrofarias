@@ -99,13 +99,21 @@
 
 <script setup lang="ts">
 import { SITE_CONFIG } from '../lib/config'
+import type { CategoriaWC } from '../lib/types'
 
-const categorias = [
-  { slug: 'foliares', name: 'Foliares' },
-  { slug: 'fertilizantes', name: 'Fertilizantes' },
-  { slug: 'fungicidas', name: 'Fungicidas' },
-  { slug: 'herbicidas', name: 'Herbicidas' },
-  { slug: 'insecticidas', name: 'Insecticidas' },
-  { slug: 'herramientas-y-repuestos', name: 'Herramientas' },
-]
+const props = withDefaults(defineProps<{
+  categorias?: Array<Pick<CategoriaWC, 'id' | 'name' | 'slug' | 'parent'>>
+}>(), {
+  categorias: () => [
+    { id: 0, name: 'Fertilizantes', slug: 'fertilizantes', parent: 0 },
+    { id: 0, name: 'Fungicidas', slug: 'fungicidas', parent: 0 },
+    { id: 0, name: 'Herbicidas', slug: 'herbicidas', parent: 0 },
+    { id: 0, name: 'Insecticidas', slug: 'insecticidas', parent: 0 },
+    { id: 0, name: 'Herramientas', slug: 'herramientas-y-repuestos', parent: 0 },
+  ],
+})
+
+const categorias = props.categorias
+  .filter(c => c.parent === 0)
+  .slice(0, 8)
 </script>
