@@ -10,7 +10,7 @@ export default defineConfig({
   site: 'https://agrofarias.cl',
   trailingSlash: 'never',
   adapter: vercel({
-    webAnalytics: { enabled: true },
+    webAnalytics: { enabled: false },
     isr: { expiration: 300 },
   }),
   vite: {
