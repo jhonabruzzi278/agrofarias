@@ -45,6 +45,16 @@ try {
 const pageTitle = categoriaActual.name;
 const pageCanonical = `https://agrofarias.cl/categoria/${categoriaActual.slug}`;
 const pageDesc = `Productos de ${categoriaActual.name} en Agro Farías.${esCategoriaPadre ? ` Explora subcategorías como ${subcategorias.slice(0, 3).map(s => s.name).join(', ')}.` : ''}`;
+
+const subcategoriaImagenes: Record<string, string> = {
+  'herramientas-y-repuestos': '/herramientasrepuestos.png',
+  'seguridad-agricola': '/seguridad agricola.png',
+  'riego-y-equipamiento': '/riego y equipamiento.png',
+  'control-de-plagas': '/control de plagas.png',
+  'coadyuvantes-agricolas': '/coadyuvantes agricolas.png',
+  'proteccion-fitosanitaria': '/proteccion fitosanitaria.png',
+  'nutricion-vegetal': '/nutricion vegetal.png',
+}
 ---
 
 <Layout title={pageTitle} description={pageDesc} canonical={pageCanonical}>
@@ -91,17 +101,28 @@ const pageDesc = `Productos de ${categoriaActual.name} en Agro Farías.${esCateg
             <h2 class="text-xl font-bold text-[#111] font-title">Subcategorías de {categoriaActual.name}</h2>
           </div>
           <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {subcategorias.map(sub => (
-              <a href={`/categoria/${sub.slug}`} class="group bg-white rounded-2xl border border-gray-200 p-5 hover:border-[var(--theme-color)]/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-center">
-                <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-[var(--theme-color)]/10 flex items-center justify-center group-hover:bg-[var(--theme-color)] group-hover:text-white transition-colors duration-300">
-                  <i class="fas fa-folder text-lg text-[var(--theme-color)] group-hover:text-white transition-colors duration-300"></i>
+            {subcategorias.map(sub => {
+              const imgSrc = subcategoriaImagenes[sub.slug];
+              return (
+              <a href={`/categoria/${sub.slug}`} class="group bg-white rounded-xl border border-gray-200 overflow-hidden hover:border-[var(--theme-color)]/30 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                <div class="h-28 sm:h-32 bg-gradient-to-br from-[var(--theme-color)]/5 to-[var(--theme-color)]/10 flex items-center justify-center overflow-hidden relative">
+                  {imgSrc ? (
+                    <img src={imgSrc} alt={sub.name} class="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                  ) : (
+                    <div class="w-14 h-14 rounded-full bg-[var(--theme-color)]/15 flex items-center justify-center group-hover:bg-[var(--theme-color)]/20 transition-colors duration-300">
+                      <i class="fas fa-folder text-xl text-[var(--theme-color)]/60 group-hover:text-[var(--theme-color)] transition-colors duration-300"></i>
+                    </div>
+                  )}
                 </div>
-                <h3 class="font-bold text-[#111] text-sm group-hover:text-[var(--theme-color)] transition-colors mb-1">{sub.name}</h3>
-                {sub.count > 0 && (
-                  <p class="text-xs text-gray-400">{sub.count} producto{sub.count !== 1 ? 's' : ''}</p>
-                )}
+                <div class="p-3.5 text-center">
+                  <h3 class="font-bold text-[#111] text-sm group-hover:text-[var(--theme-color)] transition-colors mb-1">{sub.name}</h3>
+                  {sub.count > 0 && (
+                    <p class="text-xs text-gray-400">{sub.count} producto{sub.count !== 1 ? 's' : ''}</p>
+                  )}
+                </div>
               </a>
-            ))}
+              );
+            })}
           </div>
         </section>
       )}
