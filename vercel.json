@@ -1,4 +1,7 @@
 {
+  "redirects": [
+    { "source": "/categorias", "destination": "/tienda", "permanent": true }
+  ],
   "headers": [
     {
       "source": "/(.*)",

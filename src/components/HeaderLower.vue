@@ -83,7 +83,6 @@ const currentPath = ref('/')
 const navItems = [
   { path: '/', label: 'Inicio', icon: 'fas fa-home' },
   { path: '/tienda', label: 'Tienda', icon: 'fas fa-store' },
-  { path: '/categorias', label: 'Categorías', icon: 'fas fa-th-large' },
   { path: '/cotizacion', label: 'Cotización', icon: 'fas fa-file-invoice' },
   { path: '/contacto', label: 'Contacto', icon: 'fas fa-envelope' },
 ]
