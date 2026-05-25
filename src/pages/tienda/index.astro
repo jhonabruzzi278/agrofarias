@@ -205,24 +205,33 @@ function buildFilterUrl(params: Record<string, string>): string {
                   const isActive = categoriaSlug === cat.slug || subcats.some(s => s.slug === categoriaSlug);
                   return (
                     <div class="cat-group">
-                      <a
-                        href={'/tienda?categoria=' + cat.slug}
-                        class:list={[
-                          'cat-parent flex items-center justify-between px-3 py-2.5 text-sm rounded-xl font-medium transition-all duration-200',
-                          isActive ? 'bg-[var(--theme-color)] text-white shadow-md shadow-[var(--theme-color)]/20' : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-                        ]}
-                      >
-                        <span class="truncate">{cat.name}</span>
-                        <span class:list={[
-                          'text-[11px] px-2 py-0.5 rounded-full font-bold flex-shrink-0',
-                          isActive ? 'bg-white/20' : 'bg-gray-200 text-gray-500'
-                        ]}>{cat.count}</span>
-                      </a>
+                      <div class="cat-parent-wrapper flex items-center rounded-xl transition-all duration-200" class:list={[isActive ? 'bg-[var(--theme-color)] text-white shadow-md shadow-[var(--theme-color)]/20' : 'bg-gray-50 text-gray-600 hover:bg-gray-100']}>
+                        <button
+                          type="button"
+                          class="cat-toggle flex-1 flex items-center justify-between px-3 py-2.5 text-sm font-medium text-left"
+                          aria-expanded={isActive ? 'true' : 'false'}
+                          data-cat={cat.slug}
+                        >
+                          <span class="flex items-center gap-2 truncate">
+                            <i class="fas fa-chevron-right text-[9px] transition-transform duration-200 flex-shrink-0 cat-chevron" class:list={[isActive && 'rotate-90']}></i>
+                            <span class="truncate">{cat.name}</span>
+                          </span>
+                          <span class:list={['text-[11px] px-2 py-0.5 rounded-full font-bold flex-shrink-0', isActive ? 'bg-white/20' : 'bg-gray-200 text-gray-500']}>{cat.count}</span>
+                        </button>
+                        <a
+                          href={'/categoria/' + cat.slug}
+                          class="cat-link flex-shrink-0 px-2 py-2.5 text-[10px] opacity-60 hover:opacity-100 transition-opacity"
+                          aria-label={'Ver categoría ' + cat.name}
+                          title={'Ver categoría ' + cat.name}
+                        >
+                          <i class="fas fa-external-link-alt"></i>
+                        </a>
+                      </div>
                       {subcats.length > 0 && (
-                        <div class:list={['ml-3 mt-0.5 border-l-2 border-gray-100 pl-3 space-y-0.5', isActive ? '' : 'hidden']} id={'sub-' + cat.slug}>
+                        <div class="cat-subcats ml-4 mt-0.5 border-l-2 border-gray-100 pl-3 space-y-0.5 overflow-hidden transition-all duration-300" class:list={['max-h-0 opacity-0', isActive && 'max-h-96 opacity-100']} data-sub={cat.slug}>
                           {subcats.map(sub => (
                             <a
-                              href={'/tienda?categoria=' + sub.slug}
+                              href={'/categoria/' + sub.slug}
                               class:list={[
                                 'block px-3 py-2 text-[13px] rounded-lg transition-all duration-200',
                                 categoriaSlug === sub.slug
@@ -239,6 +248,9 @@ function buildFilterUrl(params: Record<string, string>): string {
                             </a>
                           ))}
                         </div>
+                      )}
+                      {subcats.length === 0 && (
+                        <div class="cat-subcats overflow-hidden transition-all duration-300 max-h-0 opacity-0" data-sub={cat.slug}></div>
                       )}
                     </div>
                   );
@@ -468,6 +480,40 @@ function buildFilterUrl(params: Record<string, string>): string {
 
 <script is:inline>
 (function() {
+  var nav = document.getElementById('category-nav');
+  if (!nav) return;
+
+  nav.addEventListener('click', function(e) {
+    var btn = e.target.closest('.cat-toggle');
+    if (!btn) return;
+
+    var wrapper = btn.closest('.cat-parent-wrapper');
+    var group = btn.closest('.cat-group');
+    var slug = btn.getAttribute('data-cat');
+    var subcats = group.querySelector('.cat-subcats');
+    var chevron = btn.querySelector('.cat-chevron');
+
+    if (!subcats) return;
+
+    var isOpen = subcats.classList.contains('max-h-96');
+
+    if (isOpen) {
+      subcats.classList.remove('max-h-96', 'opacity-100');
+      subcats.classList.add('max-h-0', 'opacity-0');
+      if (chevron) chevron.classList.remove('rotate-90');
+      btn.setAttribute('aria-expanded', 'false');
+    } else {
+      subcats.classList.remove('max-h-0', 'opacity-0');
+      subcats.classList.add('max-h-96', 'opacity-100');
+      if (chevron) chevron.classList.add('rotate-90');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+  });
+})();
+</script>
+
+<script is:inline>
+(function() {
   const stockCheckbox = document.getElementById('filter-stock');
   const sortSelect = document.getElementById('sort-select');
   const gridBtn = document.getElementById('view-grid');
@@ -561,4 +607,12 @@ function buildFilterUrl(params: Record<string, string>): string {
   .view-btn[data-active="true"] { background: white; color: var(--theme-color); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
   .view-btn[data-active="false"] { color: #6b7280; }
   .view-btn[data-active="false"]:hover { color: #111; }
+
+  .cat-subcats {
+    transition: max-height 0.35s ease, opacity 0.25s ease;
+  }
+  .cat-subcats.max-h-0 { max-height: 0; }
+  .cat-subcats.max-h-96 { max-height: 30rem; }
+  .cat-toggle { background: none; border: none; cursor: pointer; }
+  .cat-toggle:focus-visible { outline: 2px solid var(--theme-color); outline-offset: -2px; border-radius: 0.75rem; }
 </style>

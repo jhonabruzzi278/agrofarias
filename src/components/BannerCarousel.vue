@@ -100,7 +100,7 @@ const fallbackBanners: Banner[] = [
     titulo: 'Todo para tu Cultivo',
     subtitulo: 'Fertilizantes, fitosanitarios y más',
     textoBoton: 'Explorar',
-    urlBoton: '/categorias',
+    urlBoton: '/tienda',
     orden: 2,
     imagenUrl: '/banner2.png',
   },
