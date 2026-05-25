@@ -161,7 +161,7 @@ function buildFilterUrl(params: Record<string, string>): string {
               <h3 class="font-bold font-title text-[#111] mb-3 text-xs uppercase tracking-widest flex items-center gap-2">
                 <i class="fas fa-th-large text-[var(--theme-color)] text-[10px]"></i> Categorías
               </h3>
-              <nav class="flex flex-col gap-0.5" aria-label="Filtros de categoría">
+              <nav class="flex flex-col gap-0.5" aria-label="Filtros de categoría" id="category-nav">
                 <a
                   href="/tienda"
                   class:list={['px-3 py-2.5 text-sm rounded-xl font-medium transition-all duration-200 flex items-center justify-between', !categoriaSlug && !searchQuery ? 'bg-[var(--theme-color)] text-white shadow-md shadow-[var(--theme-color)]/20' : 'bg-gray-50 text-gray-600 hover:bg-gray-100']}
@@ -173,50 +173,44 @@ function buildFilterUrl(params: Record<string, string>): string {
                 </a>
                 {parentCats.map(cat => {
                   const subcats = categorias.filter(c => c.parent === cat.id);
-                  const isParentActive = categoriaSlug === cat.slug || subcats.some(s => s.slug === categoriaSlug);
+                  const isActive = categoriaSlug === cat.slug || subcats.some(s => s.slug === categoriaSlug);
                   return (
-                    <div class="category-group">
-                      <details class="group/cat" open={isParentActive}>
-                        <summary class="cursor-pointer marker:hidden list-none">
-                          <div class:list={[
-                            'flex items-center justify-between px-3 py-2.5 text-sm rounded-xl font-medium transition-all duration-200',
-                            isParentActive ? 'bg-[var(--theme-color)] text-white shadow-md shadow-[var(--theme-color)]/20' : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-                          ]}>
-                            <a href={'/tienda?categoria=' + cat.slug} class="flex-1 flex items-center justify-between" onclick="event.stopPropagation()">
-                              <span class="truncate">{cat.name}</span>
+                    <div class="cat-group">
+                      <a
+                        href={'/tienda?categoria=' + cat.slug}
+                        class:list={[
+                          'cat-parent flex items-center justify-between px-3 py-2.5 text-sm rounded-xl font-medium transition-all duration-200',
+                          isActive ? 'bg-[var(--theme-color)] text-white shadow-md shadow-[var(--theme-color)]/20' : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                        ]}
+                      >
+                        <span class="truncate">{cat.name}</span>
+                        <span class:list={[
+                          'text-[11px] px-2 py-0.5 rounded-full font-bold flex-shrink-0',
+                          isActive ? 'bg-white/20' : 'bg-gray-200 text-gray-500'
+                        ]}>{cat.count}</span>
+                      </a>
+                      {subcats.length > 0 && (
+                        <div class:list={['ml-3 mt-0.5 border-l-2 border-gray-100 pl-3 space-y-0.5', isActive ? '' : 'hidden']} id={'sub-' + cat.slug}>
+                          {subcats.map(sub => (
+                            <a
+                              href={'/tienda?categoria=' + sub.slug}
+                              class:list={[
+                                'block px-3 py-2 text-[13px] rounded-lg transition-all duration-200',
+                                categoriaSlug === sub.slug
+                                  ? 'bg-[var(--theme-color)]/10 text-[var(--theme-color)] font-semibold'
+                                  : 'text-gray-500 hover:text-[#111] hover:bg-gray-50'
+                              ]}
+                            >
+                              <span class="flex items-center justify-between">
+                                <span class="truncate">{sub.name}</span>
+                                {sub.count > 0 && (
+                                  <span class="text-[10px] text-gray-400 ml-1 flex-shrink-0">{sub.count}</span>
+                                )}
+                              </span>
                             </a>
-                            <span class:list={[
-                              'text-[11px] px-2 py-0.5 rounded-full font-bold ml-2 flex-shrink-0',
-                              isParentActive ? 'bg-white/20' : 'bg-gray-200 text-gray-500'
-                            ]}>{cat.count}</span>
-                            {subcats.length > 0 && (
-                              <i class="fas fa-chevron-down text-[8px] ml-1.5 transition-transform duration-200 group-open/cat:rotate-180" class:list={[isParentActive ? 'text-white/60' : 'text-gray-400']}></i>
-                            )}
-                          </div>
-                        </summary>
-                        {subcats.length > 0 && (
-                          <div class="ml-3 mt-0.5 border-l-2 border-gray-100 pl-3 space-y-0.5">
-                            {subcats.map(sub => (
-                              <a
-                                href={'/tienda?categoria=' + sub.slug}
-                                class:list={[
-                                  'block px-3 py-2 text-sm rounded-lg transition-all duration-200',
-                                  categoriaSlug === sub.slug
-                                    ? 'bg-[var(--theme-color)]/10 text-[var(--theme-color)] font-semibold'
-                                    : 'text-gray-500 hover:text-[#111] hover:bg-gray-50'
-                                ]}
-                              >
-                                <span class="flex items-center justify-between">
-                                  <span class="truncate text-[13px]">{sub.name}</span>
-                                  {sub.count > 0 && (
-                                    <span class="text-[10px] text-gray-400 ml-1 flex-shrink-0">{sub.count}</span>
-                                  )}
-                                </span>
-                              </a>
-                            ))}
-                          </div>
-                        )}
-                      </details>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   );
                 })}
