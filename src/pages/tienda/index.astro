@@ -62,6 +62,63 @@ function stripHtml(html?: string): string {
   if (!html) return ''
   return html.replace(/<[^>]*>/g, '')
 }
+
+const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE));
+const currentPage = Math.min(Math.max(1, pageParam), totalPages);
+const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
+const paginatedProducts = filteredProducts.slice(startIndex, startIndex + PRODUCTS_PER_PAGE);
+
+function getPageUrl(page: number): string {
+  const p = new URLSearchParams();
+  if (categoriaSlug) p.set('categoria', categoriaSlug);
+  if (searchQuery) p.set('search', searchQuery);
+  if (sortParam !== 'default') p.set('sort', sortParam);
+  if (stockParam === 'available') p.set('stock', stockParam);
+  if (viewParam !== 'grid') p.set('view', viewParam);
+  if (page > 1) p.set('page', String(page));
+  const qs = p.toString();
+  return '/tienda' + (qs ? '?' + qs : '');
+}
+
+interface PageItem { type: 'page'; page: number }
+interface PageItemDots { type: 'dots' }
+type PageNavItem = PageItem | PageItemDots;
+
+const pageNavItems: PageNavItem[] = [];
+const pageSet = new Set<number>();
+[1, currentPage - 1, currentPage, currentPage + 1, totalPages]
+  .filter(p => p >= 1 && p <= totalPages)
+  .sort((a, b) => a - b)
+  .forEach(p => pageSet.add(p));
+
+const uniquePages = Array.from(pageSet).sort((a, b) => a - b);
+uniquePages.forEach((page, idx) => {
+  if (idx > 0 && page - uniquePages[idx - 1] > 1) pageNavItems.push({ type: 'dots' });
+  pageNavItems.push({ type: 'page', page });
+});
+
+const pageTitle = searchQuery ? `Búsqueda: "${searchQuery}"` : categoriaSlug ? `Categoría: ${categoriaSlug}` : 'Tienda';
+const pageDesc = searchQuery
+  ? `Resultados de búsqueda para "${searchQuery}" en Agro Farías.`
+  : 'Explora nuestra gama completa de productos agrícolas, fertilizantes, herbicidas, insecticidas y más.';
+
+const parentCats = categorias.filter(c => c.parent === 0);
+
+function buildFilterUrl(params: Record<string, string>): string {
+  const p = new URLSearchParams();
+  const cat = params.categoria || categoriaSlug;
+  const search = params.search || searchQuery;
+  const sort = params.sort || sortParam;
+  const stock = params.stock || stockParam;
+  const view = params.view || viewParam;
+  if (cat) p.set('categoria', cat);
+  if (search) p.set('search', search);
+  if (sort !== 'default') p.set('sort', sort);
+  if (stock === 'available') p.set('stock', stock);
+  if (view !== 'grid') p.set('view', view);
+  const qs = p.toString();
+  return '/tienda' + (qs ? '?' + qs : '');
+}
 ---
 
 <script is:inline>
@@ -478,7 +535,6 @@ function stripHtml(html?: string): string {
       listView.classList.remove('hidden');
     }
     try { localStorage.setItem('agro-view', view); } catch (_) {}
-  }
   }
 
   const curView = getCurrentParams().view;
