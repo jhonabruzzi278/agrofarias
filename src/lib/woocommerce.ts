@@ -6,7 +6,18 @@ const WC_SECRET = import.meta.env.WC_CONSUMER_SECRET
 const WC_API = `${WP_URL}/wp-json/wc/v3`
 
 const CACHE_TTL = 5 * 60 * 1000
-const cache = new Map<string, { data: unknown; expiresAt: number }>()
+
+interface CacheEntry { data: unknown; expiresAt: number }
+
+function getGlobalCache(): Map<string, CacheEntry> {
+  const g = globalThis as Record<string, unknown>
+  if (!g.__wcCache) {
+    g.__wcCache = new Map<string, CacheEntry>()
+  }
+  return g.__wcCache as Map<string, CacheEntry>
+}
+
+const cache = getGlobalCache()
 
 function getCached<T>(key: string): T | null {
   const entry = cache.get(key)
@@ -88,7 +99,10 @@ export async function submitCotizacion(data: SolicitudCotizacion): Promise<{ suc
     const res = await fetch('/api/cotizar', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        ...data,
+        productos: data.productos.map(p => ({ id: p.id, name: p.name, cantidad: p.cantidad })),
+      }),
     })
     if (res.ok) {
       const json = await res.json()

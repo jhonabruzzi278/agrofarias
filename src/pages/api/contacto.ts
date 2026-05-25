@@ -10,32 +10,20 @@ import {
   isValidNonEmptyString,
   errorResponse,
   successResponse,
+  validateOrigin,
 } from '../../lib/security';
 
-const ALLOWED_ORIGINS = [
-  'https://agrofarias.cl',
-  'https://www.agrofarias.cl',
-]
-
-function validateOrigin(request: Request): boolean {
-  const origin = request.headers.get('origin')
-  const referer = request.headers.get('referer')
-
-  if (!origin && !referer) return false
-
-  const checkUrl = origin || referer
-  if (!checkUrl) return false
-
-  try {
-    const url = new URL(checkUrl)
-    const hostname = url.hostname
-    return ALLOWED_ORIGINS.some(allowed => {
-      const allowedUrl = new URL(allowed)
-      return hostname === allowedUrl.hostname || hostname.endsWith('.' + allowedUrl.hostname.replace(/^https?:\/\//, ''))
-    })
-  } catch {
-    return false
+async function parseBody(request: Request): Promise<Record<string, unknown>> {
+  const contentType = request.headers.get('content-type') || '';
+  if (contentType.includes('application/x-www-form-urlencoded')) {
+    const formData = await request.formData();
+    const data: Record<string, unknown> = {};
+    formData.forEach((value, key) => {
+      if (typeof value === 'string') data[key] = value;
+    });
+    return data;
   }
+  return request.json();
 }
 
 export async function POST({ request }: { request: Request }) {
@@ -45,7 +33,7 @@ export async function POST({ request }: { request: Request }) {
     }
 
     const ip = getClientIP(request);
-    const { allowed, remaining } = await checkRateLimit(ip);
+    const { allowed } = await checkRateLimit(ip);
     if (!allowed) {
       return errorResponse('Demasiadas solicitudes. Intenta en 1 minuto.', 429);
     }
@@ -53,9 +41,9 @@ export async function POST({ request }: { request: Request }) {
 
     let data: Record<string, unknown>;
     try {
-      data = await request.json();
+      data = await parseBody(request);
     } catch {
-      return errorResponse('JSON inválido', 400);
+      return errorResponse('Datos inválidos', 400);
     }
 
     const nombre = sanitize(data.nombre);
@@ -81,31 +69,25 @@ export async function POST({ request }: { request: Request }) {
     if (!wpUrl) {
       return errorResponse('Configuración no disponible', 503);
     }
-    const wpApiKey = import.meta.env.WP_CONTACT_API_KEY as string;
 
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    const wpApiKey = import.meta.env.WP_CONTACT_API_KEY as string | undefined;
     if (wpApiKey) {
-      headers['X-API-Key'] = wpApiKey
+      headers['X-API-Key'] = wpApiKey;
     }
 
     const res = await fetch(`${wpUrl}/wp-json/custom/v1/contacto`, {
       method: 'POST',
       headers,
-      body: JSON.stringify({
-        nombre,
-        email,
-        telefono,
-        asunto,
-        mensaje,
-      }),
+      body: JSON.stringify({ nombre, email, telefono, asunto, mensaje }),
     });
 
     if (res.ok) {
-      const result = await res.json();
+      const result = await res.json().catch(() => ({}));
       return successResponse({ success: true, data: result });
     }
 
-    const errorText = await res.text();
+    const errorText = await res.text().catch(() => '');
     console.error('[contacto] WordPress API error:', res.status, errorText)
     return errorResponse('El servicio de contacto no está disponible. Intenta nuevamente más tarde.', 502);
   } catch (e) {

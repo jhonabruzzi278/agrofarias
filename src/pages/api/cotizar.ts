@@ -12,32 +12,20 @@ import {
   isValidNonEmptyString,
   errorResponse,
   successResponse,
+  validateOrigin,
 } from '../../lib/security';
 
-const ALLOWED_ORIGINS = [
-  'https://agrofarias.cl',
-  'https://www.agrofarias.cl',
-]
-
-function validateOrigin(request: Request): boolean {
-  const origin = request.headers.get('origin')
-  const referer = request.headers.get('referer')
-
-  if (!origin && !referer) return false
-
-  const checkUrl = origin || referer
-  if (!checkUrl) return false
-
-  try {
-    const url = new URL(checkUrl)
-    const hostname = url.hostname
-    return ALLOWED_ORIGINS.some(allowed => {
-      const allowedUrl = new URL(allowed)
-      return hostname === allowedUrl.hostname || hostname.endsWith('.' + allowedUrl.hostname.replace(/^https?:\/\//, ''))
-    })
-  } catch {
-    return false
+async function parseBody(request: Request): Promise<Record<string, unknown>> {
+  const contentType = request.headers.get('content-type') || '';
+  if (contentType.includes('application/x-www-form-urlencoded')) {
+    const formData = await request.formData();
+    const data: Record<string, unknown> = {};
+    formData.forEach((value, key) => {
+      if (typeof value === 'string') data[key] = value;
+    });
+    return data;
   }
+  return request.json();
 }
 
 export async function POST({ request }: { request: Request }) {
@@ -47,7 +35,7 @@ export async function POST({ request }: { request: Request }) {
     }
 
     const ip = getClientIP(request);
-    const { allowed, remaining } = await checkRateLimit(ip);
+    const { allowed } = await checkRateLimit(ip);
     if (!allowed) {
       return errorResponse('Demasiadas solicitudes. Intenta en 1 minuto.', 429);
     }
@@ -55,9 +43,9 @@ export async function POST({ request }: { request: Request }) {
 
     let data: Record<string, unknown>;
     try {
-      data = await request.json();
+      data = await parseBody(request);
     } catch {
-      return errorResponse('JSON inválido', 400);
+      return errorResponse('Datos inválidos', 400);
     }
 
     const nombre = sanitize(data.nombre);

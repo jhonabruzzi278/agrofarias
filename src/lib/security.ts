@@ -107,9 +107,22 @@ export async function recordRequest(ip: string): Promise<void> {
 }
 
 export function getClientIP(request: Request): string {
-  return request.headers.get('x-real-ip')
-    || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
-    || 'unknown'
+  const forwarded = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim();
+  if (forwarded) return forwarded;
+  const realIp = request.headers.get('x-real-ip');
+  if (realIp) return realIp;
+  const ua = request.headers.get('user-agent') || '';
+  return `anon-${simpleHash(ua + Date.now().toString(36))}`;
+}
+
+function simpleHash(str: string): string {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return Math.abs(hash).toString(36).slice(0, 8);
 }
 
 const MAX_STR_LENGTH = 1000
@@ -157,4 +170,21 @@ export function successResponse(data: Record<string, unknown>, status = 200): Re
     status,
     headers: { 'Content-Type': 'application/json' },
   })
+}
+
+const ALLOWED_HOSTS = new Set(['agrofarias.cl', 'www.agrofarias.cl'])
+
+export function validateOrigin(request: Request): boolean {
+  const origin = request.headers.get('origin');
+  const referer = request.headers.get('referer');
+
+  const checkUrl = origin || referer;
+  if (!checkUrl) return false;
+
+  try {
+    const hostname = new URL(checkUrl).hostname;
+    return ALLOWED_HOSTS.has(hostname);
+  } catch {
+    return false;
+  }
 }
