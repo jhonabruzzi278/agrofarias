@@ -40,17 +40,17 @@ try {
     <HeaderLower client:only="vue" />
   </header>
 
-  <div class="banner-placeholder min-h-[50vh] sm:min-h-[60vh] bg-gray-100">
+  <div class="banner-placeholder min-h-[50vh] sm:min-h-[60vh] bg-gray-100 contain-strict">
     <BannerCarousel client:only="vue" banners={banners} />
   </div>
 
-  <div class="category-placeholder min-h-[320px]">
+  <div class="category-placeholder min-h-[320px] contain-layout">
     <CategoryGrid client:only="vue" categorias={categorias} />
   </div>
 
   <PromoBanners />
 
-  <div class="products-placeholder min-h-[400px]">
+  <div class="products-placeholder min-h-[400px] contain-layout">
     <ProductGrid client:only="vue" productos={productos} title="Productos Destacados" />
   </div>
 

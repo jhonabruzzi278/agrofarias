@@ -99,6 +99,10 @@ p {
   margin-bottom: 1.25rem;
 }
 
+.contain-layout { contain: layout style; }
+.contain-paint { contain: paint; }
+.contain-strict { contain: strict; }
+
 /* Animations */
 @keyframes shimmer {
   0% { background-position: -200% 0; }

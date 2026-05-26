@@ -1,6 +1,6 @@
 <template>
   <section
-    class="banner-carousel-wrapper relative w-full overflow-hidden bg-gray-100"
+    class="banner-carousel-wrapper relative w-full overflow-hidden bg-gray-100 contain-layout contain-paint"
     aria-label="Carrusel de banners"
     aria-roledescription="carrusel"
     @mouseenter="stopAutoplay"
