@@ -97,12 +97,55 @@ const pageUrl = canonical || (Astro.url ? Astro.url.href : siteUrl);
     })} />
   </head>
   <body>
+    <!-- Loading bar for SPA navigation -->
+    <div id="nav-loading-bar" class="fixed top-0 left-0 h-[3px] bg-[var(--accent-color)] z-[9999] w-0 opacity-0 transition-all duration-200"></div>
+
     <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
     <main id="main-content" transition:animate="fade">
       <slot />
     </main>
     <WhatsAppButton client:only="vue" />
     <Toast client:only="vue" />
+
+    <script>
+      (function() {
+        var bar = document.getElementById('nav-loading-bar');
+        if (!bar) return;
+        document.addEventListener('astro:before-preparation', function() {
+          bar.style.transition = 'none';
+          bar.style.width = '0';
+          bar.style.opacity = '1';
+          requestAnimationFrame(function() {
+            requestAnimationFrame(function() {
+              bar.style.transition = 'width 800ms ease-out, opacity 300ms ease';
+              bar.style.width = '70%';
+            });
+          });
+        });
+        document.addEventListener('astro:after-preparation', function() {
+          bar.style.width = '100%';
+          setTimeout(function() {
+            bar.style.opacity = '0';
+            setTimeout(function() { bar.style.width = '0'; }, 300);
+          }, 100);
+        });
+      })();
+    </script>
+
+    <style is:global>
+      #nav-loading-bar {
+        will-change: width, opacity;
+        box-shadow: 0 0 8px rgba(245, 176, 32, 0.5);
+      }
+      [data-astro-transition="forward"] main,
+      [data-astro-transition="back"] main {
+        animation: pageIn 0.3s ease-out;
+      }
+      @keyframes pageIn {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    </style>
   </body>
 </html>
 
