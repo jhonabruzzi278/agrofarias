@@ -107,6 +107,30 @@ const pageUrl = canonical || (Astro.url ? Astro.url.href : siteUrl);
     <WhatsAppButton client:only="vue" />
     <Toast client:only="vue" />
 
+    <!-- Back to top -->
+    <button id="back-to-top" class="fixed bottom-20 right-5 w-11 h-11 rounded-full bg-[var(--theme-color)] text-white shadow-lg opacity-0 pointer-events-none transition-all duration-300 z-30 flex items-center justify-center hover:bg-[var(--theme-color-3)] hover:scale-110" aria-label="Volver arriba">
+      <i class="fas fa-arrow-up text-sm"></i>
+    </button>
+
+    <script>
+      (function() {
+        var btn = document.getElementById('back-to-top');
+        if (!btn) return;
+        function toggle() {
+          if (window.scrollY > 500) {
+            btn.classList.remove('opacity-0', 'pointer-events-none');
+            btn.classList.add('opacity-100');
+          } else {
+            btn.classList.add('opacity-0', 'pointer-events-none');
+            btn.classList.remove('opacity-100');
+          }
+        }
+        window.addEventListener('scroll', toggle, { passive: true });
+        document.addEventListener('astro:after-swap', toggle);
+        btn.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+      })();
+    </script>
+
     <script>
       (function() {
         var bar = document.getElementById('nav-loading-bar');

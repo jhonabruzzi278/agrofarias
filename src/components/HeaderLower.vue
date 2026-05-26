@@ -1,7 +1,7 @@
 <template>
   <div class="header-lower bg-white/95 backdrop-blur-md border-b border-gray-100 sticky top-0 z-40" ref="headerRef">
     <div class="large-container">
-      <div class="flex items-center justify-between h-14">
+      <div class="flex items-center justify-center md:justify-center h-14">
         <!-- Desktop Nav -->
         <nav class="hidden md:flex items-center gap-1" aria-label="Navegación principal">
           <template v-for="item in navItems" :key="item.path">
@@ -94,6 +94,9 @@ function isActive(path: string): boolean {
 
 onMounted(() => {
   currentPath.value = window.location.pathname
+  document.addEventListener('astro:after-swap', () => {
+    currentPath.value = window.location.pathname
+  })
 })
 </script>
 

@@ -17,7 +17,7 @@ const stockParam = url.searchParams.get('stock') || '';
 const viewParam = url.searchParams.get('view') || 'grid';
 const pageParam = parseInt(url.searchParams.get('page') || '1', 10);
 
-const PRODUCTS_PER_PAGE = 12;
+const PRODUCTS_PER_PAGE = 24;
 
 let productos: ProductoWC[] = [];
 let categorias: Array<{ id: number; name: string; slug: string; parent: number; count: number }> = [];
@@ -434,22 +434,25 @@ function buildFilterUrl(params: Record<string, string>): string {
 
               <!-- Pagination -->
               {totalPages > 1 && (
-                <nav class="flex items-center justify-center gap-1.5 mt-12" aria-label="Paginación">
-                  <a href={getPageUrl(currentPage - 1)} class:list={['flex items-center gap-1.5 h-10 px-4 rounded-xl text-sm font-semibold transition-all duration-200', currentPage > 1 ? 'bg-white border border-gray-200 text-[#111] hover:bg-[var(--theme-color)] hover:text-white hover:border-[var(--theme-color)] shadow-sm' : 'bg-gray-50 text-gray-300 cursor-not-allowed pointer-events-none']}>
-                    <i class="fas fa-chevron-left text-[10px]"></i>
-                    <span class="hidden sm:inline">Anterior</span>
-                  </a>
-                  <div class="flex items-center gap-1">
-                    {pageNavItems.map(item => item.type === 'dots' ? (
-                      <span class="w-10 h-10 flex items-center justify-center text-gray-300 font-bold">...</span>
-                    ) : (
-                      <a href={getPageUrl(item.page)} class:list={['flex items-center justify-center w-10 h-10 rounded-xl text-sm font-bold transition-all duration-200', item.page === currentPage ? 'bg-[var(--theme-color)] text-white shadow-lg shadow-[var(--theme-color)]/25 scale-105' : 'bg-white border border-gray-100 text-[#111] hover:bg-[var(--theme-color)] hover:text-white hover:border-[var(--theme-color)] hover:shadow-md']} aria-current={item.page === currentPage ? 'page' : undefined}>{item.page}</a>
-                    ))}
+                <nav class="flex flex-col items-center gap-4 mt-12" aria-label="Paginación">
+                  <span class="text-sm text-gray-400">Página {currentPage} de {totalPages} — {filteredProducts.length} productos</span>
+                  <div class="flex items-center justify-center gap-1.5">
+                    <a href={getPageUrl(currentPage - 1)} class:list={['flex items-center gap-1.5 h-10 px-4 rounded-xl text-sm font-semibold transition-all duration-200', currentPage > 1 ? 'bg-white border border-gray-200 text-[#111] hover:bg-[var(--theme-color)] hover:text-white hover:border-[var(--theme-color)] shadow-sm' : 'bg-gray-50 text-gray-300 cursor-not-allowed pointer-events-none']}>
+                      <i class="fas fa-chevron-left text-[10px]"></i>
+                      <span class="hidden sm:inline">Anterior</span>
+                    </a>
+                    <div class="flex items-center gap-1">
+                      {pageNavItems.map(item => item.type === 'dots' ? (
+                        <span class="w-10 h-10 flex items-center justify-center text-gray-300 font-bold">...</span>
+                      ) : (
+                        <a href={getPageUrl(item.page)} class:list={['flex items-center justify-center w-10 h-10 rounded-xl text-sm font-bold transition-all duration-200', item.page === currentPage ? 'bg-[var(--theme-color)] text-white shadow-lg shadow-[var(--theme-color)]/25 scale-105' : 'bg-white border border-gray-100 text-[#111] hover:bg-[var(--theme-color)] hover:text-white hover:border-[var(--theme-color)] hover:shadow-md']} aria-current={item.page === currentPage ? 'page' : undefined}>{item.page}</a>
+                      ))}
+                    </div>
+                    <a href={getPageUrl(currentPage + 1)} class:list={['flex items-center gap-1.5 h-10 px-4 rounded-xl text-sm font-semibold transition-all duration-200', currentPage < totalPages ? 'bg-white border border-gray-200 text-[#111] hover:bg-[var(--theme-color)] hover:text-white hover:border-[var(--theme-color)] shadow-sm' : 'bg-gray-50 text-gray-300 cursor-not-allowed pointer-events-none']}>
+                      <span class="hidden sm:inline">Siguiente</span>
+                      <i class="fas fa-chevron-right text-[10px]"></i>
+                    </a>
                   </div>
-                  <a href={getPageUrl(currentPage + 1)} class:list={['flex items-center gap-1.5 h-10 px-4 rounded-xl text-sm font-semibold transition-all duration-200', currentPage < totalPages ? 'bg-white border border-gray-200 text-[#111] hover:bg-[var(--theme-color)] hover:text-white hover:border-[var(--theme-color)] shadow-sm' : 'bg-gray-50 text-gray-300 cursor-not-allowed pointer-events-none']}>
-                    <span class="hidden sm:inline">Siguiente</span>
-                    <i class="fas fa-chevron-right text-[10px]"></i>
-                  </a>
                 </nav>
               )}
             </>
