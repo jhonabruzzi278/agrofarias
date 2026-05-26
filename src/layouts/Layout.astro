@@ -30,6 +30,9 @@ const pageUrl = canonical || (Astro.url ? Astro.url.href : siteUrl);
 
     <ClientRouter />
 
+    <link rel="prefetch" href="/tienda" />
+    <link rel="prefetch" href="/cotizacion" />
+
     <link rel="canonical" href={pageUrl} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
 
@@ -49,6 +52,7 @@ const pageUrl = canonical || (Astro.url ? Astro.url.href : siteUrl);
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://cdn.sanity.io" />
+    <link rel="preconnect" href={SITE_CONFIG.url} />
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400..700;1,400..700&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
     <noscript><link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400..700;1,400..700&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet" /></noscript>
 

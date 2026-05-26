@@ -11,7 +11,7 @@ export default defineConfig({
   trailingSlash: 'never',
   adapter: vercel({
     webAnalytics: { enabled: false },
-    isr: { expiration: 300 },
+    isr: { expiration: 3600 },
   }),
   vite: {
     plugins: [tailwindcss()],

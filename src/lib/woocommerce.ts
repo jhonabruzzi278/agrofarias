@@ -5,7 +5,7 @@ const WC_KEY = import.meta.env.WC_CONSUMER_KEY
 const WC_SECRET = import.meta.env.WC_CONSUMER_SECRET
 const WC_API = `${WP_URL}/wp-json/wc/v3`
 
-const CACHE_TTL = 5 * 60 * 1000
+const CACHE_TTL = 15 * 60 * 1000
 
 interface CacheEntry { data: unknown; expiresAt: number }
 

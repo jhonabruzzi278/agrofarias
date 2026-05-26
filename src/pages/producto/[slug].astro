@@ -5,7 +5,7 @@ import HeaderLower from '../../components/HeaderLower.vue';
 import QuoteButton from '../../components/QuoteButton.vue';
 import ProductCard from '../../components/ProductCard.vue';
 import Footer from '../../components/Footer.vue';
-import { fetchProductoBySlug, fetchProductosPorCategoria, fetchProductos, fetchCategorias } from '../../lib/woocommerce';
+import { fetchProductoBySlug, fetchProductosPorCategoria, fetchCategorias } from '../../lib/woocommerce';
 import { sanitizeHTML } from '../../lib/html-sanitizer';
 import type { ProductoWC } from '../../lib/types';
 
@@ -29,24 +29,16 @@ const cleanDesc = rawDesc.length > 160 ? rawDesc.slice(0, rawDesc.lastIndexOf(' 
 const prodImage = producto.images[0]?.src || '/logo-agrofarias.png';
 const prodCanonical = `https://agrofarias.cl/producto/${producto.slug}`;
 
-// Fetch related products from same category (excluding current)
+// Fetch related products from same category (non-blocking timeout)
 let relacionados: ProductoWC[] = [];
 try {
   const catId = producto.categories?.[0]?.id;
   if (catId) {
-    const todos = await fetchProductosPorCategoria(catId, 20);
+    const todos = await Promise.race([
+      fetchProductosPorCategoria(catId, 8),
+      new Promise<ProductoWC[]>(r => setTimeout(() => r([]), 1500)),
+    ]);
     relacionados = todos.filter(p => p.id !== producto!.id).slice(0, 4);
-  }
-  // Fallback: if not enough related products, fetch some random ones
-  if (relacionados.length < 2) {
-    const more = await fetchProductos({ perPage: 20 });
-    const existingIds = new Set(relacionados.map(p => p.id).concat([producto!.id]));
-    for (const p of more) {
-      if (!existingIds.has(p.id)) {
-        relacionados.push(p);
-        if (relacionados.length >= 4) break;
-      }
-    }
   }
 } catch (e) { console.error('[producto] Failed to fetch related products:', e); relacionados = []; }
 
