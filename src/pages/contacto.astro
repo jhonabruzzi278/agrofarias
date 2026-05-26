@@ -147,6 +147,7 @@ try { categorias = await fetchCategorias(); } catch (e) { console.error('[contac
 </Layout>
 
 <script is:inline>
+document.addEventListener('astro:page-load', function() {
 (function() {
   var form = document.getElementById('contacto-form');
   var status = document.getElementById('form-status');
@@ -239,4 +240,5 @@ try { categorias = await fetchCategorias(); } catch (e) { console.error('[contac
     }
   });
 })();
+});
 </script>

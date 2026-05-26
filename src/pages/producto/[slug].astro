@@ -256,7 +256,7 @@ const atributos = producto.attributes || [];
   <Footer client:only="vue" categorias={categorias} />
 </Layout>
 
-<script is:inline>
+<script is:inline data-astro-rerun>
 function switchTab(tabId) {
   const panels = document.querySelectorAll('.tab-panel');
   const buttons = document.querySelectorAll('.tab-btn');

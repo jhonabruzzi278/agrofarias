@@ -479,6 +479,7 @@ function buildFilterUrl(params: Record<string, string>): string {
 </Layout>
 
 <script is:inline>
+document.addEventListener('astro:page-load', function() {
 (function() {
   var nav = document.getElementById('category-nav');
   if (!nav) return;
@@ -487,7 +488,6 @@ function buildFilterUrl(params: Record<string, string>): string {
     var btn = e.target.closest('.cat-toggle');
     if (!btn) return;
 
-    var wrapper = btn.closest('.cat-parent-wrapper');
     var group = btn.closest('.cat-group');
     var slug = btn.getAttribute('data-cat');
     var subcats = group.querySelector('.cat-subcats');
@@ -510,9 +510,11 @@ function buildFilterUrl(params: Record<string, string>): string {
     }
   });
 })();
+});
 </script>
 
 <script is:inline>
+document.addEventListener('astro:page-load', function() {
 (function() {
   const stockCheckbox = document.getElementById('filter-stock');
   const sortSelect = document.getElementById('sort-select');
@@ -599,6 +601,7 @@ function buildFilterUrl(params: Record<string, string>): string {
   if (stockCheckbox) stockCheckbox.addEventListener('change', applyFilters);
   if (sortSelect) sortSelect.addEventListener('change', applyFilters);
 })();
+});
 </script>
 
 <style is:global>

@@ -3,6 +3,7 @@ import '../styles/global.css';
 import WhatsAppButton from '../components/WhatsAppButton.vue';
 import Toast from '../components/Toast.vue';
 import { SITE_CONFIG } from '../lib/config';
+import { ClientRouter } from 'astro:transitions';
 
 export interface Props {
   title?: string
@@ -26,6 +27,8 @@ const pageUrl = canonical || (Astro.url ? Astro.url.href : siteUrl);
     <link rel="icon" type="image/png" href="/logo-agrofarias.png" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+
+    <ClientRouter />
 
     <link rel="canonical" href={pageUrl} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
@@ -91,7 +94,7 @@ const pageUrl = canonical || (Astro.url ? Astro.url.href : siteUrl);
   </head>
   <body>
     <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
-    <main id="main-content">
+    <main id="main-content" transition:animate="fade">
       <slot />
     </main>
     <WhatsAppButton client:only="vue" />

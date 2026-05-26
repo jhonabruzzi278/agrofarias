@@ -8,7 +8,7 @@
   >
     <div
       ref="trackRef"
-      class="banner-track relative w-full aspect-hero cursor-grab active:cursor-grabbing"
+      class="banner-track relative w-full min-h-[300px] sm:min-h-[400px] lg:min-h-[500px] cursor-grab active:cursor-grabbing"
       @touchstart="onTouchStart"
       @touchend="onTouchEnd"
     >
@@ -21,7 +21,7 @@
         <img
           :src="banner.imagenUrl"
           :alt="banner.titulo || 'Banner promocional'"
-          class="w-full h-full object-center object-contain bg-gray-100"
+          class="w-full h-full object-cover bg-gray-100"
           width="1536"
           height="1024"
           :fetchpriority="index === 0 ? 'high' : 'auto'"
