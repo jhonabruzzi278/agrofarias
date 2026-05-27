@@ -217,7 +217,7 @@ const atributos = producto.attributes || [];
               Ver todos <i class="fas fa-arrow-right text-xs"></i>
             </a>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-5">
             {relacionados.map(prod => (
               <ProductCard product={prod} client:load />
             ))}
@@ -233,13 +233,18 @@ const atributos = producto.attributes || [];
         "description": cleanDesc,
         "image": prodImage,
         "url": prodCanonical,
+        "sku": producto.acf?.sku || producto.sku || `AF-${producto.id}`,
+        "mpn": `AF-${producto.id}`,
         ...(producto.categories[0] ? { "category": producto.categories[0].name } : {}),
+        "brand": { "@type": "Brand", "name": "Agro Farías" },
         "offers": {
           "@type": "Offer",
           "availability": producto.stock_status === 'instock' ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
           "price": "0",
           "priceCurrency": "CLP",
-          "priceSpecification": { "@type": "CompoundPriceSpecification", "description": "Consultar precio" }
+          "priceSpecification": { "@type": "UnitPriceSpecification", "price": "0", "priceCurrency": "CLP", "description": "Consultar precio" },
+          "itemCondition": "https://schema.org/NewCondition",
+          "url": prodCanonical
         }
       })} />
     </div>

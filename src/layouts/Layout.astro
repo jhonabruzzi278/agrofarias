@@ -66,35 +66,60 @@ const pageUrl = canonical || (Astro.url ? Astro.url.href : siteUrl);
       @font-face { font-display: swap; }
     </style>
 
-    <script type="application/ld+json" set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "Store",
-      "name": "Agro Farías",
-      "url": siteUrl,
-      "logo": `${siteUrl}/logo-agrofarias.png`,
-      "description": description,
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "Ruta 66 km 95850",
-        "addressLocality": "San Pedro, Melipilla",
-        "addressRegion": "Región Metropolitana",
-        "addressCountry": "CL"
-      },
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "telephone": SITE_CONFIG.phone.replace(/ /g, '-').replace('+', ''),
-        "contactType": "customer service",
-        "availableLanguage": ["es"]
-      },
-      "openingHoursSpecification": [
-        { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "opens": "08:00", "closes": "18:00" },
-        { "@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "09:00", "closes": "13:00" }
-      ],
-      "sameAs": [
-        SITE_CONFIG.social.facebook,
-        SITE_CONFIG.social.instagram
-      ]
-    })} />
+    <script type="application/ld+json" set:html={JSON.stringify([
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Agro Farías",
+    "url": siteUrl,
+    "logo": `${siteUrl}/logo-agrofarias.png`,
+    "description": description,
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Ruta 66 km 95850",
+      "addressLocality": "San Pedro, Melipilla",
+      "addressRegion": "Región Metropolitana",
+      "addressCountry": "CL"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": SITE_CONFIG.phone.replace(/ /g, '-').replace('+', ''),
+      "contactType": "customer service",
+      "email": SITE_CONFIG.email,
+      "availableLanguage": ["es"]
+    },
+    "sameAs": [
+      SITE_CONFIG.social.facebook,
+      SITE_CONFIG.social.instagram
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Store",
+    "name": "Agro Farías — Insumos Agrícolas",
+    "url": siteUrl,
+    "image": `${siteUrl}/logo-agrofarias.png`,
+    "description": description,
+    "openingHoursSpecification": [
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "opens": "08:00", "closes": "18:00" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "09:00", "closes": "13:00" }
+    ],
+    "currenciesAccepted": "CLP",
+    "priceRange": "$"
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Agro Farías",
+    "url": siteUrl,
+    "description": description,
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": { "@type": "EntryPoint", "urlTemplate": `${siteUrl}/tienda?search={search_term_string}` },
+      "query-input": "required name=search_term_string"
+    }
+  }
+])} />
   </head>
   <body>
     <!-- Loading bar for SPA navigation -->

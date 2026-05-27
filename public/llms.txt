@@ -1,0 +1,34 @@
+# Agro Farías — Insumos Agrícolas
+> Tienda online de fertilizantes, fitosanitarios, herbicidas, insecticidas, herramientas, semillas y soluciones agrícolas en Chile. Ubicados en Melipilla, Región Metropolitana. Despacho a todo Chile.
+
+## Páginas principales
+- / | Inicio: banners, categorías destacadas, productos recomendados
+- /tienda | Catálogo completo con búsqueda, filtros por categoría y stock
+- /categoria/fertilizantes | Fertilizantes y nutrición vegetal
+- /categoria/proteccion-fitosanitaria | Fungicidas, herbicidas, insecticidas, acaricidas
+- /categoria/nutricion-vegetal | Foliares, bioestimulantes, fertilizantes
+- /categoria/herramientas-y-repuestos | Herramientas agrícolas, repuestos
+- /categoria/control-de-plagas | Control de plagas, rodenticidas, molusquicidas
+- /categoria/coadyuvantes-agricolas | Coadyuvantes y adherentes
+- /categoria/seguridad-agricola | Equipos de seguridad y protección
+- /categoria/riego-y-equipamiento | Sistemas de riego y equipamiento
+- /categoria/semillas-y-jardin | Semillas y productos de jardinería
+- /cotizacion | Carrito de cotización: agrega productos y solicita presupuesto
+- /cotizar | Formulario para solicitar cotización personalizada
+- /contacto | Información de contacto, ubicación y formulario de mensajes
+
+## Información de contacto
+- Teléfono: +56 9 1234 5678
+- Email: contacto@agrofarias.cl
+- Dirección: Ruta 66 km 95850, San Pedro, Melipilla, Región Metropolitana, Chile
+- Horario: Lunes a Viernes 8:00-18:00, Sábados 9:00-13:00
+
+## Productos
+- Fertilizantes, foliares, bioestimulantes
+- Fungicidas, herbicidas, insecticidas, acaricidas
+- Coadyuvantes agrícolas, adherentes
+- Control de plagas: rodenticidas, molusquicidas
+- Herramientas agrícolas y repuestos
+- Semillas y productos de jardinería
+- Equipos de seguridad agrícola
+- Sistemas de riego y equipamiento
