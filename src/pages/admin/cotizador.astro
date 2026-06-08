@@ -94,8 +94,8 @@ console.log('[cotizador-page] PASSWORD from env:', password ? 'SET (' + password
     </div>
   </div>
 
-  <script type="module">
-    const PASSWORD = '{password}';
+  <script type="module" define:vars={{ password }}>
+    const PASSWORD = password || '';
     console.log('[cotizador] PASSWORD value:', PASSWORD);
     console.log('[cotizador] PASSWORD length:', PASSWORD.length);
     console.log('[cotizador] PASSWORD === "agrofarias2025":', PASSWORD === 'agrofarias2025');
