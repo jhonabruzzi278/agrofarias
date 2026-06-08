@@ -2,10 +2,7 @@
 export const prerender = false;
 const password = import.meta.env.COTIZADOR_PASSWORD as string;
 
-// If not configured, show config error
-if (!password) {
-  // Will be shown as login form (password always wrong since env var missing)
-}
+console.log('[cotizador-page] PASSWORD from env:', password ? 'SET (' + password.length + ' chars)' : 'NOT SET');
 ---
 <!doctype html>
 <html lang="es">
@@ -81,6 +78,7 @@ if (!password) {
           </div>
           <p id="login-error" class="text-red-600 text-sm text-center mt-4 hidden">Contraseña incorrecta</p>
           <p id="login-config-error" class="text-red-600 text-sm text-center mt-4 hidden">Cotizador no configurado. Agregá COTIZADOR_PASSWORD en Vercel.</p>
+          <p id="debug-password" class="text-xs text-gray-400 text-center mt-3"></p>
         </div>
       </div>
     </div>
@@ -98,6 +96,11 @@ if (!password) {
 
   <script type="module">
     const PASSWORD = '{password}';
+    console.log('[cotizador] PASSWORD value:', PASSWORD);
+    console.log('[cotizador] PASSWORD length:', PASSWORD.length);
+    console.log('[cotizador] PASSWORD === "agrofarias2025":', PASSWORD === 'agrofarias2025');
+    const debugEl = document.getElementById('debug-password');
+    debugEl.textContent = 'DEBUG: Password ' + (PASSWORD ? 'SET (' + PASSWORD.length + ' chars, starts with "' + PASSWORD.slice(0,3) + '...")' : 'NOT SET - revisá Vercel env vars');
     const AUTH_KEY = 'agrofarias-cotizador-auth';
     const loginScreen = document.getElementById('login-screen');
     const adminPanel = document.getElementById('admin-panel');
