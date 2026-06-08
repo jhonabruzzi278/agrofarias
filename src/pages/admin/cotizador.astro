@@ -13,14 +13,14 @@ if (Astro.request.method === 'POST') {
   const formData = await Astro.request.formData();
   const submittedPassword = formData.get('password')?.toString() || '';
   if (submittedPassword === password) {
-    Astro.cookies.set('agrofarias-cotizador-auth', password, {
-      path: '/',
-      httpOnly: true,
-      sameSite: 'strict',
-      secure: true,
-      maxAge: 60 * 60 * 8,
+    const value = encodeURIComponent(password);
+    return new Response(null, {
+      status: 302,
+      headers: {
+        Location: '/admin/cotizador',
+        'Set-Cookie': `agrofarias-cotizador-auth=${value}; Path=/; HttpOnly; SameSite=Strict; Secure; Max-Age=${60 * 60 * 8}`,
+      },
     });
-    return Astro.redirect('/admin/cotizador');
   }
 }
 
@@ -51,7 +51,7 @@ if (isAuthenticated) {
               <h1 class="text-xl font-bold text-gray-800">Cotizador Interno</h1>
               <p class="text-sm text-gray-500 mt-1">Agro Farías</p>
             </div>
-            <form method="POST">
+            <form method="POST" data-astro-reload>
               <label class="block text-sm font-medium text-gray-600 mb-1">Contraseña</label>
               <input
                 type="password"
