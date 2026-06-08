@@ -2,20 +2,15 @@ export const prerender = false;
 
 import { fetchAllProductos } from '../../../lib/woocommerce';
 
-export async function GET({ request }: { request: Request }) {
-  // Auth
+function checkAuth(request: Request): boolean {
   const password = import.meta.env.COTIZADOR_PASSWORD as string;
-  if (!password) {
-    return new Response(JSON.stringify({ error: 'No configurado' }), {
-      status: 503,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
+  if (!password) return false;
+  const authHeader = request.headers.get('x-cotizador-auth') || '';
+  return authHeader === password;
+}
 
-  const cookieHeader = request.headers.get('cookie') || '';
-  const match = cookieHeader.match(/agrofarias-cotizador-auth=([^;]+)/);
-  const cookieValue = match ? decodeURIComponent(match[1]) : null;
-  if (cookieValue !== password) {
+export async function GET({ request }: { request: Request }) {
+  if (!checkAuth(request)) {
     return new Response(JSON.stringify({ error: 'No autorizado' }), {
       status: 401,
       headers: { 'Content-Type': 'application/json' },

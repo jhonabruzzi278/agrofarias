@@ -6,7 +6,6 @@ let loginError = false;
 
 const password = import.meta.env.COTIZADOR_PASSWORD as string;
 
-// Check auth on GET
 if (Astro.request.method === 'GET') {
   const cookieHeader = Astro.request.headers.get('cookie') || '';
   const match = cookieHeader.match(/agrofarias-cotizador-auth=([^;]+)/);
@@ -14,7 +13,6 @@ if (Astro.request.method === 'GET') {
   isAuthenticated = !!password && cookieValue === password;
 }
 
-// Handle login on POST
 if (Astro.request.method === 'POST') {
   let submittedPassword = '';
   try {
@@ -71,24 +69,14 @@ if (Astro.request.method === 'POST') {
           </div>
           <form method="POST">
             <label class="block text-sm font-medium text-gray-600 mb-1">Contraseña</label>
-            <input
-              type="password"
-              name="password"
-              required
-              autofocus
+            <input type="password" name="password" required autofocus
               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition"
-              placeholder="Ingresá la contraseña"
-            />
-            <button
-              type="submit"
-              class="w-full mt-4 bg-green-700 hover:bg-green-800 text-white font-medium py-2.5 rounded-lg transition"
-            >
+              placeholder="Ingresá la contraseña" />
+            <button type="submit" class="w-full mt-4 bg-green-700 hover:bg-green-800 text-white font-medium py-2.5 rounded-lg transition">
               Ingresar
             </button>
           </form>
-          {loginError ? (
-            <p class="text-red-600 text-sm text-center mt-4">Contraseña incorrecta</p>
-          ) : null}
+          {loginError ? (<p class="text-red-600 text-sm text-center mt-4">Contraseña incorrecta</p>) : null}
         </div>
       </div>
     </div>
@@ -99,21 +87,32 @@ if (Astro.request.method === 'POST') {
   {isAuthenticated ? (
     <>
       <div id="loading" class="min-h-[60vh] flex items-center justify-center">
-        <p class="text-gray-400 text-sm">Cargando productos...</p>
+        <p class="text-gray-400 text-sm">Cargando...</p>
       </div>
       <script type="module">
+        window.__AUTH = '{password}';
+      </script>
+      <script type="module">
+        const AUTH = window.__AUTH;
+        const headers = { 'Content-Type': 'application/json', 'X-Cotizador-Auth': AUTH };
+
         async function loadApp() {
           try {
-            const res = await fetch('/api/cotizador-interno/productos');
-            if (!res.ok) throw new Error('Error al cargar productos');
-            const productos = await res.json();
+            const [prodRes, quotesRes] = await Promise.all([
+              fetch('/api/cotizador-interno/productos', { headers }),
+              fetch('/api/cotizador-interno/quotes', { headers }),
+            ]);
+            const productos = prodRes.ok ? await prodRes.json() : [];
+            const quotes = quotesRes.ok ? await quotesRes.json() : [];
             document.getElementById('loading')?.remove();
 
-            const { createApp, ref, computed, watch } = await import('https://esm.sh/vue@3.5.13/dist/vue.esm-browser.prod.js');
+            const { createApp, ref, computed } = await import('https://esm.sh/vue@3.5.13/dist/vue.esm-browser.prod.js');
 
-            const app = createApp({
+            createApp({
               setup() {
+                const tab = ref('nueva');
                 const allProducts = ref(productos);
+                const quoteQuotes = ref(quotes);
                 const searchTerm = ref('');
                 const quoteItems = ref([]);
                 const customerName = ref('');
@@ -123,78 +122,54 @@ if (Astro.request.method === 'POST') {
                 const customerMessage = ref('');
                 const sending = ref(false);
                 const result = ref(null);
+                const loadingQuotes = ref(false);
 
                 const filteredProducts = computed(() => {
                   if (!searchTerm.value.trim()) return [];
-                  const term = searchTerm.value.toLowerCase().trim();
-                  return allProducts.value.filter(p => p.name.toLowerCase().includes(term)).slice(0, 20);
+                  const t = searchTerm.value.toLowerCase().trim();
+                  return allProducts.value.filter(p => p.name.toLowerCase().includes(t)).slice(0, 20);
                 });
 
-                const total = computed(() =>
-                  quoteItems.value.reduce((sum, item) => sum + item.cantidad * item.precioUnitario, 0)
-                );
+                const total = computed(() => quoteItems.value.reduce((s, i) => s + i.cantidad * i.precioUnitario, 0));
+                const totalProducts = computed(() => quoteItems.value.reduce((s, i) => s + i.cantidad, 0));
 
-                const totalProducts = computed(() =>
-                  quoteItems.value.reduce((sum, item) => sum + item.cantidad, 0)
-                );
-
-                function hasProduct(id) {
-                  return quoteItems.value.some(i => i.producto.id === id);
+                function hasProduct(id) { return quoteItems.value.some(i => i.producto.id === id); }
+                function addProduct(p) { if (!hasProduct(p.id)) { quoteItems.value.push({ producto: p, cantidad: 1, precioUnitario: 0 }); searchTerm.value = ''; } }
+                function removeItem(idx) { quoteItems.value.splice(idx, 1); }
+                function cantidadChange(idx, v) { quoteItems.value[idx].cantidad = Math.max(1, Math.min(999, Math.round(v))); }
+                function precioChange(idx, v) { quoteItems.value[idx].precioUnitario = Math.max(0, Math.round(v)); }
+                function formatPrice(n) { return n === 0 ? '$0' : '$' + n.toLocaleString('es-CL'); }
+                function formatDate(d) { return new Date(d).toLocaleDateString('es-CL', { day:'2-digit', month:'2-digit', year:'numeric' }); }
+                function statusLabel(s) {
+                  const m = { processing:'Procesando', completed:'Completado', pending:'Pendiente', 'on-hold':'En espera', cancelled:'Cancelado' };
+                  return m[s] || s;
+                }
+                function statusColor(s) {
+                  const m = { processing:'bg-blue-100 text-blue-700', completed:'bg-green-100 text-green-700', pending:'bg-yellow-100 text-yellow-700', 'on-hold':'bg-orange-100 text-orange-700', cancelled:'bg-red-100 text-red-700' };
+                  return m[s] || 'bg-gray-100 text-gray-600';
                 }
 
-                function addProduct(producto) {
-                  if (hasProduct(producto.id)) return;
-                  quoteItems.value.push({ producto, cantidad: 1, precioUnitario: 0 });
-                  searchTerm.value = '';
-                }
-
-                function removeItem(index) {
-                  quoteItems.value.splice(index, 1);
-                }
-
-                function cantidadChange(index, val) {
-                  quoteItems.value[index].cantidad = Math.max(1, Math.min(999, Math.round(val)));
-                }
-
-                function precioChange(index, val) {
-                  quoteItems.value[index].precioUnitario = Math.max(0, Math.round(val));
-                }
-
-                function formatPrice(num) {
-                  if (num === 0) return '$0';
-                  return '$' + num.toLocaleString('es-CL');
+                async function refreshQuotes() {
+                  loadingQuotes.value = true;
+                  try {
+                    const res = await fetch('/api/cotizador-interno/quotes', { headers });
+                    if (res.ok) quoteQuotes.value = await res.json();
+                  } catch {} finally { loadingQuotes.value = false; }
                 }
 
                 async function handleSubmit() {
                   result.value = null;
-                  if (quoteItems.value.length === 0) {
-                    result.value = { ok: false, message: 'Agregá al menos un producto.' };
-                    return;
-                  }
-                  if (!customerName.value.trim()) {
-                    result.value = { ok: false, message: 'Ingresá el nombre del cliente.' };
-                    return;
-                  }
-                  if (!customerEmail.value.trim()) {
-                    result.value = { ok: false, message: 'Ingresá el email del cliente.' };
-                    return;
-                  }
-                  if (!customerPhone.value.trim()) {
-                    result.value = { ok: false, message: 'Ingresá el teléfono del cliente.' };
-                    return;
-                  }
+                  if (quoteItems.value.length === 0) { result.value = { ok: false, message: 'Agregá al menos un producto.' }; return; }
+                  if (!customerName.value.trim()) { result.value = { ok: false, message: 'Ingresá el nombre.' }; return; }
+                  if (!customerEmail.value.trim()) { result.value = { ok: false, message: 'Ingresá el email.' }; return; }
+                  if (!customerPhone.value.trim()) { result.value = { ok: false, message: 'Ingresá el teléfono.' }; return; }
                   sending.value = true;
                   try {
                     const res = await fetch('/api/cotizador-interno', {
                       method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
+                      headers,
                       body: JSON.stringify({
-                        productos: quoteItems.value.map(item => ({
-                          id: item.producto.id,
-                          name: item.producto.name,
-                          cantidad: item.cantidad,
-                          precioUnitario: item.precioUnitario,
-                        })),
+                        productos: quoteItems.value.map(i => ({ id: i.producto.id, name: i.producto.name, cantidad: i.cantidad, precioUnitario: i.precioUnitario })),
                         nombre: customerName.value.trim(),
                         email: customerEmail.value.trim(),
                         telefono: customerPhone.value.trim(),
@@ -211,21 +186,21 @@ if (Astro.request.method === 'POST') {
                       customerPhone.value = '';
                       customerCompany.value = '';
                       customerMessage.value = '';
+                      refreshQuotes();
                     } else {
                       result.value = { ok: false, message: data.error || 'Error al enviar.' };
                     }
                   } catch {
                     result.value = { ok: false, message: 'Error de conexión.' };
-                  } finally {
-                    sending.value = false;
-                  }
+                  } finally { sending.value = false; }
                 }
 
                 return {
-                  allProducts, searchTerm, quoteItems, filteredProducts,
+                  tab, allProducts, quoteQuotes, searchTerm, quoteItems, filteredProducts,
                   customerName, customerEmail, customerPhone, customerCompany, customerMessage,
-                  sending, result, total, totalProducts,
-                  hasProduct, addProduct, removeItem, cantidadChange, precioChange, formatPrice, handleSubmit,
+                  sending, result, loadingQuotes, total, totalProducts,
+                  hasProduct, addProduct, removeItem, cantidadChange, precioChange, formatPrice, formatDate, statusLabel, statusColor,
+                  handleSubmit, refreshQuotes,
                 };
               },
               template: /*html*/`
@@ -236,8 +211,15 @@ if (Astro.request.method === 'POST') {
                       <h1 class="text-2xl font-bold text-gray-800">Cotizador Interno</h1>
                       <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">Admin</span>
                     </div>
-                    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
-                      <!-- LEFT -->
+
+                    <!-- Tabs -->
+                    <div class="flex gap-1 mb-6 bg-gray-100 rounded-xl p-1 w-fit">
+                      <button @click="tab='nueva'" :class="tab==='nueva'?'bg-white shadow-sm text-gray-800':'text-gray-500 hover:text-gray-700'" class="px-4 py-2 rounded-lg text-sm font-medium transition">Nueva cotización</button>
+                      <button @click="tab='recibidas';refreshQuotes()" :class="tab==='recibidas'?'bg-white shadow-sm text-gray-800':'text-gray-500 hover:text-gray-700'" class="px-4 py-2 rounded-lg text-sm font-medium transition">Cotizaciones recibidas <span class="text-xs text-gray-400 ml-1">{{ quoteQuotes.length }}</span></button>
+                    </div>
+
+                    <!-- TAB: NUEVA COTIZACIÓN -->
+                    <div v-show="tab==='nueva'" class="grid grid-cols-1 lg:grid-cols-5 gap-6">
                       <div class="lg:col-span-2 space-y-4">
                         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
                           <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Buscar producto</h2>
@@ -254,7 +236,6 @@ if (Astro.request.method === 'POST') {
                           </div>
                         </div>
                       </div>
-                      <!-- RIGHT -->
                       <div class="lg:col-span-3">
                         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 space-y-5">
                           <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Cotización actual ({{ quoteItems.length }} producto{{ quoteItems.length !== 1 ? 's' : '' }})</h2>
@@ -264,7 +245,7 @@ if (Astro.request.method === 'POST') {
                               <table class="w-full text-sm">
                                 <thead><tr class="border-b border-gray-200 text-left text-gray-500 text-xs uppercase"><th class="pb-2 font-medium">Producto</th><th class="pb-2 font-medium text-center w-20">Cant.</th><th class="pb-2 font-medium text-right w-32">P. Unitario</th><th class="pb-2 font-medium text-right w-32">Subtotal</th><th class="pb-2 w-10"></th></tr></thead>
                                 <tbody>
-                                  <tr v-for="(item, i) in quoteItems" :key="item.producto.id" class="border-b border-gray-100">
+                                  <tr v-for="(item,i) in quoteItems" :key="item.producto.id" class="border-b border-gray-100">
                                     <td class="py-2 flex items-center gap-2"><img :src="item.producto.image" :alt="item.producto.name" class="w-8 h-8 rounded object-cover bg-gray-100" /><span class="truncate">{{ item.producto.name }}</span></td>
                                     <td class="py-2 text-center"><input type="number" :value="item.cantidad" @input="cantidadChange(i, Number($event.target.value))" class="w-16 text-center px-2 py-1 border border-gray-300 rounded text-sm" min="1" max="999" /></td>
                                     <td class="py-2 text-right"><div class="relative"><span class="absolute inset-y-0 left-2 flex items-center text-gray-400 text-sm">$</span><input type="number" :value="item.precioUnitario" @input="precioChange(i, Number($event.target.value))" class="w-28 text-right px-2 py-1 pl-5 border border-gray-300 rounded text-sm" min="0" /></div></td>
@@ -275,11 +256,10 @@ if (Astro.request.method === 'POST') {
                               </table>
                             </div>
                             <div class="flex justify-between items-center pt-3 border-t border-gray-200">
-                              <div class="text-sm text-gray-500">{{ quoteItems.length }} producto{{ quoteItems.length !== 1 ? 's' : '' }} · {{ totalProducts }} unidad{{ totalProducts !== 1 ? 'es' : '' }}</div>
+                              <div class="text-sm text-gray-500">{{ quoteItems.length }} prod{{ quoteItems.length!==1?'s':'' }} · {{ totalProducts }} unidad{{ totalProducts!==1?'es':'' }}</div>
                               <div class="text-xl font-bold text-green-700">{{ formatPrice(total) }}</div>
                             </div>
                           </div>
-                          <!-- Customer form -->
                           <div class="border-t border-gray-200 pt-5 space-y-4">
                             <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Datos del cliente</h2>
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -290,16 +270,59 @@ if (Astro.request.method === 'POST') {
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                               <div><label class="block text-xs font-medium text-gray-600 mb-1">Empresa</label><input v-model="customerCompany" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none" placeholder="Nombre de la empresa (opcional)" /></div>
                             </div>
-                            <div><label class="block text-xs font-medium text-gray-600 mb-1">Mensaje</label><textarea v-model="customerMessage" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none" rows="3" placeholder="Mensaje adicional (opcional)" maxlength="1000"></textarea></div>
+                            <div><label class="block text-xs font-medium text-gray-600 mb-1">Mensaje</label><textarea v-model="customerMessage" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none" rows="3" placeholder="Mensaje adicional" maxlength="1000"></textarea></div>
                           </div>
-                          <!-- Actions -->
                           <div class="border-t border-gray-200 pt-5 space-y-3">
                             <button @click="handleSubmit" :disabled="sending" class="w-full bg-green-700 hover:bg-green-800 disabled:bg-gray-400 text-white font-medium py-3 rounded-lg transition text-sm">
-                              <span v-if="sending">Enviando cotización...</span>
-                              <span v-else>Enviar cotización</span>
+                              <span v-if="sending">Enviando cotización...</span><span v-else>Enviar cotización</span>
                             </button>
                             <div v-if="result" :class="['p-4 rounded-lg text-sm', result.ok ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200']">{{ result.message }}</div>
-                            <p class="text-xs text-gray-400 text-center">Se enviará un email al cliente y se creará una orden en WooCommerce con los precios asignados.</p>
+                            <p class="text-xs text-gray-400 text-center">Se crea una orden en WooCommerce y se envía email al cliente con los precios.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- TAB: COTIZACIONES RECIBIDAS -->
+                    <div v-show="tab==='recibidas'">
+                      <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-semibold text-gray-700">Cotizaciones recibidas</h2>
+                        <button @click="refreshQuotes" :disabled="loadingQuotes" class="text-sm bg-white border border-gray-300 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition">&#x21bb; Actualizar</button>
+                      </div>
+                      <div v-if="quoteQuotes.length === 0" class="bg-white rounded-xl border border-gray-200 p-12 text-center text-gray-400 text-sm">
+                        No hay cotizaciones todavía.
+                      </div>
+                      <div v-else class="space-y-4">
+                        <div v-for="q in quoteQuotes" :key="q.id" class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                          <div class="flex items-center justify-between p-4 bg-gray-50 border-b border-gray-100">
+                            <div class="flex items-center gap-3">
+                              <span class="font-bold text-gray-800 text-sm">#{{ q.number }}</span>
+                              <span :class="statusColor(q.status)" class="text-xs px-2 py-0.5 rounded-full font-medium">{{ statusLabel(q.status) }}</span>
+                              <span class="text-xs text-gray-400">{{ formatDate(q.date_created) }}</span>
+                            </div>
+                            <span class="text-lg font-bold text-green-700">{{ formatPrice(Number(q.total)) }}</span>
+                          </div>
+                          <div class="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                              <p class="text-xs text-gray-400 uppercase mb-1">Cliente</p>
+                              <p class="text-sm font-medium text-gray-800">{{ q.customer.name || '-' }}</p>
+                              <p class="text-xs text-gray-500">{{ q.customer.email }}</p>
+                              <p class="text-xs text-gray-500">{{ q.customer.phone }}</p>
+                              <p v-if="q.customer.company" class="text-xs text-gray-400">{{ q.customer.company }}</p>
+                            </div>
+                            <div>
+                              <p class="text-xs text-gray-400 uppercase mb-1">Productos</p>
+                              <ul class="space-y-1">
+                                <li v-for="p in q.products" class="text-sm text-gray-700 flex justify-between">
+                                  <span>{{ p.quantity }}× {{ p.name }}</span>
+                                  <span class="text-gray-500 ml-2">{{ formatPrice(Number(p.total)) }}</span>
+                                </li>
+                              </ul>
+                            </div>
+                            <div v-if="q.message">
+                              <p class="text-xs text-gray-400 uppercase mb-1">Mensaje</p>
+                              <p class="text-xs text-gray-500 leading-relaxed">{{ q.message }}</p>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -307,9 +330,7 @@ if (Astro.request.method === 'POST') {
                   </div>
                 </div>
               `,
-            });
-
-            app.mount('#cotizador-root');
+            }).mount('#cotizador-root');
           } catch (err) {
             console.error(err);
             document.getElementById('loading')!.innerHTML = '<p class="text-red-500 text-sm">Error al cargar. Recargá la página.</p>';

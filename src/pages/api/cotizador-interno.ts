@@ -1,37 +1,25 @@
 export const prerender = false;
 
-function parseCookies(header: string): Record<string, string> {
-  const map: Record<string, string> = {};
-  header.split(';').forEach(c => {
-    const [name, ...rest] = c.trim().split('=');
-    if (name) map[name] = rest.join('=');
-  });
-  return map;
-}
-
 const isValidEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 const isValidPositiveInt = (v: unknown) => typeof v === 'number' && Number.isInteger(v) && v > 0;
 const isValidNonEmptyString = (v: unknown) => typeof v === 'string' && v.trim().length > 0;
 
+function checkAuth(request: Request): boolean {
+  const password = import.meta.env.COTIZADOR_PASSWORD as string;
+  if (!password) return false;
+  const authHeader = request.headers.get('x-cotizador-auth') || '';
+  return authHeader === password;
+}
+
 export async function POST({ request }: { request: Request }) {
   try {
-    // Auth
-    const password = import.meta.env.COTIZADOR_PASSWORD as string;
-    if (!password) {
-      return new Response(JSON.stringify({ error: 'Cotizador no configurado' }), {
-        status: 503,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-    const cookies = parseCookies(request.headers.get('cookie') || '');
-    if (cookies['agrofarias-cotizador-auth'] !== password) {
+    if (!checkAuth(request)) {
       return new Response(JSON.stringify({ error: 'No autorizado' }), {
         status: 401,
         headers: { 'Content-Type': 'application/json' },
       });
     }
 
-    // Parse body
     let body: Record<string, unknown>;
     try {
       body = await request.json();
@@ -42,7 +30,6 @@ export async function POST({ request }: { request: Request }) {
       });
     }
 
-    // Sanitize
     const sanitize = (v: unknown) => (typeof v === 'string' ? v.replace(/[<>]/g, '').trim() : '');
     const nombre = sanitize(body.nombre);
     const email = sanitize(body.email);
@@ -51,7 +38,6 @@ export async function POST({ request }: { request: Request }) {
     const mensaje = sanitize(body.mensaje ?? '');
     const productosRaw = Array.isArray(body.productos) ? body.productos : [];
 
-    // Validate
     if (!isValidNonEmptyString(nombre))
       return new Response(JSON.stringify({ error: 'Nombre inválido' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
     if (!isValidEmail(email))
@@ -79,7 +65,6 @@ export async function POST({ request }: { request: Request }) {
     if (productos.length === 0)
       return new Response(JSON.stringify({ error: 'Productos inválidos' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
 
-    // WooCommerce config
     const wpUrl = import.meta.env.WORDPRESS_URL as string | undefined;
     const wcKey = import.meta.env.WC_CONSUMER_KEY as string;
     const wcSecret = import.meta.env.WC_CONSUMER_SECRET as string;

@@ -95,6 +95,13 @@ export async function fetchProductosPorCategoria(categoriaId: number, perPage = 
   return (await wcFetch(`${WC_API}/products?category=${categoriaId}&per_page=${perPage}&status=publish`)).json()
 }
 
+export async function fetchOrders(params?: { perPage?: number; page?: number }): Promise<Record<string, unknown>[]> {
+  const perPage = Math.min(params?.perPage || 50, 100);
+  const page = params?.page || 1;
+  const url = `${WC_API}/orders?per_page=${perPage}&page=${page}&status=any`;
+  return (await wcFetch(url)).json();
+}
+
 export async function submitCotizacion(data: SolicitudCotizacion): Promise<{ success?: boolean; id?: number; error?: string }> {
   try {
     const res = await fetch('/api/cotizar', {
