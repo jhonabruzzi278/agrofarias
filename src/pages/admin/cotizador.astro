@@ -105,7 +105,7 @@ const password = import.meta.env.COTIZADOR_PASSWORD as string;
           function cq(i, v) { items.value[i].q = Math.max(1, Math.min(999, Math.round(v))); }
           function cu(i, v) { items.value[i].u = Math.max(0, Math.round(v)); }
 
-          async function refreshQ() { lQ.value = true; try { const r = await fetch('/api/cotizador-interno/quotes', { headers: H }); if (r.ok) allQ.value = await r.json(); } catch{}; lQ.value = false; }
+          async function refreshQ() { lQ.value = true; try { const r = await fetch('/api/cotizador-interno/quotes', { headers: H }); if (r.ok) { allQ.value = await r.json(); console.log('[refreshQ]', allQ.value.length, 'cotizaciones cargadas'); } else { console.warn('[refreshQ] status', r.status); } } catch(e){ console.error('[refreshQ] error:', e); } finally { lQ.value = false; } }
 
           async function send() {
             msg.value = null;
@@ -123,7 +123,7 @@ const password = import.meta.env.COTIZADOR_PASSWORD as string;
               const d = await r.json();
               if (r.ok) { msg.value = { ok: true, text: 'Cotización enviada correctamente.' }; items.value = []; cN.value = ''; cE.value = ''; cP.value = ''; cC.value = ''; cM.value = ''; refreshQ(); }
               else msg.value = { ok: false, text: d.error || 'Error al enviar.' };
-            } catch { msg.value = { ok: false, text: 'Error de conexión.' }; }
+            } catch(e) { console.error('[send] error:', e); msg.value = { ok: false, text: 'Error de conexión.' }; }
             sending.value = false;
           }
 
