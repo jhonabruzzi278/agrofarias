@@ -1,0 +1,81 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CotizadorInterno from '../../components/CotizadorInterno.vue';
+import { fetchAllProductos } from '../../lib/woocommerce';
+
+export const prerender = false;
+
+const password = import.meta.env.COTIZADOR_PASSWORD as string;
+const authCookie = Astro.cookies.get('agrofarias-cotizador-auth');
+const isAuthenticated = password && authCookie?.value === password;
+
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData();
+  const submittedPassword = formData.get('password')?.toString() || '';
+  if (submittedPassword === password) {
+    Astro.cookies.set('agrofarias-cotizador-auth', password, {
+      path: '/',
+      httpOnly: true,
+      sameSite: 'strict',
+      secure: true,
+      maxAge: 60 * 60 * 8,
+    });
+    return Astro.redirect('/admin/cotizador');
+  }
+}
+
+let productosJson = '[]';
+if (isAuthenticated) {
+  try {
+    const productos = await fetchAllProductos();
+    productosJson = JSON.stringify(productos.map(p => ({
+      id: p.id,
+      name: p.name,
+      slug: p.slug,
+      image: p.images[0]?.src || '',
+    })));
+  } catch (e) {
+    console.error('[cotizador] Failed to load products:', e);
+  }
+}
+---
+
+<Layout title="Cotizador Interno" noindex={true}>
+  <main id="main" class="min-h-screen bg-gray-50">
+    {!isAuthenticated ? (
+      <div class="min-h-screen flex items-center justify-center px-4">
+        <div class="w-full max-w-sm">
+          <div class="bg-white rounded-xl shadow-lg p-8">
+            <div class="text-center mb-6">
+              <div class="text-4xl mb-3">&#x1F512;</div>
+              <h1 class="text-xl font-bold text-gray-800">Cotizador Interno</h1>
+              <p class="text-sm text-gray-500 mt-1">Agro Farías</p>
+            </div>
+            <form method="POST">
+              <label class="block text-sm font-medium text-gray-600 mb-1">Contraseña</label>
+              <input
+                type="password"
+                name="password"
+                required
+                autofocus
+                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition"
+                placeholder="Ingresá la contraseña"
+              />
+              <button
+                type="submit"
+                class="w-full mt-4 bg-green-700 hover:bg-green-800 text-white font-medium py-2.5 rounded-lg transition"
+              >
+                Ingresar
+              </button>
+            </form>
+            {Astro.request.method === 'POST' ? (
+              <p class="text-red-600 text-sm text-center mt-4">Contraseña incorrecta</p>
+            ) : null}
+          </div>
+        </div>
+      </div>
+    ) : (
+      <CotizadorInterno client:only="vue" productosJson={productosJson} />
+    )}
+  </main>
+</Layout>
