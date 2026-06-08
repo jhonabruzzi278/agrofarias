@@ -51,6 +51,8 @@ console.log('[cotizador-page] PASSWORD from env:', password ? 'SET (' + password
     .line-clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
     .cursor-pointer{cursor:pointer}.pointer-events-none{pointer-events:none}.opacity-0{opacity:0}.opacity-100{opacity:1}
     .hidden{display:none}
+    .space-y-1>*+*{margin-top:.25rem}.space-y-2>*+*{margin-top:.5rem}.space-y-3>*+*{margin-top:.75rem}.space-y-4>*+*{margin-top:1rem}.space-y-5>*+*{margin-top:1.25rem}
+    .border-t{border-top:1px solid #e5e7eb}.border-b{border-bottom:1px solid #e5e7eb}
     @media(min-width:640px){.sm\\:p-6{padding:1.5rem}.sm\\:grid-cols-2{grid-template-columns:repeat(2,1fr)}.sm\\:grid-cols-3{grid-template-columns:repeat(3,1fr)}}
     @media(min-width:1024px){.lg\\:p-8{padding:2rem}.lg\\:col-span-2{grid-column:span 2}.lg\\:col-span-3{grid-column:span 3}.lg\\:grid-cols-5{grid-template-columns:repeat(5,1fr)}}
     @media(min-width:768px){.md\\:grid-cols-3{grid-template-columns:repeat(3,1fr)}}
@@ -133,18 +135,38 @@ console.log('[cotizador-page] PASSWORD from env:', password ? 'SET (' + password
       loginScreen.classList.add('hidden');
       adminPanel.classList.remove('hidden');
       loadingScreen.classList.remove('hidden');
+      console.log('[showApp] starting...');
 
       try {
         const headers = { 'Content-Type': 'application/json', 'X-Cotizador-Auth': PASSWORD };
+        console.log('[showApp] fetching APIs...');
         const [prodRes, quotesRes] = await Promise.all([
           fetch('/api/cotizador-interno/productos', { headers }),
           fetch('/api/cotizador-interno/quotes', { headers }),
         ]);
-        const productos = prodRes.ok ? await prodRes.json() : [];
-        const quotes = quotesRes.ok ? await quotesRes.json() : [];
+        console.log('[showApp] productos status:', prodRes.status);
+        console.log('[showApp] quotes status:', quotesRes.status);
+        const productos = prodRes.ok ? await prodRes.json() : (console.warn('[showApp] productos failed'), []);
+        const quotes = quotesRes.ok ? await quotesRes.json() : (console.warn('[showApp] quotes failed'), []);
+        console.log('[showApp] productos count:', productos.length);
+        console.log('[showApp] quotes count:', quotes.length);
         loadingScreen.classList.add('hidden');
 
-        const { createApp, ref, computed } = await import('https://esm.sh/vue@3.5.13/dist/vue.esm-browser.prod.js');
+        console.log('[showApp] importing Vue...');
+        const loadMsg = document.getElementById('admin-panel').querySelector('#cotizador-root');
+        loadMsg.innerHTML = '<p class="text-gray-400 text-sm text-center py-20">Cargando aplicación...</p>';
+
+        let VueModule;
+        try {
+          VueModule = await import('https://esm.sh/vue@3.5.13/dist/vue.esm-browser.prod.js');
+        } catch (vueErr) {
+          console.error('[showApp] Vue import failed:', vueErr);
+          loadingScreen.classList.remove('hidden');
+          loadingScreen.innerHTML = '<p class="text-red-500 text-sm">Error al cargar Vue. Recargá la página o verificá la conexión.</p>';
+          return;
+        }
+        const { createApp, ref, computed } = VueModule;
+        console.log('[showApp] Vue loaded, mounting...');
 
         createApp({
           setup() {
