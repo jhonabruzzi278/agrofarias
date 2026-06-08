@@ -158,7 +158,7 @@ console.log('[cotizador-page] PASSWORD from env:', password ? 'SET (' + password
 
         let VueModule;
         try {
-          VueModule = await import('https://esm.sh/vue@3.5.13/dist/vue.esm-browser.prod.js');
+          VueModule = await import('/js/vue.esm-browser.prod.js');
         } catch (vueErr) {
           console.error('[showApp] Vue import failed:', vueErr);
           loadingScreen.classList.remove('hidden');
