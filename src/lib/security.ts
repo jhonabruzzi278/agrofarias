@@ -188,3 +188,16 @@ export function validateOrigin(request: Request): boolean {
     return false;
   }
 }
+
+export async function parseBody(request: Request): Promise<Record<string, unknown>> {
+  const contentType = request.headers.get('content-type') || '';
+  if (contentType.includes('urlencoded') || contentType.includes('multipart')) {
+    const formData = await request.formData();
+    const data: Record<string, unknown> = {};
+    formData.forEach((value, key) => {
+      if (typeof value === 'string') data[key] = value;
+    });
+    return data;
+  }
+  return request.json();
+}

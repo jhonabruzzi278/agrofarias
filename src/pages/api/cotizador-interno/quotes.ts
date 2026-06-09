@@ -1,12 +1,14 @@
 export const prerender = false;
 
 import { fetchOrders } from '../../../lib/woocommerce';
+import { checkRateLimit, recordRequest, getClientIP } from '../../../lib/security';
 
 function checkAuth(request: Request): boolean {
   const password = import.meta.env.COTIZADOR_PASSWORD as string;
   if (!password) return false;
+  const expected = 'agf_' + Buffer.from(password + ':af').toString('base64').replace(/=/g, '');
   const authHeader = request.headers.get('x-cotizador-auth') || '';
-  return authHeader === password;
+  return authHeader === expected;
 }
 
 export async function GET({ request }: { request: Request }) {
@@ -17,10 +19,19 @@ export async function GET({ request }: { request: Request }) {
     });
   }
 
+  const ip = getClientIP(request);
+  const { allowed } = await checkRateLimit(ip);
+  if (!allowed) {
+    return new Response(JSON.stringify({ error: 'Demasiadas solicitudes' }), {
+      status: 429,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+  await recordRequest(ip);
+
   try {
     const orders = await fetchOrders({ perPage: 50 });
 
-    // Filter to only quote-related orders
     const quotes = orders
       .filter((o: Record<string, unknown>) => {
         const note = String(o.customer_note || '');

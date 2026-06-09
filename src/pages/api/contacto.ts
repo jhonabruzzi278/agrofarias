@@ -11,25 +11,20 @@ import {
   errorResponse,
   successResponse,
   validateOrigin,
+  parseBody,
 } from '../../lib/security';
-
-async function parseBody(request: Request): Promise<Record<string, unknown>> {
-  const contentType = request.headers.get('content-type') || '';
-  if (contentType.includes('urlencoded') || contentType.includes('multipart')) {
-    const formData = await request.formData();
-    const data: Record<string, unknown> = {};
-    formData.forEach((value, key) => {
-      if (typeof value === 'string') data[key] = value;
-    });
-    return data;
-  }
-  return request.json();
-}
 
 export async function POST({ request }: { request: Request }) {
   try {
     if (!validateOrigin(request)) {
       return errorResponse('Origen no permitido', 403)
+    }
+
+    // API Key is required
+    const wpApiKey = import.meta.env.WP_CONTACT_API_KEY as string | undefined;
+    if (!wpApiKey) {
+      console.error('[contacto] WP_CONTACT_API_KEY not configured');
+      return errorResponse('Servicio no configurado', 503);
     }
 
     const ip = getClientIP(request);
@@ -70,11 +65,10 @@ export async function POST({ request }: { request: Request }) {
       return errorResponse('Configuración no disponible', 503);
     }
 
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    const wpApiKey = import.meta.env.WP_CONTACT_API_KEY as string | undefined;
-    if (wpApiKey) {
-      headers['X-API-Key'] = wpApiKey;
-    }
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'X-API-Key': wpApiKey,
+    };
 
     const res = await fetch(`${wpUrl}/wp-json/custom/v1/contacto`, {
       method: 'POST',

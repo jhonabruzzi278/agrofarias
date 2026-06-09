@@ -1,14 +1,23 @@
 export const prerender = false;
 
-const isValidEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-const isValidPositiveInt = (v: unknown) => typeof v === 'number' && Number.isInteger(v) && v > 0;
-const isValidNonEmptyString = (v: unknown) => typeof v === 'string' && v.trim().length > 0;
+import {
+  sanitize,
+  sanitizePhone,
+  sanitizeProductName,
+  isValidEmail,
+  isValidPositiveInt,
+  isValidNonEmptyString,
+  checkRateLimit,
+  recordRequest,
+  getClientIP,
+} from '../../lib/security';
 
 function checkAuth(request: Request): boolean {
   const password = import.meta.env.COTIZADOR_PASSWORD as string;
   if (!password) return false;
+  const expected = 'agf_' + Buffer.from(password + ':af').toString('base64').replace(/=/g, '');
   const authHeader = request.headers.get('x-cotizador-auth') || '';
-  return authHeader === password;
+  return authHeader === expected;
 }
 
 export async function POST({ request }: { request: Request }) {
@@ -20,6 +29,17 @@ export async function POST({ request }: { request: Request }) {
       });
     }
 
+    // Rate limiting
+    const ip = getClientIP(request);
+    const { allowed } = await checkRateLimit(ip);
+    if (!allowed) {
+      return new Response(JSON.stringify({ error: 'Demasiadas solicitudes' }), {
+        status: 429,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    await recordRequest(ip);
+
     let body: Record<string, unknown>;
     try {
       body = await request.json();
@@ -30,10 +50,9 @@ export async function POST({ request }: { request: Request }) {
       });
     }
 
-    const sanitize = (v: unknown) => (typeof v === 'string' ? v.replace(/[<>]/g, '').trim() : '');
     const nombre = sanitize(body.nombre);
     const email = sanitize(body.email);
-    const telefono = sanitize(body.telefono);
+    const telefono = sanitizePhone(body.telefono);
     const empresa = sanitize(body.empresa ?? '');
     const mensaje = sanitize(body.mensaje ?? '');
     const productosRaw = Array.isArray(body.productos) ? body.productos : [];
@@ -42,7 +61,7 @@ export async function POST({ request }: { request: Request }) {
       return new Response(JSON.stringify({ error: 'Nombre inválido' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
     if (!isValidEmail(email))
       return new Response(JSON.stringify({ error: 'Email inválido' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
-    if (!isValidNonEmptyString(telefono))
+    if (!isValidNonEmptyString(telefono, 50))
       return new Response(JSON.stringify({ error: 'Teléfono inválido' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
     if (productosRaw.length === 0)
       return new Response(JSON.stringify({ error: 'Debe haber al menos un producto' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
@@ -53,7 +72,7 @@ export async function POST({ request }: { request: Request }) {
       if (!p || typeof p !== 'object') return null;
       const item = p as Record<string, unknown>;
       const id = item.id;
-      const name = sanitize(item.name);
+      const name = sanitizeProductName(item.name);
       const cantidad = item.cantidad;
       const precioUnitario = item.precioUnitario;
       if (!isValidPositiveInt(id) || !isValidNonEmptyString(name) || !isValidPositiveInt(cantidad))

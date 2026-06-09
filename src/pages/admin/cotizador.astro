@@ -2,6 +2,7 @@
 import '../../styles/global.css';
 export const prerender = false;
 const password = import.meta.env.COTIZADOR_PASSWORD as string;
+const token = password ? 'agf_' + Buffer.from(password + ':af').toString('base64').replace(/=/g, '') : '';
 ---
 <!doctype html>
 <html lang="es" class="scroll-smooth">
@@ -48,8 +49,9 @@ const password = import.meta.env.COTIZADOR_PASSWORD as string;
     </div>
   </div>
 
-  <script type="module" define:vars={{ password }}>
-    const P = password || '';
+  <script type="module" define:vars={{ token }}>
+    const TOKEN = token || '';
+    function derive(pw) { return 'agf_' + btoa(pw + ':af').replace(/=/g, ''); }
     const AUTH = 'agrofarias-cotizador-auth';
     const $id = id => document.getElementById(id);
     const $login = $id('login-screen');
@@ -58,10 +60,10 @@ const password = import.meta.env.COTIZADOR_PASSWORD as string;
     const $err = $id('login-error');
     const $pw = $id('password-input');
 
-    function checkAuth() { return P && localStorage.getItem(AUTH) === P; }
+    function checkAuth() { return TOKEN && localStorage.getItem(AUTH) === TOKEN; }
 
     $id('login-btn').addEventListener('click', () => {
-      if ($pw.value === P) { localStorage.setItem(AUTH, P); $err.classList.add('hidden'); showApp(); }
+      if (derive($pw.value) === TOKEN) { localStorage.setItem(AUTH, TOKEN); $err.classList.add('hidden'); showApp(); }
       else { $err.classList.remove('hidden'); $pw.value = ''; $pw.focus(); setTimeout(() => $err.classList.add('hidden'), 3000); }
     });
     $pw.addEventListener('keydown', e => { if (e.key === 'Enter') $id('login-btn').click(); });
@@ -70,28 +72,37 @@ const password = import.meta.env.COTIZADOR_PASSWORD as string;
     async function showApp() {
       $login.classList.add('hidden');
       $panel.classList.remove('hidden');
-      $root.innerHTML = '<div class="min-h-60 flex items-center justify-center"><p class="text-gray-400 text-sm">Cargando productos...</p></div>';
+      $root.innerHTML = '<div class="min-h-[60vh] flex items-center justify-center"><p class="text-gray-400 text-sm">Cargando...</p></div>';
 
-      const H = { 'Content-Type': 'application/json', 'X-Cotizador-Auth': P };
-      let productos = [], quotes = [];
-      try { const r = await fetch('/api/cotizador-interno/productos', { headers: H }); if (r.ok) productos = await r.json(); } catch{}
+      const H = { 'Content-Type': 'application/json', 'X-Cotizador-Auth': TOKEN };
+      let quotes = [];
       try { const r = await fetch('/api/cotizador-interno/quotes', { headers: H }); if (r.ok) quotes = await r.json(); } catch{}
 
-      const { createApp, ref, computed } = await import('/js/vue.esm-browser.prod.js');
+      const { createApp, ref, computed, watch } = await import('/js/vue.esm-browser.prod.js');
 
       createApp({
         setup() {
           const tab = ref('nueva');
-          const allP = ref(productos); const allQ = ref(quotes);
+          const searchResults = ref([]); const allQ = ref(quotes);
           const search = ref(''); const items = ref([]);
           const cN = ref(''); const cE = ref(''); const cP = ref(''); const cC = ref(''); const cM = ref('');
-          const sending = ref(false); const msg = ref(null); const lQ = ref(false);
+          const sending = ref(false); const msg = ref(null); const lQ = ref(false); const searching = ref(false);
+          let debounceTimer = null;
 
-          const filt = computed(() => {
-            if (!search.value.trim()) return [];
-            const t = search.value.toLowerCase().trim();
-            return allP.value.filter(p => p.name.toLowerCase().includes(t)).slice(0, 20);
-          });
+          function doSearch(term) {
+            if (!term.trim()) { searchResults.value = []; return; }
+            searching.value = true;
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(async () => {
+              try {
+                const r = await fetch(`/api/cotizador-interno/productos?search=${encodeURIComponent(term.trim())}`, { headers: H });
+                if (r.ok) searchResults.value = await r.json();
+              } catch{}
+              searching.value = false;
+            }, 300);
+          }
+
+          watch(search, (v) => doSearch(v));
           const total = computed(() => items.value.reduce((s, i) => s + i.q * i.u, 0));
           const tProd = computed(() => items.value.reduce((s, i) => s + i.q, 0));
 
@@ -127,7 +138,8 @@ const password = import.meta.env.COTIZADOR_PASSWORD as string;
             sending.value = false;
           }
 
-          return { tab, allP, allQ, search, items, filt, cN, cE, cP, cC, cM, sending, msg, lQ, total, tProd, fp, fd, sl, hp, ap, ri, cq, cu, send, refreshQ };
+          return { tab, searchResults, allQ, search, items, cN, cE, cP, cC, cM,
+            sending, msg, lQ, searching, total, tProd, fp, fd, sl, hp, ap, ri, cq, cu, send, refreshQ };
         },
         template: `
 <div class="min-h-screen p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
@@ -147,11 +159,11 @@ const password = import.meta.env.COTIZADOR_PASSWORD as string;
       <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
         <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Buscar producto</h2>
         <input v-model="search" type="text" placeholder="Escribí el nombre del producto..." class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition text-sm" />
-        <div v-if="search.trim()" class="mt-1 text-xs text-gray-400">{{ filt.length }} resultado{{ filt.length !== 1 ? 's' : '' }}</div>
+        <div v-if="search.trim()" class="mt-1 text-xs text-gray-400">{{ searching ? 'Buscando...' : searchResults.length + ' resultado' + (searchResults.length !== 1 ? 's' : '') }}</div>
       </div>
-      <div v-if="search.trim()" class="space-y-2 overflow-y-auto max-h-[calc(100vh-320px)]">
-        <div v-if="filt.length === 0" class="text-center text-gray-400 py-10 text-sm">No se encontraron productos.</div>
-        <div v-for="p in filt" :key="p.id" class="flex items-center gap-3 bg-white rounded-lg border border-gray-200 p-3 shadow-sm hover:shadow transition cursor-pointer">
+      <div v-if="search.trim() && !searching" class="space-y-2 overflow-y-auto max-h-[calc(100vh-320px)]">
+        <div v-if="searchResults.length === 0" class="text-center text-gray-400 py-10 text-sm">No se encontraron productos.</div>
+        <div v-for="p in searchResults" :key="p.id" class="flex items-center gap-3 bg-white rounded-lg border border-gray-200 p-3 shadow-sm hover:shadow transition cursor-pointer">
           <img :src="p.image" :alt="p.name" class="w-12 h-12 rounded-lg object-cover bg-gray-100 shrink-0" />
           <div class="flex-1 min-w-0"><p class="text-sm font-medium text-gray-800 truncate">{{ p.name }}</p></div>
           <button v-if="!hp(p.id)" @click="ap(p)" class="shrink-0 bg-green-600 hover:bg-green-700 text-white text-xs font-medium px-3 py-1.5 rounded-lg transition cursor-pointer border-none">+ Agregar</button>
