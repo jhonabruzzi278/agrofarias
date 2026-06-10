@@ -11,7 +11,15 @@ export default defineConfig({
   trailingSlash: 'never',
   adapter: vercel({
     webAnalytics: { enabled: false },
-    isr: { expiration: 3600 },
+    isr: {
+      expiration: 3600,
+      // El ISR cachea por path e IGNORA el query string y las cookies. Estas
+      // rutas dependen de query params (tienda) o de auth/cookies (APIs), así
+      // que NO deben cachearse: hacerlo rompe paginación/búsqueda/filtros y
+      // podría servir respuestas de API saltándose el middleware de sesión.
+      // Las páginas SEO por path (/producto, /categoria, /) sí siguen con ISR.
+      exclude: [/^\/tienda/, /^\/api\//],
+    },
   }),
   vite: {
     plugins: [tailwindcss()],
