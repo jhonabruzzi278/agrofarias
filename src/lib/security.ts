@@ -1,20 +1,33 @@
 import { Ratelimit } from '@upstash/ratelimit'
 import { Redis } from '@upstash/redis'
 
-const redis = new Redis({
-  url: import.meta.env.UPSTASH_REDIS_REST_URL as string,
-  token: import.meta.env.UPSTASH_REDIS_REST_TOKEN as string,
-})
+// Init perezoso: si faltan las env de Upstash, NO instanciamos (instanciar con
+// url vacía lanza y tumbaría todo el SSR). Sin KV configurado, no bloqueamos.
+let ratelimit: Ratelimit | null = null
+let initialized = false
 
-const ratelimit = new Ratelimit({
-  redis,
-  limiter: Ratelimit.slidingWindow(10, '60 s'),
-  analytics: true,
-})
+function getRatelimit(): Ratelimit | null {
+  if (initialized) return ratelimit
+  initialized = true
+  const url = import.meta.env.UPSTASH_REDIS_REST_URL as string | undefined
+  const token = import.meta.env.UPSTASH_REDIS_REST_TOKEN as string | undefined
+  if (!url || !token) {
+    console.warn('[rate-limit] UPSTASH_REDIS_REST_URL/TOKEN no configurados; rate-limit desactivado')
+    return null
+  }
+  ratelimit = new Ratelimit({
+    redis: new Redis({ url, token }),
+    limiter: Ratelimit.slidingWindow(10, '60 s'),
+    analytics: true,
+  })
+  return ratelimit
+}
 
 export async function checkRateLimit(ip: string): Promise<{ allowed: boolean; remaining: number }> {
+  const rl = getRatelimit()
+  if (!rl) return { allowed: true, remaining: 10 } // sin KV: no bloquear
   try {
-    const { success, remaining } = await ratelimit.limit(ip)
+    const { success, remaining } = await rl.limit(ip)
     return { allowed: success, remaining: Math.max(0, remaining) }
   } catch (e) {
     // Fallback: si Redis falla, permitir (no quiebres el sitio).

@@ -25,10 +25,14 @@ describe('submitCotizacion', () => {
 
     const result = await submitCotizacion(data);
     expect(result).toEqual({ success: true, id: 123 });
+    // submitCotizacion mapea los productos a {id, name, cantidad} (descarta slug/image).
     expect(mockFetch).toHaveBeenCalledWith('/api/cotizar', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        ...data,
+        productos: [{ id: 1, name: 'Test', cantidad: 1 }],
+      }),
     });
   });
 
