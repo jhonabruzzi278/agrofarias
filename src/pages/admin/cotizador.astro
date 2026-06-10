@@ -1,8 +1,9 @@
 ---
 import '../../styles/global.css';
 export const prerender = false;
-const password = import.meta.env.COTIZADOR_PASSWORD as string;
-const token = password ? 'agf_' + Buffer.from(password + ':af').toString('base64').replace(/=/g, '') : '';
+// Esta página ya NO contiene secretos: es solo la cáscara con el formulario
+// de login. La autenticación ocurre 100% en el servidor (cookie de sesión
+// HttpOnly firmada). Ver src/lib/session.ts y src/middleware.ts.
 ---
 <!doctype html>
 <html lang="es" class="scroll-smooth">
@@ -49,32 +50,47 @@ const token = password ? 'agf_' + Buffer.from(password + ':af').toString('base64
     </div>
   </div>
 
-  <script type="module" define:vars={{ token }}>
-    const TOKEN = token || '';
-    function derive(pw) { return 'agf_' + btoa(pw + ':af').replace(/=/g, ''); }
-    const AUTH = 'agrofarias-cotizador-auth';
+  <script type="module">
     const $id = id => document.getElementById(id);
     const $login = $id('login-screen');
     const $panel = $id('admin-panel');
     const $root = $id('cotizador-root');
     const $err = $id('login-error');
     const $pw = $id('password-input');
+    const $loginBtn = $id('login-btn');
 
-    function checkAuth() { return TOKEN && localStorage.getItem(AUTH) === TOKEN; }
+    // La cookie de sesión (HttpOnly) viaja automáticamente en same-origin.
+    const H = { 'Content-Type': 'application/json' };
 
-    $id('login-btn').addEventListener('click', () => {
-      if (derive($pw.value) === TOKEN) { localStorage.setItem(AUTH, TOKEN); $err.classList.add('hidden'); showApp(); }
-      else { $err.classList.remove('hidden'); $pw.value = ''; $pw.focus(); setTimeout(() => $err.classList.add('hidden'), 3000); }
+    async function doLogin() {
+      const pw = $pw.value;
+      if (!pw) return;
+      $loginBtn.disabled = true;
+      try {
+        const r = await fetch('/api/admin/login', {
+          method: 'POST', headers: H, body: JSON.stringify({ password: pw }),
+        });
+        if (r.ok) { $err.classList.add('hidden'); $pw.value = ''; showApp(); }
+        else { $err.classList.remove('hidden'); $pw.value = ''; $pw.focus(); setTimeout(() => $err.classList.add('hidden'), 3000); }
+      } catch {
+        $err.classList.remove('hidden'); $err.textContent = 'Error de conexión';
+      } finally {
+        $loginBtn.disabled = false;
+      }
+    }
+
+    $loginBtn.addEventListener('click', doLogin);
+    $pw.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+    $id('logout-btn').addEventListener('click', async () => {
+      try { await fetch('/api/admin/logout', { method: 'POST', headers: H }); } catch {}
+      location.reload();
     });
-    $pw.addEventListener('keydown', e => { if (e.key === 'Enter') $id('login-btn').click(); });
-    $id('logout-btn').addEventListener('click', () => { localStorage.removeItem(AUTH); location.reload(); });
 
     async function showApp() {
       $login.classList.add('hidden');
       $panel.classList.remove('hidden');
       $root.innerHTML = '<div class="min-h-[60vh] flex items-center justify-center"><p class="text-gray-400 text-sm">Cargando...</p></div>';
 
-      const H = { 'Content-Type': 'application/json', 'X-Cotizador-Auth': TOKEN };
       let quotes = [];
       try { const r = await fetch('/api/cotizador-interno/quotes', { headers: H }); if (r.ok) quotes = await r.json(); } catch{}
 
@@ -251,7 +267,13 @@ const token = password ? 'agf_' + Buffer.from(password + ':af').toString('base64
       }).mount('#cotizador-root');
     }
 
-    if (checkAuth()) showApp();
+    // Arranque: si ya hay sesión válida (cookie), el endpoint responde 200.
+    (async () => {
+      try {
+        const r = await fetch('/api/cotizador-interno/quotes', { headers: H });
+        if (r.ok) showApp();
+      } catch {}
+    })();
   </script>
 </body>
 </html>

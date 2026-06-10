@@ -1,118 +1,50 @@
-const RATE_LIMIT_WINDOW_MS = 60000
-const RATE_LIMIT_MAX = 10
+import { Ratelimit } from '@upstash/ratelimit'
+import { Redis } from '@upstash/redis'
 
-interface RateLimitStore {
-  check(ip: string): { allowed: boolean; remaining: number } | Promise<{ allowed: boolean; remaining: number }>
-  record(ip: string): void | Promise<void>
-}
+const redis = new Redis({
+  url: import.meta.env.UPSTASH_REDIS_REST_URL as string,
+  token: import.meta.env.UPSTASH_REDIS_REST_TOKEN as string,
+})
 
-class InMemoryStore implements RateLimitStore {
-  private log = new Map<string, { count: number; resetAt: number }>()
-
-  check(ip: string): { allowed: boolean; remaining: number } {
-    const now = Date.now()
-    const record = this.log.get(ip)
-    if (!record || now > record.resetAt) {
-      return { allowed: true, remaining: RATE_LIMIT_MAX - 1 }
-    }
-    if (record.count >= RATE_LIMIT_MAX) {
-      return { allowed: false, remaining: 0 }
-    }
-    return { allowed: true, remaining: RATE_LIMIT_MAX - record.count }
-  }
-
-  record(ip: string): void {
-    const now = Date.now()
-    const record = this.log.get(ip)
-    if (!record || now > record.resetAt) {
-      this.log.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS })
-    } else {
-      record.count++
-    }
-  }
-}
-
-const fallbackStore = new InMemoryStore()
-
-class VercelKVStore implements RateLimitStore {
-  private kv: any
-
-  constructor() {
-    try {
-      this.kv = (globalThis as any).kv
-    } catch {
-      this.kv = null
-    }
-  }
-
-  private isAvailable(): boolean {
-    return this.kv !== null && this.kv !== undefined
-  }
-
-  async check(ip: string): Promise<{ allowed: boolean; remaining: number }> {
-    if (!this.isAvailable()) {
-      return fallbackStore.check(ip) as { allowed: boolean; remaining: number }
-    }
-
-    try {
-      const key = `ratelimit:${ip}`
-      const data = await this.kv.get(key)
-      const now = Date.now()
-
-      if (!data || now > data.resetAt) {
-        return { allowed: true, remaining: RATE_LIMIT_MAX - 1 }
-      }
-
-      if (data.count >= RATE_LIMIT_MAX) {
-        return { allowed: false, remaining: 0 }
-      }
-
-      return { allowed: true, remaining: RATE_LIMIT_MAX - data.count }
-    } catch {
-      return fallbackStore.check(ip) as { allowed: boolean; remaining: number }
-    }
-  }
-
-  async record(ip: string): Promise<void> {
-    if (!this.isAvailable()) {
-      fallbackStore.record(ip)
-      return
-    }
-
-    try {
-      const key = `ratelimit:${ip}`
-      const now = Date.now()
-      const data = await this.kv.get(key)
-
-      if (!data || now > data.resetAt) {
-        await this.kv.set(key, JSON.stringify({ count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS }), { ex: Math.ceil(RATE_LIMIT_WINDOW_MS / 1000) })
-      } else {
-        data.count++
-        await this.kv.set(key, JSON.stringify(data), { ex: Math.ceil(RATE_LIMIT_WINDOW_MS / 1000) })
-      }
-    } catch {
-      fallbackStore.record(ip)
-    }
-  }
-}
-
-const store = new VercelKVStore()
+const ratelimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(10, '60 s'),
+  analytics: true,
+})
 
 export async function checkRateLimit(ip: string): Promise<{ allowed: boolean; remaining: number }> {
-  return store.check(ip)
+  try {
+    const { success, remaining } = await ratelimit.limit(ip)
+    return { allowed: success, remaining: Math.max(0, remaining) }
+  } catch (e) {
+    // Fallback: si Redis falla, permitir (no quiebres el sitio).
+    console.warn('[checkRateLimit] Error conectando a Upstash:', e)
+    return { allowed: true, remaining: 10 }
+  }
 }
 
-export async function recordRequest(ip: string): Promise<void> {
-  return store.record(ip)
+export async function recordRequest(_ip: string): Promise<void> {
+  // Upstash lo maneja automáticamente vía ratelimit.limit() en checkRateLimit()
 }
 
 export function getClientIP(request: Request): string {
-  const forwarded = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim();
-  if (forwarded) return forwarded;
-  const realIp = request.headers.get('x-real-ip');
+  // En Vercel, `x-real-ip` lo fija la plataforma con la IP real del cliente
+  // y no es spoofeable por el cliente, así que se prefiere.
+  const realIp = request.headers.get('x-real-ip')?.trim();
   if (realIp) return realIp;
-  const ua = request.headers.get('user-agent') || '';
-  return `anon-${simpleHash(ua + Date.now().toString(36))}`;
+
+  // Fallback: tomar el salto MÁS A LA DERECHA de x-forwarded-for (el añadido
+  // por el proxy de confianza), no el primero (que el cliente puede falsear).
+  const forwarded = request.headers.get('x-forwarded-for');
+  if (forwarded) {
+    const hops = forwarded.split(',').map((h) => h.trim()).filter(Boolean);
+    if (hops.length > 0) return hops[hops.length - 1];
+  }
+
+  // Último recurso: bucket estable por user-agent (sin tiempo, para que el
+  // rate-limit no se evada con una clave distinta en cada request).
+  const ua = request.headers.get('user-agent') || 'unknown';
+  return `anon-${simpleHash(ua)}`;
 }
 
 function simpleHash(str: string): string {

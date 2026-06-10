@@ -1,5 +1,6 @@
 export const prerender = false;
 
+import type { APIContext } from 'astro';
 import {
   sanitize,
   sanitizePhone,
@@ -11,18 +12,12 @@ import {
   recordRequest,
   getClientIP,
 } from '../../lib/security';
+import { SESSION_COOKIE, verifySession } from '../../lib/session';
 
-function checkAuth(request: Request): boolean {
-  const password = import.meta.env.COTIZADOR_PASSWORD as string;
-  if (!password) return false;
-  const expected = 'agf_' + Buffer.from(password + ':af').toString('base64').replace(/=/g, '');
-  const authHeader = request.headers.get('x-cotizador-auth') || '';
-  return authHeader === expected;
-}
-
-export async function POST({ request }: { request: Request }) {
+export async function POST({ request, cookies }: APIContext) {
   try {
-    if (!checkAuth(request)) {
+    // Defensa en profundidad: el middleware ya exige sesión válida.
+    if (!(await verifySession(cookies.get(SESSION_COOKIE)?.value))) {
       return new Response(JSON.stringify({ error: 'No autorizado' }), {
         status: 401,
         headers: { 'Content-Type': 'application/json' },

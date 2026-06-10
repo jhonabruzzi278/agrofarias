@@ -20,12 +20,7 @@ export async function POST({ request }: { request: Request }) {
       return errorResponse('Origen no permitido', 403)
     }
 
-    // API Key is required
-    const wpApiKey = import.meta.env.WP_CONTACT_API_KEY as string | undefined;
-    if (!wpApiKey) {
-      console.error('[contacto] WP_CONTACT_API_KEY not configured');
-      return errorResponse('Servicio no configurado', 503);
-    }
+    const wpApiKey = import.meta.env.WP_CONTACT_API_KEY;
 
     const ip = getClientIP(request);
     const { allowed } = await checkRateLimit(ip);
@@ -67,8 +62,10 @@ export async function POST({ request }: { request: Request }) {
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      'X-API-Key': wpApiKey,
     };
+    if (wpApiKey) {
+      headers['X-API-Key'] = wpApiKey;
+    }
 
     const res = await fetch(`${wpUrl}/wp-json/custom/v1/contacto`, {
       method: 'POST',
