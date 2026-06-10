@@ -64,7 +64,8 @@ function stripHtml(html?: string): string {
 }
 
 const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE));
-const currentPage = Math.min(Math.max(1, pageParam), totalPages);
+// `?page=abc` => parseInt NaN; clamp a 1 para no romper el slice ni mostrar "Página NaN".
+const currentPage = Number.isFinite(pageParam) ? Math.min(Math.max(1, pageParam), totalPages) : 1;
 const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
 const paginatedProducts = filteredProducts.slice(startIndex, startIndex + PRODUCTS_PER_PAGE);
 

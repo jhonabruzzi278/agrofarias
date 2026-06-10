@@ -23,37 +23,52 @@ export async function GET({ request, cookies }: APIContext) {
   }
   await recordRequest(ip);
 
-  try {
-    const orders = await fetchOrders({ perPage: 50 });
+  const isCotizacion = (o: Record<string, unknown>): boolean => {
+    const note = String(o.customer_note || '');
+    return note.includes('COTIZACIÓN -') || note.includes('COTIZACION -');
+  };
 
-    const quotes = orders
-      .filter((o: Record<string, unknown>) => {
-        const note = String(o.customer_note || '');
-        return note.includes('COTIZACIÓN -') || note.includes('COTIZACION -');
-      })
-      .map((o: Record<string, unknown>) => {
-        const billing = (o.billing as Record<string, string>) || {};
-        const items = (o.line_items as Array<Record<string, unknown>>) || [];
-        return {
-          id: o.id,
-          number: o.number,
-          status: o.status,
-          date_created: o.date_created,
-          total: o.total,
-          customer: {
-            name: `${billing.first_name || ''} ${billing.last_name || ''}`.trim(),
-            email: billing.email || '',
-            phone: billing.phone || '',
-            company: billing.company || '',
-          },
-          products: items.map((item: Record<string, unknown>) => ({
-            name: item.name,
-            quantity: item.quantity,
-            total: item.total,
-          })),
-          message: String(o.customer_note || ''),
-        };
-      });
+  const mapQuote = (o: Record<string, unknown>) => {
+    const billing = (o.billing as Record<string, string>) || {};
+    const items = (o.line_items as Array<Record<string, unknown>>) || [];
+    return {
+      id: o.id,
+      number: o.number,
+      status: o.status,
+      date_created: o.date_created,
+      total: o.total,
+      customer: {
+        name: `${billing.first_name || ''} ${billing.last_name || ''}`.trim(),
+        email: billing.email || '',
+        phone: billing.phone || '',
+        company: billing.company || '',
+      },
+      products: items.map((item: Record<string, unknown>) => ({
+        name: item.name,
+        quantity: item.quantity,
+        total: item.total,
+      })),
+      message: String(o.customer_note || ''),
+    };
+  };
+
+  try {
+    // El filtro de "cotización" se aplica sobre el customer_note, que WooCommerce
+    // no permite filtrar server-side. Por eso escaneamos varias páginas de órdenes
+    // recientes (hasta MAX_PAGES * PER_PAGE) en lugar de quedarnos con las primeras
+    // 50: así las cotizaciones no quedan ocultas tras órdenes normales.
+    const PER_PAGE = 100;
+    const MAX_PAGES = 3; // hasta 300 órdenes recientes escaneadas
+    const quotes: ReturnType<typeof mapQuote>[] = [];
+
+    for (let page = 1; page <= MAX_PAGES; page++) {
+      const orders = await fetchOrders({ perPage: PER_PAGE, page });
+      if (orders.length === 0) break;
+      for (const o of orders) {
+        if (isCotizacion(o)) quotes.push(mapQuote(o));
+      }
+      if (orders.length < PER_PAGE) break; // última página
+    }
 
     return new Response(JSON.stringify(quotes), {
       status: 200,

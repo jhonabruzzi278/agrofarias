@@ -129,12 +129,9 @@ export async function POST({ request, cookies }: APIContext) {
       });
     }
 
+    // El detalle de WooCommerce queda solo en logs; al cliente, mensaje genérico.
     console.error('[cotizador-interno] WooCommerce order failed:', orderRes.status, orderText);
-    const errMsg = (() => {
-      try { return JSON.parse(orderText).message || 'Error al crear la cotización'; }
-      catch { return 'Error al crear la cotización'; }
-    })();
-    return new Response(JSON.stringify({ error: errMsg }), { status: 502, headers: { 'Content-Type': 'application/json' } });
+    return new Response(JSON.stringify({ error: 'No se pudo crear la cotización. Intenta nuevamente más tarde.' }), { status: 502, headers: { 'Content-Type': 'application/json' } });
   } catch (e) {
     console.error('[cotizador-interno] Unhandled error:', e);
     return new Response(JSON.stringify({ error: 'Error interno' }), { status: 500, headers: { 'Content-Type': 'application/json' } });

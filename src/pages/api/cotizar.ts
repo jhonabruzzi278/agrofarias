@@ -123,9 +123,9 @@ export async function POST({ request }: { request: Request }) {
       return successResponse({ success: true, id: order.id, via: 'woocommerce', orderNumber: order.number });
     }
 
+    // El detalle de WooCommerce queda solo en logs; al cliente, mensaje genérico.
     console.error('[cotizar] WooCommerce order creation failed:', orderRes.status, orderText)
-    const errMsg = (() => { try { return JSON.parse(orderText).message || 'Error al crear la orden'; } catch { return 'Error al crear la orden'; } })();
-    return errorResponse(errMsg, 502);
+    return errorResponse('No se pudo crear la cotización. Intenta nuevamente más tarde.', 502);
   } catch (e) {
     console.error('[cotizar] Unhandled error:', e)
     return errorResponse('Error interno del servidor', 500);
