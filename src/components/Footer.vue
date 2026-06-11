@@ -74,13 +74,18 @@
             </ul>
 
             <div class="mt-4 p-3 bg-white/10 rounded-lg space-y-2">
-              <p class="text-white/80 text-sm flex items-start gap-2">
-                <i class="fas fa-map-marker-alt text-[var(--accent-color)] mt-0.5 text-xs"></i>{{ SITE_CONFIG.address }}
-              </p>
+              <a :href="SITE_CONFIG.mapsUrl" target="_blank" rel="noopener noreferrer" class="text-white/80 text-sm flex items-start gap-2 hover:text-white transition-colors group">
+                <i class="fas fa-map-marker-alt text-[var(--accent-color)] mt-0.5 text-xs"></i>
+                <span class="group-hover:underline">{{ SITE_CONFIG.address }}</span>
+              </a>
               <p class="text-white/80 text-sm flex items-center gap-2">
                 <i class="fas fa-envelope text-[var(--accent-color)] text-xs"></i>
                 <a :href="SITE_CONFIG.emailHref" class="hover:text-white transition-colors">{{ SITE_CONFIG.email }}</a>
               </p>
+              <a :href="SITE_CONFIG.directionsUrl" target="_blank" rel="noopener noreferrer"
+                class="mt-1 inline-flex items-center gap-2 bg-[var(--accent-color)] text-[#111] text-sm font-semibold px-4 py-2 rounded-lg hover:brightness-95 transition no-underline">
+                <i class="fas fa-route text-xs"></i> Cómo llegar
+              </a>
             </div>
           </div>
         </div>
