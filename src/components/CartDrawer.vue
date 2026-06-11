@@ -102,7 +102,7 @@ import type { QuoteItem } from '../lib/types'
 const quote = useQuote()
 // Exponer como bindings de nivel superior para que el template desempaquete los refs.
 const items = quote.items
-const totalItems = totalItems
+const totalItems = quote.totalItems
 const open = ref(false)
 
 function inc(item: QuoteItem) { quote.updateQuantity(item.id, item.cantidad + 1) }

@@ -417,33 +417,24 @@ function buildFilterUrl(params: Record<string, string>): string {
               <!-- List view -->
               <div id="products-list" class:list={['space-y-3', viewParam !== 'list' ? 'hidden' : '']}>
                 {paginatedProducts.map(prod => (
-                  <a href={`/producto/${prod.slug}`} class="group flex items-center gap-5 p-4 bg-white rounded-2xl border border-gray-100 hover:border-[var(--theme-color)]/30 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
-                    <div class="w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-gray-50 to-green-50">
+                  <div class="group flex items-center gap-4 p-3 sm:p-4 bg-white rounded-2xl border border-gray-100 hover:border-[var(--theme-color)]/30 hover:shadow-lg transition-all duration-300">
+                    <a href={`/producto/${prod.slug}`} class="w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-gray-50 to-green-50 block">
                       {prod.images[0] ? (
                         <img src={prod.images[0].src} alt={prod.name} width="80" height="80" class="w-full h-full object-contain p-2 group-hover:scale-110 transition-transform duration-500" loading="lazy" />
                       ) : (
                         <div class="w-full h-full flex items-center justify-center text-gray-300"><i class="fas fa-image text-2xl"></i></div>
                       )}
-                    </div>
+                    </a>
                     <div class="flex-1 min-w-0">
-                      <h3 class="font-bold text-[#111] group-hover:text-[var(--theme-color)] transition-colors truncate leading-tight">{prod.name}</h3>
-                      {prod.categories[0] && <span class="text-xs text-gray-400 mt-1 inline-block">{prod.categories[0].name}</span>}
+                      <a href={`/producto/${prod.slug}`} class="block">
+                        <h3 class="font-bold text-[#111] group-hover:text-[var(--theme-color)] transition-colors truncate leading-tight">{prod.name}</h3>
+                      </a>
+                      {prod.categories[0] && <span class="text-xs text-gray-400 mt-0.5 inline-block">{prod.categories[0].name}</span>}
                     </div>
-                    <div class="flex-shrink-0 flex items-center gap-3">
-                      {prod.stock_status === 'instock' ? (
-                        <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-green-700 bg-green-50 px-3 py-1.5 rounded-full">
-                          <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> Disponible
-                        </span>
-                      ) : (
-                        <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 bg-red-50 px-3 py-1.5 rounded-full">
-                          <span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span> Consultar
-                        </span>
-                      )}
-                      <span class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-[var(--theme-color)] group-hover:text-white transition-all duration-300 group-hover:translate-x-1">
-                        <i class="fas fa-chevron-right text-xs"></i>
-                      </span>
+                    <div class="flex-shrink-0">
+                      <QuoteButton client:only="vue" productId={prod.id} productName={prod.name} productSlug={prod.slug} productImage={prod.images[0]?.src ?? ''} />
                     </div>
-                  </a>
+                  </div>
                 ))}
               </div>
 
@@ -614,8 +605,17 @@ document.addEventListener('astro:page-load', function() {
     });
   }
 
-  if (gridBtn) gridBtn.addEventListener('click', function() { setView('grid'); applyFilters(); });
-  if (listBtn) listBtn.addEventListener('click', function() { setView('list'); applyFilters(); });
+  // Cambiar de vista es 100% en el cliente (ambas vistas existen en el DOM):
+  // togglear sin recargar y sincronizar el parámetro en la URL.
+  function updateViewParam(view) {
+    try {
+      var u = new URL(window.location.href);
+      if (view === 'grid') u.searchParams.delete('view'); else u.searchParams.set('view', view);
+      history.replaceState({}, '', u.toString());
+    } catch (e) {}
+  }
+  if (gridBtn) gridBtn.addEventListener('click', function() { setView('grid'); updateViewParam('grid'); });
+  if (listBtn) listBtn.addEventListener('click', function() { setView('list'); updateViewParam('list'); });
   if (stockCheckbox) stockCheckbox.addEventListener('change', applyFilters);
   if (sortSelect) sortSelect.addEventListener('change', applyFilters);
 })();
