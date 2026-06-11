@@ -91,9 +91,11 @@
                     </tbody>
                   </table>
                 </div>
-                <div class="flex justify-between items-center pt-3 border-t border-gray-200">
-                  <div class="text-sm text-gray-500">{{ items.length }} prod · {{ tProd }} unid</div>
-                  <div class="text-xl font-bold text-green-700">{{ fp(total) }}</div>
+                <div class="pt-3 border-t border-gray-200 space-y-1">
+                  <div class="text-xs text-gray-400">{{ items.length }} prod · {{ tProd }} unid</div>
+                  <div class="flex justify-between text-sm text-gray-600"><span>Neto</span><span>{{ fp(total) }}</span></div>
+                  <div class="flex justify-between text-sm text-gray-600"><span>IVA (19%)</span><span>{{ fp(iva) }}</span></div>
+                  <div class="flex justify-between items-center pt-1 mt-1 border-t border-gray-100"><span class="text-sm font-semibold text-gray-700">Total</span><span class="text-xl font-bold text-green-700">{{ fp(totalConIva) }}</span></div>
                 </div>
               </div>
               <!-- Customer form -->
@@ -176,7 +178,10 @@
                     <span :class="statusClass(q.status)" class="px-2 py-0.5 rounded-full text-xs font-medium">{{ sl(q.status) }}</span>
                     <span class="text-xs text-gray-400">{{ fd(q.date_created) }}</span>
                   </div>
-                  <span class="text-lg font-bold text-green-700">{{ fp(Number(q.total)) }}</span>
+                  <div class="text-right">
+                    <span class="text-lg font-bold text-green-700">{{ fp(totalConIvaOf(q.total)) }}</span>
+                    <p class="text-[10px] text-gray-400">Neto {{ fp(Number(q.total)) }} + IVA {{ fp(ivaOf(q.total)) }}</p>
+                  </div>
                 </div>
                 <div class="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
@@ -201,8 +206,8 @@
                   </div>
                 </div>
                 <!-- ACCIONES RÁPIDAS -->
-                <div class="flex flex-wrap gap-2 px-4 pb-4">
-                  <a v-if="waLink(q.customer.phone)" :href="waLink(q.customer.phone)" target="_blank" rel="noopener noreferrer"
+                <div class="flex flex-wrap items-center gap-2 px-4 pb-4">
+                  <a v-if="waLink(q)" :href="waLink(q)" target="_blank" rel="noopener noreferrer"
                     class="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-green-50 text-green-700 hover:bg-green-100 transition no-underline">
                     💬 WhatsApp
                   </a>
@@ -214,6 +219,14 @@
                     class="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition no-underline">
                     ↗ Ver en WooCommerce
                   </a>
+                  <div class="flex items-center gap-1.5 ml-auto">
+                    <label class="text-xs text-gray-400">Estado:</label>
+                    <select :value="q.status" @change="updateStatus(q, ($event.target as HTMLSelectElement).value)" :disabled="updatingId === q.id"
+                      class="text-xs px-2 py-1.5 border border-gray-300 rounded-lg bg-white cursor-pointer focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none disabled:opacity-50">
+                      <option v-for="s in STATUSES" :key="s" :value="s">{{ sl(s) }}</option>
+                    </select>
+                    <span v-if="updatingId === q.id" class="text-xs text-gray-400">Guardando…</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -339,16 +352,46 @@ const filteredQuotes = computed(() => {
 
 // Métricas sobre el conjunto filtrado (consistentes con lo que se ve).
 const mTotal = computed(() => filteredQuotes.value.length)
-const mValor = computed(() => filteredQuotes.value.reduce((s, q) => s + (Number(q.total) || 0), 0))
+// Valor con IVA incluido (consistente con lo que muestran las tarjetas).
+const mValor = computed(() => filteredQuotes.value.reduce((s, q) => s + totalConIvaOf(q.total), 0))
 const mPromedio = computed(() => (mTotal.value ? Math.round(mValor.value / mTotal.value) : 0))
 const mProductos = computed(() =>
   filteredQuotes.value.reduce((s, q) => s + (q.products?.reduce((a: number, p: any) => a + (Number(p.quantity) || 0), 0) || 0), 0),
 )
 
-// Acciones rápidas
-function waLink(phone?: string): string {
-  const digits = String(phone || '').replace(/\D/g, '')
-  return digits.length >= 8 ? `https://wa.me/${digits}` : ''
+// --- IVA chileno (19%) ---
+const IVA_RATE = 0.19
+const iva = computed(() => Math.round(total.value * IVA_RATE))
+const totalConIva = computed(() => total.value + iva.value)
+const ivaOf = (net: unknown) => Math.round((Number(net) || 0) * IVA_RATE)
+const totalConIvaOf = (net: unknown) => (Number(net) || 0) + ivaOf(net)
+
+// --- Cambio de estado ---
+const STATUSES = ['pending', 'processing', 'on-hold', 'completed', 'cancelled']
+const updatingId = ref<number | null>(null)
+async function updateStatus(q: any, status: string) {
+  if (!status || status === q.status) return
+  updatingId.value = q.id
+  try {
+    const r = await fetch('/api/cotizador-interno/update-status', {
+      method: 'POST', headers: H, body: JSON.stringify({ id: q.id, status }),
+    })
+    if (r.ok) q.status = status // muta el objeto en allQ (reactivo) → recalcula métricas/conteos
+  } catch {} finally {
+    updatingId.value = null
+  }
+}
+
+// --- Acciones rápidas ---
+function waText(q: any): string {
+  const lines = (q.products || []).map((p: any) => `• ${p.quantity}x ${p.name}`).join('\n')
+  const nombre = q.customer?.name ? String(q.customer.name).split(' ')[0] : ''
+  const saludo = nombre ? `Hola ${nombre}! ` : 'Hola! '
+  return `${saludo}Te escribo de Agro Farías por tu cotización #${q.number}:\n${lines}\nTotal (IVA incl.): ${fp(totalConIvaOf(q.total))}`
+}
+function waLink(q: any): string {
+  const digits = String(q.customer?.phone || '').replace(/\D/g, '')
+  return digits.length >= 8 ? `https://wa.me/${digits}?text=${encodeURIComponent(waText(q))}` : ''
 }
 async function copyEmail(q: any) {
   if (!q.customer?.email) return

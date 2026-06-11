@@ -91,6 +91,12 @@ export async function POST({ request, cookies }: APIContext) {
     const auth = btoa(`${wcKey}:${wcSecret}`);
     const nombreParts = nombre.split(/\s+/);
 
+    // IVA chileno (19%): los precios ingresados se tratan como NETO.
+    const neto = productos.reduce((s, p) => s + p.cantidad * p.precioUnitario, 0);
+    const iva = Math.round(neto * 0.19);
+    const totalConIva = neto + iva;
+    const clp = (n: number) => '$' + n.toLocaleString('es-CL');
+
     const orderBody = {
       status: 'processing',
       billing: {
@@ -100,7 +106,7 @@ export async function POST({ request, cookies }: APIContext) {
         phone: telefono,
         company: empresa || '',
       },
-      customer_note: `COTIZACIÓN - ${productos.map(p => `${p.name} x${p.cantidad} ($${p.precioUnitario.toLocaleString('es-CL')} c/u)`).join(', ')}${mensaje ? ' - Mensaje: ' + mensaje : ''}`,
+      customer_note: `COTIZACIÓN - ${productos.map(p => `${p.name} x${p.cantidad} ($${p.precioUnitario.toLocaleString('es-CL')} c/u)`).join(', ')} - Neto: ${clp(neto)} | IVA (19%): ${clp(iva)} | Total: ${clp(totalConIva)}${mensaje ? ' - Mensaje: ' + mensaje : ''}`,
       line_items: productos.map(p => ({
         product_id: p.id,
         quantity: p.cantidad,
