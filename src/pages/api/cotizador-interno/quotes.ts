@@ -23,6 +23,8 @@ export async function GET({ request, cookies }: APIContext) {
   }
   await recordRequest(ip);
 
+  const wpUrl = (import.meta.env.WORDPRESS_URL as string | undefined)?.replace(/\/$/, '') || '';
+
   const isCotizacion = (o: Record<string, unknown>): boolean => {
     const note = String(o.customer_note || '');
     return note.includes('COTIZACIÓN -') || note.includes('COTIZACION -');
@@ -37,6 +39,8 @@ export async function GET({ request, cookies }: APIContext) {
       status: o.status,
       date_created: o.date_created,
       total: o.total,
+      // Link al editor de la orden en WooCommerce (HPOS, default moderno).
+      editUrl: wpUrl ? `${wpUrl}/wp-admin/admin.php?page=wc-orders&action=edit&id=${o.id}` : '',
       customer: {
         name: `${billing.first_name || ''} ${billing.last_name || ''}`.trim(),
         email: billing.email || '',

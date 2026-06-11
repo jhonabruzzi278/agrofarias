@@ -123,29 +123,101 @@
         </div>
 
         <!-- RECEIVED QUOTES TAB -->
-        <div v-show="tab==='recibidas'">
-          <div class="flex items-center justify-between mb-4">
+        <div v-show="tab==='recibidas'" class="space-y-5">
+          <div class="flex items-center justify-between">
             <h2 class="text-lg font-semibold text-gray-700">Cotizaciones recibidas</h2>
-            <button @click="refreshQ" :disabled="lQ" class="text-sm bg-white border border-gray-300 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition cursor-pointer">↻ Actualizar</button>
+            <button @click="refreshQ" :disabled="lQ" class="text-sm bg-white border border-gray-300 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition cursor-pointer disabled:opacity-50 flex items-center gap-1.5">
+              <span :class="lQ && 'animate-spin'">↻</span> {{ lQ ? 'Actualizando...' : 'Actualizar' }}
+            </button>
           </div>
-          <div v-if="allQ.length === 0" class="bg-white rounded-xl border border-gray-200 p-12 text-center text-gray-400 text-sm">No hay cotizaciones todavía.</div>
-          <div v-else class="space-y-4">
-            <div v-for="q in allQ" :key="q.id" class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-              <div class="flex items-center justify-between p-4 bg-gray-50 border-b border-gray-200">
-                <div class="flex items-center gap-3">
-                  <span class="font-bold text-gray-800 text-sm">#{{ q.number }}</span>
-                  <span :class="{'bg-blue-100 text-blue-700': q.status==='processing', 'bg-green-100 text-green-700': q.status==='completed', 'bg-yellow-100 text-yellow-700': q.status==='pending', 'bg-orange-100 text-orange-700': q.status==='on-hold', 'bg-red-100 text-red-700': q.status==='cancelled'}" class="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">{{ sl(q.status) }}</span>
-                  <span class="text-xs text-gray-400">{{ fd(q.date_created) }}</span>
-                </div>
-                <span class="text-lg font-bold text-green-700">{{ fp(Number(q.total)) }}</span>
+
+          <div v-if="allQ.length === 0 && !lQ" class="bg-white rounded-xl border border-gray-200 p-12 text-center text-gray-400 text-sm">No hay cotizaciones todavía.</div>
+
+          <template v-else>
+            <!-- MÉTRICAS -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              <div class="bg-white rounded-xl border border-gray-200 p-4">
+                <p class="text-xs text-gray-400 uppercase tracking-wide">Cotizaciones</p>
+                <p class="text-2xl font-bold text-gray-800 mt-1">{{ mTotal }}</p>
               </div>
-              <div class="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div><p class="text-xs text-gray-400 uppercase mb-1">Cliente</p><p class="text-sm font-medium text-gray-800">{{ q.customer.name || '-' }}</p><p class="text-xs text-gray-500">{{ q.customer.email }}</p><p class="text-xs text-gray-500">{{ q.customer.phone }}</p><p v-if="q.customer.company" class="text-xs text-gray-400">{{ q.customer.company }}</p></div>
-                <div><p class="text-xs text-gray-400 uppercase mb-1">Productos</p><ul class="space-y-1"><li v-for="(p, pi) in q.products" :key="pi" class="text-sm text-gray-700 flex justify-between"><span>{{ p.quantity }}x {{ p.name }}</span><span class="text-gray-500 ml-2">{{ fp(Number(p.total)) }}</span></li></ul></div>
-                <div v-if="q.message"><p class="text-xs text-gray-400 uppercase mb-1">Mensaje</p><p class="text-xs text-gray-500 leading-relaxed line-clamp-2">{{ q.message }}</p></div>
+              <div class="bg-white rounded-xl border border-gray-200 p-4">
+                <p class="text-xs text-gray-400 uppercase tracking-wide">Valor total</p>
+                <p class="text-2xl font-bold text-green-700 mt-1">{{ fp(mValor) }}</p>
+              </div>
+              <div class="bg-white rounded-xl border border-gray-200 p-4">
+                <p class="text-xs text-gray-400 uppercase tracking-wide">Ticket promedio</p>
+                <p class="text-2xl font-bold text-gray-800 mt-1">{{ fp(mPromedio) }}</p>
+              </div>
+              <div class="bg-white rounded-xl border border-gray-200 p-4">
+                <p class="text-xs text-gray-400 uppercase tracking-wide">Productos</p>
+                <p class="text-2xl font-bold text-gray-800 mt-1">{{ mProductos }}</p>
               </div>
             </div>
-          </div>
+
+            <!-- FILTROS -->
+            <div class="flex flex-col sm:flex-row gap-3">
+              <div class="relative flex-1">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">🔍</span>
+                <input v-model="qSearch" type="text" placeholder="Buscar por cliente, email, empresa o #..." class="w-full pl-9 pr-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none" />
+              </div>
+              <select v-model="qStatus" class="px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none">
+                <option value="">Todos los estados ({{ allQ.length }})</option>
+                <option v-for="s in availableStatuses" :key="s" :value="s">{{ sl(s) }} ({{ statusCounts[s] }})</option>
+              </select>
+            </div>
+
+            <!-- LISTA -->
+            <div v-if="filteredQuotes.length === 0" class="bg-white rounded-xl border border-gray-200 p-10 text-center text-gray-400 text-sm">Ninguna cotización coincide con el filtro.</div>
+            <div v-else class="space-y-4">
+              <div v-for="q in filteredQuotes" :key="q.id" class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition">
+                <div class="flex items-center justify-between p-4 bg-gray-50 border-b border-gray-200">
+                  <div class="flex items-center gap-3 flex-wrap">
+                    <span class="font-bold text-gray-800 text-sm">#{{ q.number }}</span>
+                    <span :class="statusClass(q.status)" class="px-2 py-0.5 rounded-full text-xs font-medium">{{ sl(q.status) }}</span>
+                    <span class="text-xs text-gray-400">{{ fd(q.date_created) }}</span>
+                  </div>
+                  <span class="text-lg font-bold text-green-700">{{ fp(Number(q.total)) }}</span>
+                </div>
+                <div class="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <p class="text-xs text-gray-400 uppercase mb-1">Cliente</p>
+                    <p class="text-sm font-medium text-gray-800">{{ q.customer.name || '-' }}</p>
+                    <p class="text-xs text-gray-500 break-all">{{ q.customer.email }}</p>
+                    <p class="text-xs text-gray-500">{{ q.customer.phone }}</p>
+                    <p v-if="q.customer.company" class="text-xs text-gray-400">{{ q.customer.company }}</p>
+                  </div>
+                  <div>
+                    <p class="text-xs text-gray-400 uppercase mb-1">Productos</p>
+                    <ul class="space-y-1">
+                      <li v-for="(p, pi) in q.products" :key="pi" class="text-sm text-gray-700 flex justify-between gap-2">
+                        <span class="truncate">{{ p.quantity }}x {{ p.name }}</span>
+                        <span class="text-gray-500 shrink-0">{{ fp(Number(p.total)) }}</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div v-if="q.message">
+                    <p class="text-xs text-gray-400 uppercase mb-1">Mensaje</p>
+                    <p class="text-xs text-gray-500 leading-relaxed line-clamp-3">{{ q.message }}</p>
+                  </div>
+                </div>
+                <!-- ACCIONES RÁPIDAS -->
+                <div class="flex flex-wrap gap-2 px-4 pb-4">
+                  <a v-if="waLink(q.customer.phone)" :href="waLink(q.customer.phone)" target="_blank" rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-green-50 text-green-700 hover:bg-green-100 transition no-underline">
+                    💬 WhatsApp
+                  </a>
+                  <button v-if="q.customer.email" @click="copyEmail(q)"
+                    class="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition cursor-pointer border-none">
+                    {{ copiedId === q.id ? '✓ Copiado' : '✉ Copiar email' }}
+                  </button>
+                  <a v-if="q.editUrl" :href="q.editUrl" target="_blank" rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition no-underline">
+                    ↗ Ver en WooCommerce
+                  </a>
+                </div>
+              </div>
+            </div>
+          </template>
         </div>
       </div>
     </div>
@@ -176,6 +248,11 @@ const msg = ref<{ ok: boolean; text: string } | null>(null)
 const lQ = ref(false)
 const searching = ref(false)
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
+
+// --- Filtros y métricas del dashboard de cotizaciones recibidas ---
+const qSearch = ref('')
+const qStatus = ref('')
+const copiedId = ref<number | null>(null)
 
 async function loadQuotes(): Promise<boolean> {
   // Devuelve true si la sesión es válida (200), false si 401.
@@ -237,6 +314,60 @@ watch(search, (v) => doSearch(v))
 
 const total = computed(() => items.value.reduce((s, i) => s + i.q * i.u, 0))
 const tProd = computed(() => items.value.reduce((s, i) => s + i.q, 0))
+
+// Conteo por estado sobre TODAS las cotizaciones (para el selector).
+const statusCounts = computed<Record<string, number>>(() => {
+  const acc: Record<string, number> = {}
+  for (const q of allQ.value) acc[q.status] = (acc[q.status] || 0) + 1
+  return acc
+})
+const availableStatuses = computed(() => Object.keys(statusCounts.value).sort())
+
+// Lista filtrada por texto (cliente/email/empresa/#) y estado.
+const filteredQuotes = computed(() => {
+  const term = qSearch.value.trim().toLowerCase()
+  return allQ.value.filter((q) => {
+    if (qStatus.value && q.status !== qStatus.value) return false
+    if (!term) return true
+    const hay = [
+      q.customer?.name, q.customer?.email, q.customer?.company,
+      String(q.number), String(q.id),
+    ].filter(Boolean).join(' ').toLowerCase()
+    return hay.includes(term)
+  })
+})
+
+// Métricas sobre el conjunto filtrado (consistentes con lo que se ve).
+const mTotal = computed(() => filteredQuotes.value.length)
+const mValor = computed(() => filteredQuotes.value.reduce((s, q) => s + (Number(q.total) || 0), 0))
+const mPromedio = computed(() => (mTotal.value ? Math.round(mValor.value / mTotal.value) : 0))
+const mProductos = computed(() =>
+  filteredQuotes.value.reduce((s, q) => s + (q.products?.reduce((a: number, p: any) => a + (Number(p.quantity) || 0), 0) || 0), 0),
+)
+
+// Acciones rápidas
+function waLink(phone?: string): string {
+  const digits = String(phone || '').replace(/\D/g, '')
+  return digits.length >= 8 ? `https://wa.me/${digits}` : ''
+}
+async function copyEmail(q: any) {
+  if (!q.customer?.email) return
+  try {
+    await navigator.clipboard.writeText(q.customer.email)
+    copiedId.value = q.id
+    setTimeout(() => { if (copiedId.value === q.id) copiedId.value = null }, 1800)
+  } catch {}
+}
+// Color del badge según estado (clases estáticas para que Tailwind las detecte).
+function statusClass(s: string): string {
+  return ({
+    processing: 'bg-blue-100 text-blue-700',
+    completed: 'bg-green-100 text-green-700',
+    pending: 'bg-yellow-100 text-yellow-700',
+    'on-hold': 'bg-orange-100 text-orange-700',
+    cancelled: 'bg-red-100 text-red-700',
+  } as Record<string, string>)[s] || 'bg-gray-100 text-gray-600'
+}
 
 const fp = (n: number) => n === 0 ? '$0' : '$' + n.toLocaleString('es-CL')
 const fd = (d: string) => new Date(d).toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: 'numeric' })
