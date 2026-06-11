@@ -7,6 +7,7 @@ import ProductCard from '../../components/ProductCard.vue';
 import Footer from '../../components/Footer.vue';
 import { fetchProductoBySlug, fetchProductosPorCategoria, fetchCategorias } from '../../lib/woocommerce';
 import { sanitizeHTML } from '../../lib/html-sanitizer';
+import { FICHAS_TECNICAS } from '../../lib/fichas-tecnicas';
 import type { ProductoWC } from '../../lib/types';
 
 export const prerender = false;
@@ -50,7 +51,8 @@ const atributos = producto.attributes || [];
 // {url} o nada. El botón solo aparece si hay una URL http(s) válida.
 function resolveFichaUrl(p: ProductoWC): string {
   const fromMeta = p.meta_data?.find(m => m.key === 'ficha_tecnica' || m.key === '_ficha_tecnica')?.value;
-  const raw: unknown = p.acf?.ficha_tecnica ?? fromMeta;
+  // Prioridad: campo del producto en WooCommerce > mapa local (fallback).
+  const raw: unknown = p.acf?.ficha_tecnica ?? fromMeta ?? FICHAS_TECNICAS[p.slug];
   let url = '';
   if (typeof raw === 'string') url = raw;
   else if (raw && typeof raw === 'object' && typeof (raw as { url?: unknown }).url === 'string') url = (raw as { url: string }).url;
