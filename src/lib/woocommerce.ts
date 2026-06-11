@@ -1,4 +1,5 @@
 import type { ProductoWC, CategoriaWC, SolicitudCotizacion } from './types'
+import { getRedis } from './kv'
 
 const WP_URL = import.meta.env.WORDPRESS_URL
 const WC_KEY = import.meta.env.WC_CONSUMER_KEY
@@ -32,6 +33,28 @@ function setCache(key: string, data: unknown): void {
   cache.set(key, { data, expiresAt: Date.now() + CACHE_TTL })
 }
 
+// --- Caché L2 compartido (Upstash KV) ---
+// L1 = memoria por-instancia (rápida pero se pierde en cold starts).
+// L2 = Upstash, compartido entre todas las instancias → evita re-pedir todo el
+// catálogo a WooCommerce en cada arranque en frío.
+const KV_TTL_SECONDS = 600 // 10 min
+const KV_MAX_BYTES = 1_000_000 // no cachear payloads enormes en KV
+
+async function kvGet<T>(key: string): Promise<T | null> {
+  const r = getRedis()
+  if (!r) return null
+  try { return (await r.get<T>(key)) ?? null } catch { return null }
+}
+
+async function kvSet(key: string, data: unknown): Promise<void> {
+  const r = getRedis()
+  if (!r) return
+  try {
+    if (JSON.stringify(data).length > KV_MAX_BYTES) return
+    await r.set(key, data, { ex: KV_TTL_SECONDS })
+  } catch { /* noop: el caché es best-effort */ }
+}
+
 function getFetchHeaders(): HeadersInit {
   return {
     'Authorization': 'Basic ' + btoa(`${WC_KEY}:${WC_SECRET}`),
@@ -58,6 +81,13 @@ export async function fetchAllProductos(params?: { categoria?: string }): Promis
   const cached = getCached<ProductoWC[]>(cacheKey)
   if (cached) return cached
 
+  // L2: catálogo compartido en KV (rápido, evita recorrer toda la API de WC).
+  const kvCached = await kvGet<ProductoWC[]>(`wc:${cacheKey}`)
+  if (kvCached && kvCached.length) {
+    setCache(cacheKey, kvCached)
+    return kvCached
+  }
+
   const allProducts: ProductoWC[] = []
   let page = 1
   const perPage = 100
@@ -69,6 +99,7 @@ export async function fetchAllProductos(params?: { categoria?: string }): Promis
     page++
   }
   setCache(cacheKey, allProducts)
+  await kvSet(`wc:${cacheKey}`, allProducts)
   return allProducts
 }
 
@@ -76,9 +107,16 @@ export async function fetchCategorias(): Promise<CategoriaWC[]> {
   const cached = getCached<CategoriaWC[]>('categorias')
   if (cached) return cached
 
+  const kvCached = await kvGet<CategoriaWC[]>('wc:categorias')
+  if (kvCached && kvCached.length) {
+    setCache('categorias', kvCached)
+    return kvCached
+  }
+
   const url = `${WC_API}/products/categories?per_page=50`
   const data = await (await wcFetch(url)).json()
   setCache('categorias', data)
+  await kvSet('wc:categorias', data)
   return data
 }
 

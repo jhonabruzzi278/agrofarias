@@ -9,6 +9,12 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://agrofarias.cl',
   trailingSlash: 'never',
+  // Prefetch de links internos al pasar el mouse: arranca la carga del destino
+  // antes del click (tienda, paginación, productos) → navegación casi instantánea.
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: 'hover',
+  },
   adapter: vercel({
     webAnalytics: { enabled: false },
     isr: {
