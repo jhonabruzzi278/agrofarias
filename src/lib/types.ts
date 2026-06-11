@@ -9,12 +9,17 @@ export interface ProductoWC {
   categories: Array<{ id: number; name: string; slug: string }>
   tags: Array<{ id: number; name: string; slug: string }>
   attributes: Array<{ id: number; name: string; options: string[] }>
+  sku?: string
   acf?: {
     sku?: string
     unidad_medida?: string
     cultivo_aplicable?: string
     dosis_recomendada?: string
+    // Ficha técnica (PDF). ACF puede devolver string (URL), objeto {url} o id.
+    ficha_tecnica?: string | { url?: string } | number | null
   }
+  // Campos personalizados nativos de WooCommerce (fallback para la ficha).
+  meta_data?: Array<{ key: string; value: unknown }>
   stock_status: 'instock' | 'outofstock' | 'onbackorder'
   stock_quantity: number | null
 }

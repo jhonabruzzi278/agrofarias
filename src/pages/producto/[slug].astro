@@ -44,6 +44,19 @@ try {
 
 // Parse attributes for specs tab
 const atributos = producto.attributes || [];
+
+// Ficha técnica (PDF). Se busca en ACF `ficha_tecnica` y, como fallback, en los
+// custom fields nativos de WooCommerce (meta_data). Soporta string (URL), objeto
+// {url} o nada. El botón solo aparece si hay una URL http(s) válida.
+function resolveFichaUrl(p: ProductoWC): string {
+  const fromMeta = p.meta_data?.find(m => m.key === 'ficha_tecnica' || m.key === '_ficha_tecnica')?.value;
+  const raw: unknown = p.acf?.ficha_tecnica ?? fromMeta;
+  let url = '';
+  if (typeof raw === 'string') url = raw;
+  else if (raw && typeof raw === 'object' && typeof (raw as { url?: unknown }).url === 'string') url = (raw as { url: string }).url;
+  return /^https?:\/\//i.test(url) ? url : '';
+}
+const fichaUrl = resolveFichaUrl(producto);
 ---
 
 <Layout title={producto.name} description={cleanDesc} image={prodImage} canonical={prodCanonical} type="product">
@@ -131,7 +144,7 @@ const atributos = producto.attributes || [];
 
           <!-- CTA Box -->
           <div class="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
-            <div class="mb-4">
+            <div class="mb-4 flex flex-wrap items-center gap-3">
               <QuoteButton
                 client:only="vue"
                 productId={producto.id}
@@ -139,6 +152,18 @@ const atributos = producto.attributes || [];
                 productSlug={producto.slug}
                 productImage={producto.images[0]?.src}
               />
+              {fichaUrl && (
+                <a
+                  href={fichaUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-white text-[var(--theme-color)] text-sm font-medium rounded-lg border border-[var(--theme-color)] hover:bg-[var(--theme-color)]/5 transition-all duration-200"
+                  aria-label={`Descargar ficha técnica de ${producto.name} (PDF)`}
+                >
+                  <i class="fas fa-file-pdf text-xs" aria-hidden="true"></i>
+                  Descargar ficha técnica
+                </a>
+              )}
             </div>
             <div class="flex items-center gap-3 text-sm text-gray-500">
               <div class="w-8 h-8 rounded-full bg-[var(--theme-color)]/10 flex items-center justify-center flex-shrink-0">
