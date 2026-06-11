@@ -4,6 +4,7 @@ import type { APIContext } from 'astro';
 import { fetchOrders } from '../../../lib/woocommerce';
 import { checkRateLimit, recordRequest, getClientIP } from '../../../lib/security';
 import { SESSION_COOKIE, verifySession } from '../../../lib/session';
+import { getRedis, ESTADOS_KEY } from '../../../lib/kv';
 
 export async function GET({ request, cookies }: APIContext) {
   if (!(await verifySession(cookies.get(SESSION_COOKIE)?.value))) {
@@ -25,6 +26,13 @@ export async function GET({ request, cookies }: APIContext) {
 
   const wpUrl = (import.meta.env.WORDPRESS_URL as string | undefined)?.replace(/\/$/, '') || '';
 
+  // Estados INTERNOS (solo nuestros, no WooCommerce) guardados en Upstash.
+  const redis = getRedis();
+  let estados: Record<string, unknown> = {};
+  if (redis) {
+    try { estados = (await redis.hgetall(ESTADOS_KEY)) || {}; } catch (e) { console.warn('[quotes] No se pudo leer estados internos:', e); }
+  }
+
   const isCotizacion = (o: Record<string, unknown>): boolean => {
     const note = String(o.customer_note || '');
     return note.includes('COTIZACIÓN -') || note.includes('COTIZACION -');
@@ -33,10 +41,14 @@ export async function GET({ request, cookies }: APIContext) {
   const mapQuote = (o: Record<string, unknown>) => {
     const billing = (o.billing as Record<string, string>) || {};
     const items = (o.line_items as Array<Record<string, unknown>>) || [];
+    const wcStatus = String(o.status || 'pending');
+    const saved = estados[String(o.id)];
     return {
       id: o.id,
       number: o.number,
-      status: o.status,
+      status: wcStatus,
+      // Estado interno: el guardado en KV; si no hay, parte del estado WC.
+      internalStatus: typeof saved === 'string' && saved ? saved : wcStatus,
       date_created: o.date_created,
       total: o.total,
       // Link al editor de la orden en WooCommerce (HPOS, default moderno).

@@ -3,6 +3,7 @@ export const prerender = false;
 import type { APIContext } from 'astro';
 import { isValidPositiveInt } from '../../../lib/security';
 import { SESSION_COOKIE, verifySession } from '../../../lib/session';
+import { getRedis, ESTADOS_KEY } from '../../../lib/kv';
 
 const ALLOWED_STATUSES = new Set(['pending', 'processing', 'on-hold', 'completed', 'cancelled']);
 
@@ -30,31 +31,15 @@ export async function POST({ request, cookies }: APIContext) {
     return json({ error: 'Estado inválido' }, 400);
   }
 
-  const wpUrl = import.meta.env.WORDPRESS_URL as string | undefined;
-  const wcKey = import.meta.env.WC_CONSUMER_KEY as string | undefined;
-  const wcSecret = import.meta.env.WC_CONSUMER_SECRET as string | undefined;
-  if (!wpUrl || !wcKey || !wcSecret) {
-    return json({ error: 'Servicio no disponible' }, 503);
-  }
+  // Estado SOLO interno: se guarda en Upstash, NO se modifica la orden en WooCommerce.
+  const redis = getRedis();
+  if (!redis) return json({ error: 'Almacenamiento no disponible' }, 503);
 
   try {
-    const auth = btoa(`${wcKey}:${wcSecret}`);
-    const res = await fetch(`${wpUrl}/wp-json/wc/v3/orders/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Basic ${auth}` },
-      body: JSON.stringify({ status }),
-    });
-
-    if (res.ok) {
-      const order = await res.json().catch(() => ({}));
-      return json({ success: true, id: order.id ?? id, status: order.status ?? status }, 200);
-    }
-
-    // El detalle de WooCommerce queda en logs; al cliente, mensaje genérico.
-    console.error('[update-status] WooCommerce error:', res.status, await res.text().catch(() => ''));
-    return json({ error: 'No se pudo actualizar el estado.' }, 502);
+    await redis.hset(ESTADOS_KEY, { [String(id)]: status });
+    return json({ success: true, id, status }, 200);
   } catch (e) {
-    console.error('[update-status] Unhandled error:', e);
-    return json({ error: 'Error interno' }, 500);
+    console.error('[update-status] Error guardando en KV:', e);
+    return json({ error: 'No se pudo guardar el estado.' }, 502);
   }
 }

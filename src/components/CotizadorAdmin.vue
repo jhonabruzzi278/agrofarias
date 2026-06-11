@@ -175,7 +175,7 @@
                 <div class="flex items-center justify-between p-4 bg-gray-50 border-b border-gray-200">
                   <div class="flex items-center gap-3 flex-wrap">
                     <span class="font-bold text-gray-800 text-sm">#{{ q.number }}</span>
-                    <span :class="statusClass(q.status)" class="px-2 py-0.5 rounded-full text-xs font-medium">{{ sl(q.status) }}</span>
+                    <span :class="statusClass(q.internalStatus)" class="px-2 py-0.5 rounded-full text-xs font-medium">{{ sl(q.internalStatus) }}</span>
                     <span class="text-xs text-gray-400">{{ fd(q.date_created) }}</span>
                   </div>
                   <div class="text-right">
@@ -220,8 +220,8 @@
                     ↗ Ver en WooCommerce
                   </a>
                   <div class="flex items-center gap-1.5 ml-auto">
-                    <label class="text-xs text-gray-400">Estado:</label>
-                    <select :value="q.status" @change="updateStatus(q, ($event.target as HTMLSelectElement).value)" :disabled="updatingId === q.id"
+                    <label class="text-xs text-gray-400">Estado interno:</label>
+                    <select :value="q.internalStatus" @change="updateStatus(q, ($event.target as HTMLSelectElement).value)" :disabled="updatingId === q.id"
                       class="text-xs px-2 py-1.5 border border-gray-300 rounded-lg bg-white cursor-pointer focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none disabled:opacity-50">
                       <option v-for="s in STATUSES" :key="s" :value="s">{{ sl(s) }}</option>
                     </select>
@@ -328,19 +328,19 @@ watch(search, (v) => doSearch(v))
 const total = computed(() => items.value.reduce((s, i) => s + i.q * i.u, 0))
 const tProd = computed(() => items.value.reduce((s, i) => s + i.q, 0))
 
-// Conteo por estado sobre TODAS las cotizaciones (para el selector).
+// Conteo por estado INTERNO sobre TODAS las cotizaciones (para el selector).
 const statusCounts = computed<Record<string, number>>(() => {
   const acc: Record<string, number> = {}
-  for (const q of allQ.value) acc[q.status] = (acc[q.status] || 0) + 1
+  for (const q of allQ.value) acc[q.internalStatus] = (acc[q.internalStatus] || 0) + 1
   return acc
 })
 const availableStatuses = computed(() => Object.keys(statusCounts.value).sort())
 
-// Lista filtrada por texto (cliente/email/empresa/#) y estado.
+// Lista filtrada por texto (cliente/email/empresa/#) y estado interno.
 const filteredQuotes = computed(() => {
   const term = qSearch.value.trim().toLowerCase()
   return allQ.value.filter((q) => {
-    if (qStatus.value && q.status !== qStatus.value) return false
+    if (qStatus.value && q.internalStatus !== qStatus.value) return false
     if (!term) return true
     const hay = [
       q.customer?.name, q.customer?.email, q.customer?.company,
@@ -370,13 +370,14 @@ const totalConIvaOf = (net: unknown) => (Number(net) || 0) + ivaOf(net)
 const STATUSES = ['pending', 'processing', 'on-hold', 'completed', 'cancelled']
 const updatingId = ref<number | null>(null)
 async function updateStatus(q: any, status: string) {
-  if (!status || status === q.status) return
+  if (!status || status === q.internalStatus) return
   updatingId.value = q.id
   try {
     const r = await fetch('/api/cotizador-interno/update-status', {
       method: 'POST', headers: H, body: JSON.stringify({ id: q.id, status }),
     })
-    if (r.ok) q.status = status // muta el objeto en allQ (reactivo) → recalcula métricas/conteos
+    // Estado SOLO interno (Upstash): no se toca WooCommerce.
+    if (r.ok) q.internalStatus = status // muta el objeto en allQ (reactivo) → recalcula conteos/filtro
   } catch {} finally {
     updatingId.value = null
   }
