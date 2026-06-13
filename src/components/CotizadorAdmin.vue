@@ -64,7 +64,7 @@
             <div v-if="search.trim() && !searching" class="space-y-2 overflow-y-auto max-h-[calc(100vh-320px)]">
               <div v-if="searchResults.length === 0" class="text-center text-gray-400 py-10 text-sm">No se encontraron productos.</div>
               <div v-for="p in searchResults" :key="p.id" class="flex items-center gap-3 bg-white rounded-lg border border-gray-200 p-3 shadow-sm hover:shadow transition cursor-pointer">
-                <img :src="p.image" :alt="p.name" class="w-12 h-12 rounded-lg object-cover bg-gray-100 shrink-0" />
+                <img :src="p.image" :alt="p.name" class="w-12 h-12 rounded-lg object-cover bg-gray-100 shrink-0" loading="lazy" decoding="async" />
                 <div class="flex-1 min-w-0"><p class="text-sm font-medium text-gray-800 truncate">{{ p.name }}</p></div>
                 <button v-if="!hp(p.id)" @click="ap(p)" class="shrink-0 bg-green-600 hover:bg-green-700 text-white text-xs font-medium px-3 py-1.5 rounded-lg transition cursor-pointer border-none">+ Agregar</button>
                 <span v-else class="shrink-0 text-xs text-gray-400 bg-gray-100 px-3 py-1.5 rounded-lg">Agregado</span>
@@ -82,7 +82,7 @@
                     <thead><tr class="border-b border-gray-200 text-left text-gray-500 text-xs uppercase"><th class="pb-2 font-medium">Producto</th><th class="pb-2 font-medium text-center w-20">Cant.</th><th class="pb-2 font-medium text-right w-32">P. Unitario</th><th class="pb-2 font-medium text-right w-32">Subtotal</th><th class="pb-2 w-10"></th></tr></thead>
                     <tbody>
                       <tr v-for="(item,i) in items" :key="item.d.id" class="border-b border-gray-100">
-                        <td class="py-2 flex items-center gap-2"><img :src="item.d.image" :alt="item.d.name" class="w-8 h-8 rounded object-cover bg-gray-100" /><span class="truncate">{{ item.d.name }}</span></td>
+                        <td class="py-2 flex items-center gap-2"><img :src="item.d.image" :alt="item.d.name" class="w-8 h-8 rounded object-cover bg-gray-100" loading="lazy" decoding="async" /><span class="truncate">{{ item.d.name }}</span></td>
                         <td class="py-2 text-center"><input type="number" :value="item.q" @input="cq(i, Number($event.target.value))" class="w-16 text-center px-2 py-1 border border-gray-300 rounded text-sm" min="1" max="999" /></td>
                         <td class="py-2 text-right"><div class="relative inline-block"><span class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-sm">$</span><input type="number" :value="item.u" @input="cu(i, Number($event.target.value))" class="w-28 text-right px-2 py-1 pl-5 border border-gray-300 rounded text-sm" min="0" /></div></td>
                         <td class="py-2 text-right font-medium text-gray-800">{{ fp(item.q * item.u) }}</td>

@@ -191,6 +191,12 @@
       "subtask": true
     }
   },
+  "mcp": {
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["chrome-devtools-mcp@latest"]
+    }
+  },
   "permission": {
     "mcp_*": "ask"
   }

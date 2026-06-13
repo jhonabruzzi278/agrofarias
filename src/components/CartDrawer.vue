@@ -61,7 +61,7 @@
         <div v-else class="flex-1 overflow-y-auto px-4 py-3 space-y-3">
           <div v-for="item in items" :key="item.id" class="flex gap-3 bg-gray-50 rounded-xl p-3">
             <a :href="`/producto/${item.slug}`" class="w-16 h-16 rounded-lg bg-white border border-gray-100 overflow-hidden shrink-0">
-              <img v-if="item.image" :src="item.image" :alt="item.name" class="w-full h-full object-contain p-1" />
+              <img v-if="item.image" :src="item.image" :alt="item.name" class="w-full h-full object-contain p-1" loading="lazy" decoding="async" />
               <div v-else class="w-full h-full flex items-center justify-center text-gray-300"><i class="fas fa-image"></i></div>
             </a>
             <div class="flex-1 min-w-0 flex flex-col justify-between">

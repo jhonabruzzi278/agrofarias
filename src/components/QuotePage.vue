@@ -34,7 +34,7 @@
           <div v-for="item in items" :key="item.id" class="flex items-center gap-4 p-4 hover:bg-gray-50/50 transition-colors group">
             <!-- Product image -->
             <a :href="`/producto/${item.slug}`" class="flex-shrink-0">
-              <img v-if="item.image" :src="item.image" :alt="item.name" class="w-20 h-20 object-cover rounded-lg bg-gray-100" loading="lazy" />
+              <img v-if="item.image" :src="item.image" :alt="item.name" class="w-20 h-20 object-cover rounded-lg bg-gray-100" loading="lazy" decoding="async" />
               <div v-else class="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center">
                 <i class="fas fa-image text-gray-300 text-xl"></i>
               </div>
