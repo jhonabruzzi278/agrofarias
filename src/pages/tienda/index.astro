@@ -17,6 +17,8 @@ const stockParam = url.searchParams.get('stock') || '';
 const viewParam = url.searchParams.get('view') || 'grid';
 const pageParam = parseInt(url.searchParams.get('page') || '1', 10);
 
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=120, stale-while-revalidate=600');
+
 const PRODUCTS_PER_PAGE = 24;
 
 let productos: ProductoWC[] = [];

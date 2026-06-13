@@ -68,6 +68,13 @@ async function wcFetch(url: string): Promise<Response> {
   return res
 }
 
+async function wcFetchWithHeaders(url: string): Promise<{ res: Response; totalPages: number }> {
+  const res = await fetch(url, { headers: getFetchHeaders() })
+  if (!res.ok) throw new Error(`WooCommerce API error: ${res.status} ${res.statusText}`)
+  const totalPages = parseInt(res.headers.get('X-WP-TotalPages') || '1', 10)
+  return { res, totalPages }
+}
+
 export async function fetchProductos(params?: { categoria?: string; perPage?: number; page?: number }): Promise<ProductoWC[]> {
   const page = params?.page || 1
   const perPage = Math.min(params?.perPage || 100, 100)
@@ -81,23 +88,36 @@ export async function fetchAllProductos(params?: { categoria?: string }): Promis
   const cached = getCached<ProductoWC[]>(cacheKey)
   if (cached) return cached
 
-  // L2: catálogo compartido en KV (rápido, evita recorrer toda la API de WC).
   const kvCached = await kvGet<ProductoWC[]>(`wc:${cacheKey}`)
   if (kvCached && kvCached.length) {
     setCache(cacheKey, kvCached)
     return kvCached
   }
 
-  const allProducts: ProductoWC[] = []
-  let page = 1
   const perPage = 100
-  while (true) {
-    const batch = await fetchProductos({ ...params, perPage, page })
-    if (batch.length === 0) break
-    allProducts.push(...batch)
-    if (batch.length < perPage) break
-    page++
+  let baseUrl = `${WC_API}/products?per_page=${perPage}&status=publish`
+  if (params?.categoria) baseUrl += `&category=${params.categoria}`
+
+  const { res: firstRes, totalPages } = await wcFetchWithHeaders(`${baseUrl}&page=1`)
+  const firstPage: ProductoWC[] = await firstRes.json()
+  if (firstPage.length === 0) {
+    setCache(cacheKey, [])
+    return []
   }
+
+  if (totalPages <= 1) {
+    setCache(cacheKey, firstPage)
+    await kvSet(`wc:${cacheKey}`, firstPage)
+    return firstPage
+  }
+
+  const remainingPages = await Promise.all(
+    Array.from({ length: totalPages - 1 }, (_, i) => i + 2).map(page =>
+      fetchProductos({ ...params, perPage, page }).catch(() => [] as ProductoWC[])
+    )
+  )
+
+  const allProducts = [firstPage, ...remainingPages].flat()
   setCache(cacheKey, allProducts)
   await kvSet(`wc:${cacheKey}`, allProducts)
   return allProducts
