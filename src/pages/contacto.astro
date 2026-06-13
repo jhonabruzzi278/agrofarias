@@ -230,16 +230,16 @@ document.addEventListener('astro:page-load', function() {
 
       if (res.ok) {
         status.className = 'bg-green-50 border border-green-200 text-green-700 px-5 py-3 rounded-xl text-sm font-medium';
-        status.innerHTML = '<i class="fas fa-check-circle mr-2"></i>¡Mensaje enviado! Te responderemos a la brevedad.';
+        status.textContent = '✓ ¡Mensaje enviado! Te responderemos a la brevedad.';
         form.reset();
         if (countEl) countEl.textContent = '0';
       } else {
         status.className = 'bg-red-50 border border-red-200 text-red-600 px-5 py-3 rounded-xl text-sm font-medium';
-        status.innerHTML = '<i class="fas fa-exclamation-circle mr-2"></i>' + (data.error || 'Error al enviar. Intenta nuevamente.');
+        status.textContent = '⚠ ' + (data.error || 'Error al enviar. Intenta nuevamente.');
       }
     } catch (_) {
       status.className = 'bg-red-50 border border-red-200 text-red-600 px-5 py-3 rounded-xl text-sm font-medium';
-      status.innerHTML = '<i class="fas fa-exclamation-circle mr-2"></i>Error de conexión. Verifica tu internet.';
+      status.textContent = '⚠ Error de conexión. Verifica tu internet.';
     } finally {
       btn.innerHTML = originalText;
       btn.disabled = false;

@@ -1,7 +1,7 @@
 export const prerender = false;
 
 import type { APIContext } from 'astro';
-import { checkRateLimit, recordRequest, getClientIP } from '../../../lib/security';
+import { checkRateLimit, getClientIP } from '../../../lib/security';
 import { SESSION_COOKIE, verifySession } from '../../../lib/session';
 
 export async function GET({ request, cookies }: APIContext) {
@@ -20,7 +20,6 @@ export async function GET({ request, cookies }: APIContext) {
       headers: { 'Content-Type': 'application/json' },
     });
   }
-  await recordRequest(ip);
 
   try {
     const url = new URL(request.url);
@@ -37,7 +36,7 @@ export async function GET({ request, cookies }: APIContext) {
       });
     }
 
-    const auth = btoa(`${wcKey}:${wcSecret}`);
+    const auth = Buffer.from(`${wcKey}:${wcSecret}`).toString('base64');
     const apiUrl = search
       ? `${wpUrl}/wp-json/wc/v3/products?search=${encodeURIComponent(search)}&per_page=20&status=publish`
       : `${wpUrl}/wp-json/wc/v3/products?per_page=100&page=1&status=publish`;
@@ -48,8 +47,8 @@ export async function GET({ request, cookies }: APIContext) {
 
     if (!res.ok) {
       console.error('[productos] WooCommerce error:', res.status);
-      return new Response(JSON.stringify([]), {
-        status: 200,
+      return new Response(JSON.stringify({ error: 'Error al buscar productos' }), {
+        status: 502,
         headers: { 'Content-Type': 'application/json' },
       });
     }
@@ -62,14 +61,14 @@ export async function GET({ request, cookies }: APIContext) {
       image: ((p.images as Array<{ src: string }>)?.[0]?.src) || '',
     }));
 
-    return new Response(JSON.stringify(data), {
+    return new Response(JSON.stringify({ success: true, data }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (e) {
     console.error('[productos] Error:', e);
-    return new Response(JSON.stringify([]), {
-      status: 200,
+    return new Response(JSON.stringify({ error: 'Error interno' }), {
+      status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
   }

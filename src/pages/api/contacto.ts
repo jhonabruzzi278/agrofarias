@@ -2,7 +2,6 @@ export const prerender = false;
 
 import {
   checkRateLimit,
-  recordRequest,
   getClientIP,
   sanitize,
   sanitizePhone,
@@ -27,7 +26,6 @@ export async function POST({ request }: { request: Request }) {
     if (!allowed) {
       return errorResponse('Demasiadas solicitudes. Intenta en 1 minuto.', 429);
     }
-    await recordRequest(ip);
 
     let data: Record<string, unknown>;
     try {

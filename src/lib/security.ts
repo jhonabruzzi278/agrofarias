@@ -36,9 +36,7 @@ export async function checkRateLimit(ip: string): Promise<{ allowed: boolean; re
   }
 }
 
-export async function recordRequest(_ip: string): Promise<void> {
-  // Upstash lo maneja automáticamente vía ratelimit.limit() en checkRateLimit()
-}
+
 
 export function getClientIP(request: Request): string {
   // En Vercel, `x-real-ip` lo fija la plataforma con la IP real del cliente
@@ -103,18 +101,20 @@ export function isValidNonEmptyString(input: unknown, maxLen = 200): boolean {
   return trimmed.length > 0 && trimmed.length <= maxLen
 }
 
+const API_HEADERS: Record<string, string> = {
+  'Content-Type': 'application/json',
+  'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+}
+
 export function errorResponse(error: string, status: number): Response {
-  return new Response(JSON.stringify({ error }), {
-    status,
-    headers: { 'Content-Type': 'application/json' },
-  })
+  return new Response(JSON.stringify({ error }), { status, headers: API_HEADERS })
 }
 
 export function successResponse(data: Record<string, unknown>, status = 200): Response {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { 'Content-Type': 'application/json' },
-  })
+  return new Response(JSON.stringify(data), { status, headers: API_HEADERS })
 }
 
 const ALLOWED_HOSTS = new Set(['agrofarias.cl', 'www.agrofarias.cl'])
@@ -124,7 +124,11 @@ export function validateOrigin(request: Request): boolean {
   const referer = request.headers.get('referer');
 
   const checkUrl = origin || referer;
-  if (!checkUrl) return false;
+  if (!checkUrl) {
+    const host = request.headers.get('host') || request.headers.get('x-forwarded-host');
+    if (host) return ALLOWED_HOSTS.has(host.replace(/:\d+$/, ''));
+    return false;
+  }
 
   try {
     const hostname = new URL(checkUrl).hostname;

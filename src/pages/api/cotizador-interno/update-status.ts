@@ -1,45 +1,73 @@
 export const prerender = false;
 
 import type { APIContext } from 'astro';
-import { isValidPositiveInt } from '../../../lib/security';
+import { isValidPositiveInt, checkRateLimit, getClientIP } from '../../../lib/security';
 import { SESSION_COOKIE, verifySession } from '../../../lib/session';
 import { getRedis, ESTADOS_KEY } from '../../../lib/kv';
 
 const ALLOWED_STATUSES = new Set(['pending', 'processing', 'on-hold', 'completed', 'cancelled']);
 
-function json(body: unknown, status: number): Response {
-  return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
-}
-
 export async function POST({ request, cookies }: APIContext) {
-  // Defensa en profundidad (además del middleware).
   if (!(await verifySession(cookies.get(SESSION_COOKIE)?.value))) {
-    return json({ error: 'No autorizado' }, 401);
+    return new Response(JSON.stringify({ error: 'No autorizado' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  const ip = getClientIP(request);
+  const { allowed } = await checkRateLimit(ip);
+  if (!allowed) {
+    return new Response(JSON.stringify({ error: 'Demasiadas solicitudes' }), {
+      status: 429,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
   let body: { id?: unknown; status?: unknown };
   try {
     body = await request.json();
   } catch {
-    return json({ error: 'Datos inválidos' }, 400);
+    return new Response(JSON.stringify({ error: 'Datos inválidos' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
   const id = body.id;
   const status = body.status;
-  if (!isValidPositiveInt(id)) return json({ error: 'ID inválido' }, 400);
+  if (!isValidPositiveInt(id)) {
+    return new Response(JSON.stringify({ error: 'ID inválido' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
   if (typeof status !== 'string' || !ALLOWED_STATUSES.has(status)) {
-    return json({ error: 'Estado inválido' }, 400);
+    return new Response(JSON.stringify({ error: 'Estado inválido' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
-  // Estado SOLO interno: se guarda en Upstash, NO se modifica la orden en WooCommerce.
   const redis = getRedis();
-  if (!redis) return json({ error: 'Almacenamiento no disponible' }, 503);
+  if (!redis) {
+    return new Response(JSON.stringify({ error: 'Almacenamiento no disponible' }), {
+      status: 503,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
 
   try {
     await redis.hset(ESTADOS_KEY, { [String(id)]: status });
-    return json({ success: true, id, status }, 200);
+    return new Response(JSON.stringify({ success: true, id, status }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
   } catch (e) {
     console.error('[update-status] Error guardando en KV:', e);
-    return json({ error: 'No se pudo guardar el estado.' }, 502);
+    return new Response(JSON.stringify({ error: 'No se pudo guardar el estado.' }), {
+      status: 502,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }

@@ -37,6 +37,7 @@
     "@types/sanitize-html": "^2.16.1",
     "@vitest/coverage-v8": "^4.1.7",
     "@vue/test-utils": "^2.4.10",
+    "ecc-universal": "^2.0.0",
     "happy-dom": "^20.9.0",
     "jsdom": "^29.1.1",
     "typescript": "^6.0.3",

@@ -2,7 +2,6 @@ export const prerender = false;
 
 import {
   checkRateLimit,
-  recordRequest,
   getClientIP,
   sanitize,
   sanitizePhone,
@@ -27,7 +26,6 @@ export async function POST({ request }: { request: Request }) {
     if (!allowed) {
       return errorResponse('Demasiadas solicitudes. Intenta en 1 minuto.', 429);
     }
-    await recordRequest(ip);
 
     let data: Record<string, unknown>;
     try {
@@ -87,7 +85,7 @@ export async function POST({ request }: { request: Request }) {
       return errorResponse('Servicio de cotización no disponible', 503)
     }
 
-    const auth = btoa(`${wcKey}:${wcSecret}`);
+    const auth = Buffer.from(`${wcKey}:${wcSecret}`).toString('base64');
 
     const nombreParts = nombre.trim().split(/\s+/)
     const orderBody = {
@@ -119,7 +117,7 @@ export async function POST({ request }: { request: Request }) {
 
     if (orderRes.ok) {
       const order = JSON.parse(orderText);
-      console.log(`[cotizar] Order created: ${order.id} for ${email}`)
+      console.log(`[cotizar] Order created: ${order.id}`);
       return successResponse({ success: true, id: order.id, via: 'woocommerce', orderNumber: order.number });
     }
 

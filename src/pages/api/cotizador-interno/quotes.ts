@@ -2,7 +2,7 @@ export const prerender = false;
 
 import type { APIContext } from 'astro';
 import { fetchOrders } from '../../../lib/woocommerce';
-import { checkRateLimit, recordRequest, getClientIP } from '../../../lib/security';
+import { checkRateLimit, getClientIP } from '../../../lib/security';
 import { SESSION_COOKIE, verifySession } from '../../../lib/session';
 import { getRedis, ESTADOS_KEY } from '../../../lib/kv';
 
@@ -22,7 +22,6 @@ export async function GET({ request, cookies }: APIContext) {
       headers: { 'Content-Type': 'application/json' },
     });
   }
-  await recordRequest(ip);
 
   const wpUrl = (import.meta.env.WORDPRESS_URL as string | undefined)?.replace(/\/$/, '') || '';
 
@@ -51,8 +50,7 @@ export async function GET({ request, cookies }: APIContext) {
       internalStatus: typeof saved === 'string' && saved ? saved : wcStatus,
       date_created: o.date_created,
       total: o.total,
-      // Link al editor de la orden en WooCommerce (HPOS, default moderno).
-      editUrl: wpUrl ? `${wpUrl}/wp-admin/admin.php?page=wc-orders&action=edit&id=${o.id}` : '',
+      editUrl: '',
       customer: {
         name: `${billing.first_name || ''} ${billing.last_name || ''}`.trim(),
         email: billing.email || '',
@@ -86,7 +84,7 @@ export async function GET({ request, cookies }: APIContext) {
       if (orders.length < PER_PAGE) break; // última página
     }
 
-    return new Response(JSON.stringify(quotes), {
+    return new Response(JSON.stringify({ success: true, data: quotes }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });

@@ -9,7 +9,6 @@ import {
   isValidPositiveInt,
   isValidNonEmptyString,
   checkRateLimit,
-  recordRequest,
   getClientIP,
 } from '../../lib/security';
 import { SESSION_COOKIE, verifySession } from '../../lib/session';
@@ -24,7 +23,6 @@ export async function POST({ request, cookies }: APIContext) {
       });
     }
 
-    // Rate limiting
     const ip = getClientIP(request);
     const { allowed } = await checkRateLimit(ip);
     if (!allowed) {
@@ -33,7 +31,6 @@ export async function POST({ request, cookies }: APIContext) {
         headers: { 'Content-Type': 'application/json' },
       });
     }
-    await recordRequest(ip);
 
     let body: Record<string, unknown>;
     try {
@@ -88,7 +85,7 @@ export async function POST({ request, cookies }: APIContext) {
       return new Response(JSON.stringify({ error: 'Servicio no disponible' }), { status: 503, headers: { 'Content-Type': 'application/json' } });
     }
 
-    const auth = btoa(`${wcKey}:${wcSecret}`);
+    const auth = Buffer.from(`${wcKey}:${wcSecret}`).toString('base64');
     const nombreParts = nombre.split(/\s+/);
 
     // IVA chileno (19%): los precios ingresados se tratan como NETO.
@@ -128,7 +125,7 @@ export async function POST({ request, cookies }: APIContext) {
 
     if (orderRes.ok) {
       const order = JSON.parse(orderText);
-      console.log(`[cotizador-interno] Order created: ${order.id} for ${email}`);
+      console.log(`[cotizador-interno] Order created: ${order.id}`);
       return new Response(JSON.stringify({ success: true, id: order.id, orderNumber: order.number }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },

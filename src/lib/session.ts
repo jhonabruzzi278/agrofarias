@@ -13,22 +13,16 @@ const SESSION_TTL_MS = 8 * 60 * 60 * 1000; // 8 horas
 const encoder = new TextEncoder();
 
 function getSecret(): string {
-  // Preferir un secreto dedicado; si no está, derivar del password como
-  // último recurso (sigue siendo server-side y nunca se expone al cliente).
-  return (
-    (import.meta.env.SESSION_SECRET as string | undefined) ||
-    (import.meta.env.COTIZADOR_PASSWORD as string | undefined) ||
-    ''
-  );
+  return (import.meta.env.SESSION_SECRET as string | undefined) || ''
 }
 
 function toBase64Url(input: string): string {
-  return btoa(input).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  return Buffer.from(input).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
 function fromBase64Url(input: string): string {
   const padded = input.replace(/-/g, '+').replace(/_/g, '/');
-  return atob(padded + '='.repeat((4 - (padded.length % 4)) % 4));
+  return Buffer.from(padded + '='.repeat((4 - (padded.length % 4)) % 4), 'base64').toString('utf-8');
 }
 
 function bytesToBinaryString(buffer: ArrayBuffer): string {
@@ -63,10 +57,9 @@ function timingSafeEqual(a: string, b: string): boolean {
 /** Valida la contraseña del admin en tiempo constante. */
 export async function verifyPassword(input: unknown): Promise<boolean> {
   const expected = import.meta.env.COTIZADOR_PASSWORD as string | undefined;
-  const secret = getSecret();
-  if (!expected || !secret || typeof input !== 'string') return false;
-  // Comparamos HMACs de longitud fija para no filtrar la longitud del password.
-  const [a, b] = await Promise.all([hmac(input, secret), hmac(expected, secret)]);
+  if (!expected || typeof input !== 'string') return false;
+  const hmacKey = getSecret() || expected;
+  const [a, b] = await Promise.all([hmac(input, hmacKey), hmac(expected, hmacKey)]);
   return timingSafeEqual(a, b);
 }
 

@@ -57,7 +57,7 @@ async function kvSet(key: string, data: unknown): Promise<void> {
 
 function getFetchHeaders(): HeadersInit {
   return {
-    'Authorization': 'Basic ' + btoa(`${WC_KEY}:${WC_SECRET}`),
+    'Authorization': 'Basic ' + Buffer.from(`${WC_KEY}:${WC_SECRET}`).toString('base64'),
     'Content-Type': 'application/json',
   }
 }

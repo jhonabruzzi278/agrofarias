@@ -1,0 +1,197 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "anthropic/claude-sonnet-4-5",
+  "small_model": "anthropic/claude-haiku-4-5",
+  "default_agent": "build",
+  "plugin": [
+    "ecc-universal"
+  ],
+  "skills": {
+    "paths": [
+      ".agents/skills",
+      "node_modules/ecc-universal/skills"
+    ]
+  },
+  "instructions": [
+    "node_modules/ecc-universal/.opencode/instructions/INSTRUCTIONS.md",
+    "node_modules/ecc-universal/skills/coding-standards/SKILL.md",
+    "node_modules/ecc-universal/skills/security-review/SKILL.md",
+    "node_modules/ecc-universal/skills/tdd-workflow/SKILL.md",
+    "node_modules/ecc-universal/skills/verification-loop/SKILL.md",
+    "node_modules/ecc-universal/skills/api-design/SKILL.md",
+    "node_modules/ecc-universal/skills/strategic-compact/SKILL.md",
+    ".agents/skills/accessibility/SKILL.md",
+    ".agents/skills/astro/SKILL.md",
+    ".agents/skills/frontend-design/SKILL.md",
+    ".agents/skills/nodejs-backend-patterns/SKILL.md",
+    ".agents/skills/nodejs-best-practices/SKILL.md",
+    ".agents/skills/seo/SKILL.md",
+    ".agents/skills/typescript-advanced-types/SKILL.md",
+    ".agents/skills/vue/SKILL.md",
+    ".agents/skills/vue-best-practices/SKILL.md",
+    ".agents/skills/vue-debug-guides/SKILL.md"
+  ],
+  "agent": {
+    "build": {
+      "description": "Primary coding agent for development work",
+      "mode": "primary",
+      "model": "anthropic/claude-sonnet-4-5",
+      "tools": {
+        "write": true,
+        "edit": true,
+        "bash": true,
+        "read": true,
+        "changed-files": true
+      }
+    },
+    "planner": {
+      "description": "Expert planning specialist for complex features and refactoring",
+      "mode": "subagent",
+      "model": "anthropic/claude-opus-4-5",
+      "prompt": "{file:node_modules/ecc-universal/.opencode/prompts/agents/planner.txt}",
+      "tools": {
+        "read": true,
+        "bash": true,
+        "write": false,
+        "edit": false
+      }
+    },
+    "architect": {
+      "description": "Software architecture specialist for system design, scalability, and technical decisions",
+      "mode": "subagent",
+      "model": "anthropic/claude-opus-4-5",
+      "prompt": "{file:node_modules/ecc-universal/.opencode/prompts/agents/architect.txt}",
+      "tools": {
+        "read": true,
+        "bash": true,
+        "write": false,
+        "edit": false
+      }
+    },
+    "code-reviewer": {
+      "description": "Expert code review specialist for Astro, Vue 3, and TypeScript. Reviews code for quality, security, and maintainability.",
+      "mode": "subagent",
+      "model": "anthropic/claude-opus-4-5",
+      "prompt": "{file:node_modules/ecc-universal/.opencode/prompts/agents/code-reviewer.txt}",
+      "tools": {
+        "read": true,
+        "bash": true,
+        "write": false,
+        "edit": false
+      }
+    },
+    "security-reviewer": {
+      "description": "Security vulnerability detection and remediation specialist. Use after writing code that handles user input, authentication, API endpoints, or sensitive data.",
+      "mode": "subagent",
+      "model": "anthropic/claude-opus-4-5",
+      "prompt": "{file:node_modules/ecc-universal/.opencode/prompts/agents/security-reviewer.txt}",
+      "tools": {
+        "read": true,
+        "bash": true,
+        "write": true,
+        "edit": true
+      }
+    },
+    "tdd-guide": {
+      "description": "Test-Driven Development specialist enforcing write-tests-first methodology with Vitest. Ensures 80%+ test coverage.",
+      "mode": "subagent",
+      "model": "anthropic/claude-opus-4-5",
+      "prompt": "{file:node_modules/ecc-universal/.opencode/prompts/agents/tdd-guide.txt}",
+      "tools": {
+        "read": true,
+        "write": true,
+        "edit": true,
+        "bash": true
+      }
+    },
+    "build-error-resolver": {
+      "description": "Build and TypeScript error resolution specialist for Astro, Vue, and TypeScript projects. Fixes build/type errors with minimal diffs.",
+      "mode": "subagent",
+      "model": "anthropic/claude-opus-4-5",
+      "prompt": "{file:node_modules/ecc-universal/.opencode/prompts/agents/build-error-resolver.txt}",
+      "tools": {
+        "read": true,
+        "write": true,
+        "edit": true,
+        "bash": true
+      }
+    },
+    "refactor-cleaner": {
+      "description": "Dead code cleanup and consolidation specialist. Use for removing unused components, composables, or duplicated logic.",
+      "mode": "subagent",
+      "model": "anthropic/claude-opus-4-5",
+      "prompt": "{file:node_modules/ecc-universal/.opencode/prompts/agents/refactor-cleaner.txt}",
+      "tools": {
+        "read": true,
+        "write": true,
+        "edit": true,
+        "bash": true
+      }
+    }
+  },
+  "command": {
+    "plan": {
+      "description": "Create a detailed implementation plan for complex features",
+      "template": "{file:node_modules/ecc-universal/.opencode/commands/plan.md}\n\n$ARGUMENTS",
+      "agent": "planner",
+      "subtask": true
+    },
+    "tdd": {
+      "description": "Enforce TDD workflow with Vitest and 80%+ test coverage",
+      "template": "{file:node_modules/ecc-universal/.opencode/commands/tdd.md}\n\n$ARGUMENTS",
+      "agent": "tdd-guide",
+      "subtask": true
+    },
+    "code-review": {
+      "description": "Review Astro/Vue/TypeScript code for quality, security, and maintainability",
+      "template": "{file:node_modules/ecc-universal/.opencode/commands/code-review.md}\n\n$ARGUMENTS",
+      "agent": "code-reviewer",
+      "subtask": true
+    },
+    "security": {
+      "description": "Run comprehensive security review on API endpoints, auth, and input handling",
+      "template": "{file:node_modules/ecc-universal/.opencode/commands/security.md}\n\n$ARGUMENTS",
+      "agent": "security-reviewer",
+      "subtask": true
+    },
+    "build-fix": {
+      "description": "Fix Astro/Vite/TypeScript build errors with minimal changes",
+      "template": "{file:node_modules/ecc-universal/.opencode/commands/build-fix.md}\n\n$ARGUMENTS",
+      "agent": "build-error-resolver",
+      "subtask": true
+    },
+    "refactor-clean": {
+      "description": "Remove dead code, unused Vue components, and consolidate duplicates",
+      "template": "{file:node_modules/ecc-universal/.opencode/commands/refactor-clean.md}\n\n$ARGUMENTS",
+      "agent": "refactor-cleaner",
+      "subtask": true
+    },
+    "verify": {
+      "description": "Run verification loop (pnpm test, astro check, build)",
+      "template": "{file:node_modules/ecc-universal/.opencode/commands/verify.md}\n\n$ARGUMENTS"
+    },
+    "checkpoint": {
+      "description": "Save verification state and progress",
+      "template": "{file:node_modules/ecc-universal/.opencode/commands/checkpoint.md}\n\n$ARGUMENTS"
+    },
+    "learn": {
+      "description": "Extract patterns and learnings from session",
+      "template": "{file:node_modules/ecc-universal/.opencode/commands/learn.md}\n\n$ARGUMENTS"
+    },
+    "test-coverage": {
+      "description": "Analyze Vitest test coverage and identify gaps",
+      "template": "{file:node_modules/ecc-universal/.opencode/commands/test-coverage.md}\n\n$ARGUMENTS",
+      "agent": "tdd-guide",
+      "subtask": true
+    },
+    "update-docs": {
+      "description": "Update project documentation and README",
+      "template": "{file:node_modules/ecc-universal/.opencode/commands/update-docs.md}\n\n$ARGUMENTS",
+      "agent": "refactor-cleaner",
+      "subtask": true
+    }
+  },
+  "permission": {
+    "mcp_*": "ask"
+  }
+}
