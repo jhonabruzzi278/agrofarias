@@ -9,6 +9,9 @@
               :src="image"
               :alt="name"
               loading="lazy"
+              decoding="async"
+              width="400"
+              height="300"
               class="w-full h-52 sm:h-56 lg:h-52 object-cover transition-transform duration-500 ease-out group-hover:scale-105"
             />
             <div v-else class="w-full h-52 sm:h-56 lg:h-52 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
@@ -81,7 +84,13 @@ defineProps<{
 </script>
 
 <style scoped>
-.shop-card { width: 100%; height: 100%; display: flex; }
+.shop-card {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 420px;
+}
 
 .animate-in {
   animation: badgePop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);

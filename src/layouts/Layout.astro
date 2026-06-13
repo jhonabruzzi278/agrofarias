@@ -216,9 +216,7 @@ const pageUrl = canonical || (Astro.url ? Astro.url.href : siteUrl);
       .rs-btn { height: 2rem; background: #e5e7eb; border-radius: 0.5rem; margin-top: 0.25rem; }
       @keyframes rsPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
       @media (prefers-reduced-motion: reduce) { .rs-card { animation: none; } }
-    </style>
 
-    <style is:global>
       #nav-loading-bar {
         will-change: width, opacity;
         box-shadow: 0 0 8px rgba(245, 176, 32, 0.5);
