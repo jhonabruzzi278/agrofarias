@@ -348,13 +348,17 @@ function buildFilterUrl(params: Record<string, string>): string {
 
               <!-- Grid view -->
               <div id="products-grid" class:list={['grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5', viewParam === 'list' ? 'hidden' : '']}>
-                {paginatedProducts.map(prod => (
+                {paginatedProducts.map((prod, i) => {
+                  const isAboveFold = i < 4;
+                  const imgLoading = isAboveFold ? 'eager' : 'lazy';
+                  const imgPriority = i < 2 ? 'high' : 'auto';
+                  return (
                   <div class="shop-card group">
                     <div class="inner-box bg-white rounded-2xl sm:rounded-xl border border-gray-100 overflow-hidden transition-all duration-500 hover:-translate-y-1 hover:shadow-lg hover:shadow-[var(--theme-color)]/8 hover:border-[var(--theme-color)]/20 flex flex-col h-full">
                       <figure class="relative overflow-hidden flex-shrink-0">
                         <a href={`/producto/${prod.slug}`} class="block">
                           {prod.images[0] ? (
-                            <img src={prod.images[0].src} alt={prod.name} width="400" height="400" loading="lazy" decoding="async" class="w-full aspect-square sm:h-52 lg:h-56 object-cover transition-transform duration-500 group-hover:scale-105" />
+                            <img src={prod.images[0].src} alt={prod.name} width="400" height="400" loading={imgLoading} fetchpriority={imgPriority} decoding={isAboveFold ? 'sync' : 'async'} class="w-full aspect-square sm:h-52 lg:h-56 object-cover transition-transform duration-500 group-hover:scale-105" />
                           ) : (
                             <div class="w-full aspect-square sm:h-52 lg:h-56 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
                               <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#9ca3af" stroke-width="1.5">
@@ -399,7 +403,7 @@ function buildFilterUrl(params: Record<string, string>): string {
                       </div>
                     </div>
                   </div>
-                ))}
+                )})}
               </div>
 
               <!-- List view -->
