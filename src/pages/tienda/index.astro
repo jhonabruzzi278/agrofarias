@@ -122,19 +122,7 @@ function buildFilterUrl(params: Record<string, string>): string {
 }
 ---
 
-<script is:inline>
-(function() {
-  var cur = new URL(location.href).searchParams.get('view');
-  if (!cur) {
-    var saved = (localStorage.getItem('agro-view') || 'grid');
-    if (saved === 'list') {
-      var u = new URL(location.href);
-      u.searchParams.set('view', 'list');
-      location.replace(u.toString());
-    }
-  }
-})();
-</script>
+
 
 <Layout title={pageTitle} description={pageDesc}>
   <header class="main-header">
