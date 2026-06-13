@@ -125,25 +125,6 @@ const pageUrl = canonical || (Astro.url ? Astro.url.href : siteUrl);
     <!-- Loading bar for SPA navigation -->
     <div id="nav-loading-bar" class="fixed top-0 left-0 h-[3px] bg-[var(--accent-color)] z-[9999] w-0 opacity-0 transition-all duration-200"></div>
 
-    <!-- Skeleton overlay mientras carga la tienda (navegación SPA) -->
-    <div id="route-skeleton" aria-hidden="true">
-      <div class="route-skeleton-inner">
-        <div class="route-skeleton-grid">
-          {Array.from({ length: 8 }).map(() => (
-            <div class="rs-card">
-              <div class="rs-img"></div>
-              <div class="rs-body">
-                <div class="rs-line rs-w33"></div>
-                <div class="rs-line rs-w75"></div>
-                <div class="rs-line rs-w50"></div>
-                <div class="rs-btn"></div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-
     <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
     <main id="main-content" transition:animate="fade">
       <slot />
@@ -176,47 +157,7 @@ const pageUrl = canonical || (Astro.url ? Astro.url.href : siteUrl);
       })();
     </script>
 
-    <script>
-      // Skeleton overlay solo al navegar hacia /tienda (catálogo pesado).
-      (function() {
-        function skel() { return document.getElementById('route-skeleton'); }
-        function isTienda(to) {
-          try { return new URL(to, location.origin).pathname === '/tienda'; } catch (e) { return false; }
-        }
-        function hide() { var s = skel(); if (s) s.classList.remove('is-visible'); }
-        document.addEventListener('astro:before-preparation', function(e) {
-          if (e && e.to && isTienda(e.to)) { var s = skel(); if (s) s.classList.add('is-visible'); }
-        });
-        document.addEventListener('astro:after-swap', hide);
-        document.addEventListener('astro:page-load', hide);
-      })();
-    </script>
-
     <style is:global>
-      #route-skeleton {
-        position: fixed;
-        inset: 0;
-        z-index: 9990;
-        background: #f9fafb;
-        opacity: 0;
-        pointer-events: none;
-        overflow: hidden;
-        transition: opacity 0.15s ease;
-      }
-      #route-skeleton.is-visible { opacity: 1; pointer-events: auto; }
-      .route-skeleton-inner { max-width: 1200px; margin: 0 auto; padding: 104px 1.5rem 2rem; }
-      .route-skeleton-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-      @media (min-width: 640px) { .route-skeleton-grid { grid-template-columns: repeat(3, 1fr); } }
-      @media (min-width: 1024px) { .route-skeleton-grid { grid-template-columns: repeat(4, 1fr); } }
-      .rs-card { background: #fff; border: 1px solid #f0f0f0; border-radius: 0.75rem; overflow: hidden; animation: rsPulse 1.5s ease-in-out infinite; }
-      .rs-img { aspect-ratio: 4 / 3; background: #e5e7eb; }
-      .rs-body { padding: 0.85rem; display: flex; flex-direction: column; gap: 0.6rem; }
-      .rs-line { height: 0.85rem; background: #e5e7eb; border-radius: 0.375rem; }
-      .rs-w33 { width: 33%; } .rs-w50 { width: 50%; } .rs-w75 { width: 75%; }
-      .rs-btn { height: 2rem; background: #e5e7eb; border-radius: 0.5rem; margin-top: 0.25rem; }
-      @keyframes rsPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
-      @media (prefers-reduced-motion: reduce) { .rs-card { animation: none; } }
-
       #nav-loading-bar {
         will-change: width, opacity;
         box-shadow: 0 0 8px rgba(245, 176, 32, 0.5);
