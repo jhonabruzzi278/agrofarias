@@ -4,7 +4,6 @@ interface Props {
 }
 const { categorias = [] } = Astro.props
 
-// Map de imágenes locales por slug
 const catImages: Record<string, string> = {
   'herbicidas': '/imagenes optimizadas/herbicidas.webp',
   'fungicidas': '/imagenes optimizadas/fungicidas.webp',
@@ -31,7 +30,6 @@ const BENTO_ORDER = [
   'riego-y-equipamiento',
 ]
 
-// Build display list from WC data or fallback to hardcoded
 const topCats = BENTO_ORDER
   .map(slug => {
     const wc = categorias.find(c => c.slug === slug)
@@ -43,7 +41,7 @@ const topCats = BENTO_ORDER
   .slice(0, 8)
 ---
 
-<section class="bento-section py-16 bg-white">
+<section class="bento-section py-16 bg-gray-50">
   <div class="large-container">
     <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
       <div>
@@ -57,49 +55,52 @@ const topCats = BENTO_ORDER
       </a>
     </div>
 
-    <!-- Bento grid: 4-col on desktop, 2-col on mobile -->
     <div class="bento-grid">
       {topCats.map((cat, i) => {
-        // First card: spans 2 cols + 2 rows (large hero)
         const isHero = i === 0
-        // Second card: spans 2 cols (wide)
         const isWide = i === 3
         return (
           <a
             href={`/categoria/${cat.slug}`}
             class:list={[
-              'bento-card group relative overflow-hidden rounded-2xl bg-gray-100 no-underline',
+              'bento-card group relative overflow-hidden rounded-2xl bg-[#e8efe9] no-underline block',
               isHero && 'bento-hero',
               isWide && 'bento-wide',
             ]}
           >
+            <!-- Imagen de categoría -->
             <img
               src={cat.image}
               alt={cat.name}
               loading="lazy"
               decoding="async"
-              class="absolute inset-0 w-full h-full object-contain p-6 transition-transform duration-700 group-hover:scale-110"
+              class="absolute inset-0 w-full h-full object-contain p-5 sm:p-8 transition-transform duration-700 group-hover:scale-105"
             />
-            <!-- Gradient overlay bottom -->
-            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <!-- Static bottom label -->
-            <div class="absolute bottom-0 left-0 right-0 p-4 translate-y-0 group-hover:-translate-y-1 transition-transform duration-300">
-              <div class="flex items-end justify-between">
-                <div>
+
+            <!-- Gradiente siempre visible en la parte inferior para legibilidad -->
+            <div class="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent"></div>
+
+            <!-- Overlay de hover sutil -->
+            <div class="absolute inset-0 bg-[var(--theme-color)]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+            <!-- Label siempre visible, texto siempre blanco -->
+            <div class="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
+              <div class="flex items-end justify-between gap-2">
+                <div class="min-w-0">
                   <h3 class:list={[
-                    'font-bold text-[#111] group-hover:text-white transition-colors leading-tight',
-                    isHero ? 'text-xl sm:text-2xl' : 'text-sm sm:text-base',
+                    'font-bold text-white leading-tight truncate',
+                    isHero ? 'text-lg sm:text-xl' : 'text-sm sm:text-base',
                   ]}>
                     {cat.name}
                   </h3>
                   {cat.count > 0 && (
-                    <p class="text-xs text-gray-500 group-hover:text-white/70 transition-colors mt-0.5">
+                    <p class="text-white/60 text-xs mt-0.5">
                       {cat.count} producto{cat.count !== 1 ? 's' : ''}
                     </p>
                   )}
                 </div>
-                <span class="w-8 h-8 rounded-full bg-white/90 group-hover:bg-[var(--theme-color)] flex items-center justify-center text-[var(--theme-color)] group-hover:text-white transition-all duration-300 shrink-0 ml-2">
-                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/20 group-hover:bg-[var(--theme-color)] flex items-center justify-center text-white transition-all duration-300 shrink-0">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </span>
               </div>
             </div>
@@ -114,34 +115,52 @@ const topCats = BENTO_ORDER
 .bento-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: auto;
-  gap: 0.75rem;
+  gap: 0.625rem;
 }
 
 .bento-card {
-  min-height: 180px;
-  background: #f3f4f6;
+  min-height: 170px;
 }
 
 .bento-hero {
   grid-column: span 2;
   grid-row: span 2;
-  min-height: 380px;
+  min-height: 360px;
 }
 
 .bento-wide {
   grid-column: span 2;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .bento-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .bento-hero {
     grid-column: span 2;
     grid-row: span 1;
-    min-height: 220px;
+    min-height: 200px;
+  }
+
+  .bento-wide {
+    grid-column: span 1;
+  }
+
+  .bento-card {
+    min-height: 160px;
+  }
+}
+
+@media (max-width: 600px) {
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  .bento-hero {
+    grid-column: span 2;
+    min-height: 200px;
   }
 
   .bento-wide {
@@ -149,13 +168,7 @@ const topCats = BENTO_ORDER
   }
 
   .bento-card {
-    min-height: 150px;
-  }
-}
-
-@media (max-width: 480px) {
-  .bento-card {
-    min-height: 130px;
+    min-height: 140px;
   }
 }
 </style>

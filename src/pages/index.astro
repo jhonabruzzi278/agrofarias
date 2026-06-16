@@ -10,19 +10,27 @@ import ProductGrid from '../components/ProductGrid.vue';
 import CTASection from '../components/CTASection.astro';
 import Footer from '../components/Footer.vue';
 import { fetchProductos, fetchCategorias } from '../lib/woocommerce';
+import { fetchBanners } from '../lib/sanity';
 import type { ProductoWC } from '../lib/types';
 
 export const prerender = false;
 
 let productos: ProductoWC[] = [];
 let categorias: Array<{ id: number; name: string; slug: string; parent: number }> = [];
+let heroBanner: { imagenUrl?: string; titulo?: string; subtitulo?: string; textoBoton?: string; urlBoton?: string } | undefined;
+
 try {
-  [productos, categorias] = await Promise.all([
+  const [prods, cats, banners] = await Promise.all([
     fetchProductos({ perPage: 12 }),
     fetchCategorias(),
+    fetchBanners().catch(() => []),
   ]);
+  productos = prods;
+  categorias = cats;
+  // Primer banner de Sanity → hero. Si no hay, HeroSection usa el fallback local.
+  heroBanner = banners[0];
 } catch (e) {
-  console.error('[index] Failed to fetch data:', e)
+  console.error('[index] fetch error:', e);
 }
 ---
 
@@ -32,24 +40,30 @@ try {
     <HeaderLower client:only="vue" />
   </header>
 
-  <!-- Hero: lo primero que ve el cliente -->
-  <HeroSection />
+  <!-- Hero: imagen y texto desde Sanity (con fallback a imagen local) -->
+  <HeroSection
+    imageUrl={heroBanner?.imagenUrl}
+    titulo={heroBanner?.titulo}
+    subtitulo={heroBanner?.subtitulo}
+    textoBoton={heroBanner?.textoBoton}
+    urlBoton={heroBanner?.urlBoton}
+  />
 
-  <!-- Bento de categorías destacadas -->
+  <!-- Bento de categorías (datos desde WooCommerce) -->
   <CategoryBentoSection categorias={categorias} />
 
-  <!-- Promociones desde Sanity CMS -->
-  <PromoBanners />
-
-  <!-- Por qué elegirnos -->
-  <WhyUsSection />
-
-  <!-- Productos destacados -->
+  <!-- Productos destacados (WooCommerce) -->
   <div class="products-placeholder min-h-[400px] contain-layout">
     <ProductGrid client:only="vue" productos={productos} title="Productos Destacados" />
   </div>
 
-  <!-- CTA cotización -->
+  <!-- Por qué elegirnos (estático) -->
+  <WhyUsSection />
+
+  <!-- Promociones (Sanity CMS) -->
+  <PromoBanners />
+
+  <!-- CTA cotización (Sanity CMS) -->
   <CTASection />
 
   <Footer client:only="vue" categorias={categorias} />
