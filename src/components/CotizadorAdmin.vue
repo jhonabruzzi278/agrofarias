@@ -282,7 +282,10 @@ async function loadQuotes(): Promise<boolean> {
   // Devuelve true si la sesión es válida (200), false si 401.
   const r = await fetch('/api/cotizador-interno/quotes', { headers: H })
   if (r.status === 401) return false
-  if (r.ok) allQ.value = await r.json()
+  if (r.ok) {
+    const json = await r.json()
+    allQ.value = Array.isArray(json) ? json : (json.data ?? [])
+  }
   return true
 }
 
@@ -438,7 +441,10 @@ async function refreshQ() {
   lQ.value = true
   try {
     const r = await fetch('/api/cotizador-interno/quotes', { headers: H })
-    if (r.ok) allQ.value = await r.json()
+    if (r.ok) {
+      const json = await r.json()
+      allQ.value = Array.isArray(json) ? json : (json.data ?? [])
+    }
   } catch {} finally { lQ.value = false }
 }
 
