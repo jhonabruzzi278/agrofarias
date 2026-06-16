@@ -1,4 +1,4 @@
-import type { ProductoWC, CategoriaWC, SolicitudCotizacion } from './types'
+import type { ProductoWC, CategoriaWC, SolicitudCotizacion, WCCustomer, WCProductPayload, WCMediaResult } from './types'
 import { getRedis } from './kv'
 
 const WP_URL = import.meta.env.WORDPRESS_URL
@@ -68,11 +68,81 @@ async function wcFetch(url: string): Promise<Response> {
   return res
 }
 
-async function wcFetchWithHeaders(url: string): Promise<{ res: Response; totalPages: number }> {
+async function wcFetchWithHeaders(url: string): Promise<{ res: Response; totalPages: number; total: number }> {
   const res = await fetch(url, { headers: getFetchHeaders() })
   if (!res.ok) throw new Error(`WooCommerce API error: ${res.status} ${res.statusText}`)
   const totalPages = parseInt(res.headers.get('X-WP-TotalPages') || '1', 10)
-  return { res, totalPages }
+  const total = parseInt(res.headers.get('X-WP-Total') || '0', 10)
+  return { res, totalPages, total }
+}
+
+async function wcPost(path: string, body: unknown): Promise<Response> {
+  const res = await fetch(`${WP_URL}${path}`, {
+    method: 'POST',
+    headers: getFetchHeaders(),
+    body: JSON.stringify(body),
+  })
+  if (!res.ok) {
+    const text = await res.text().catch(() => '')
+    throw new Error(`WooCommerce POST error: ${res.status} ${text.slice(0, 200)}`)
+  }
+  return res
+}
+
+async function wcPut(path: string, body: unknown): Promise<Response> {
+  const res = await fetch(`${WP_URL}${path}`, {
+    method: 'PUT',
+    headers: getFetchHeaders(),
+    body: JSON.stringify(body),
+  })
+  if (!res.ok) {
+    const text = await res.text().catch(() => '')
+    throw new Error(`WooCommerce PUT error: ${res.status} ${text.slice(0, 200)}`)
+  }
+  return res
+}
+
+async function wcDelete(path: string): Promise<Response> {
+  const res = await fetch(`${WP_URL}${path}`, {
+    method: 'DELETE',
+    headers: getFetchHeaders(),
+  })
+  if (!res.ok) {
+    const text = await res.text().catch(() => '')
+    throw new Error(`WooCommerce DELETE error: ${res.status} ${text.slice(0, 200)}`)
+  }
+  return res
+}
+
+async function wcPostMedia(file: File): Promise<WCMediaResult> {
+  const WP_USERNAME = import.meta.env.WP_USERNAME
+  const WP_APP_PASSWORD = import.meta.env.WP_APP_PASSWORD
+  if (!WP_USERNAME || !WP_APP_PASSWORD) {
+    throw new Error('WP_USERNAME y WP_APP_PASSWORD son requeridos para subir imágenes')
+  }
+  const auth = 'Basic ' + Buffer.from(`${WP_USERNAME}:${WP_APP_PASSWORD}`).toString('base64')
+  const formData = new FormData()
+  formData.append('file', file, file.name)
+  const res = await fetch(`${WP_URL}/wp-json/wp/v2/media`, {
+    method: 'POST',
+    headers: {
+      'Authorization': auth,
+      'Content-Disposition': `attachment; filename="${file.name}"`,
+    },
+    body: formData,
+  })
+  if (!res.ok) {
+    const text = await res.text().catch(() => '')
+    throw new Error(`WordPress media upload error: ${res.status} ${text.slice(0, 200)}`)
+  }
+  const data = await res.json()
+  return { id: data.id, source_url: data.source_url }
+}
+
+function bustProductCache(): void {
+  const g = globalThis as Record<string, unknown>
+  const c = g.__wcCache as Map<string, unknown> | undefined
+  if (c) for (const k of [...c.keys()]) if (k.startsWith('all_products')) c.delete(k)
 }
 
 export async function fetchProductos(params?: { categoria?: string; perPage?: number; page?: number }): Promise<ProductoWC[]> {
@@ -158,6 +228,76 @@ export async function fetchOrders(params?: { perPage?: number; page?: number }):
   const page = params?.page || 1;
   const url = `${WC_API}/orders?per_page=${perPage}&page=${page}&status=any`;
   return (await wcFetch(url)).json();
+}
+
+// --- Admin functions (no cache, live data) ---
+
+export async function fetchProductosAdmin(params?: {
+  search?: string; category?: number; page?: number; per_page?: number; status?: string
+}): Promise<{ products: ProductoWC[]; totalPages: number; total: number }> {
+  const page = params?.page || 1
+  const perPage = Math.min(params?.per_page || 20, 100)
+  let url = `${WC_API}/products?per_page=${perPage}&page=${page}&status=${params?.status || 'any'}`
+  if (params?.search) url += `&search=${encodeURIComponent(params.search)}`
+  if (params?.category) url += `&category=${params.category}`
+  const { res, totalPages, total } = await wcFetchWithHeaders(url)
+  const products: ProductoWC[] = await res.json()
+  return { products, totalPages, total }
+}
+
+export async function createProducto(payload: WCProductPayload): Promise<ProductoWC> {
+  const res = await wcPost('/wp-json/wc/v3/products', payload)
+  const product = await res.json()
+  bustProductCache()
+  return product
+}
+
+export async function updateProducto(id: number, payload: WCProductPayload): Promise<ProductoWC> {
+  const res = await wcPut(`/wp-json/wc/v3/products/${id}`, payload)
+  const product = await res.json()
+  bustProductCache()
+  return product
+}
+
+export async function trashProducto(id: number): Promise<void> {
+  await wcPut(`/wp-json/wc/v3/products/${id}`, { status: 'trash' })
+  bustProductCache()
+}
+
+export async function uploadProductoImage(file: File): Promise<WCMediaResult> {
+  return wcPostMedia(file)
+}
+
+export async function fetchCustomers(params?: {
+  search?: string; page?: number; per_page?: number
+}): Promise<{ customers: WCCustomer[]; totalPages: number; total: number }> {
+  const page = params?.page || 1
+  const perPage = Math.min(params?.per_page || 20, 100)
+  let url = `${WC_API}/customers?per_page=${perPage}&page=${page}`
+  if (params?.search) url += `&search=${encodeURIComponent(params.search)}`
+  const { res, totalPages, total } = await wcFetchWithHeaders(url)
+  const customers: WCCustomer[] = await res.json()
+  return { customers, totalPages, total }
+}
+
+export async function fetchCustomerById(id: number): Promise<WCCustomer> {
+  return (await wcFetch(`${WC_API}/customers/${id}`)).json()
+}
+
+export async function createCustomer(payload: {
+  first_name: string; last_name: string; email: string; username: string; password: string
+  billing?: { phone?: string; city?: string; address_1?: string; state?: string; country?: string }
+}): Promise<WCCustomer> {
+  return (await wcPost('/wp-json/wc/v3/customers', payload)).json()
+}
+
+export async function deleteCustomer(id: number): Promise<void> {
+  await wcDelete(`/wp-json/wc/v3/customers/${id}?force=true`)
+}
+
+export async function fetchOrdersByCustomer(customerId: number): Promise<Record<string, unknown>[]> {
+  const url = `${WC_API}/orders?customer=${customerId}&per_page=20&status=any`
+  return (await wcFetch(url)).json()
 }
 
 export async function submitCotizacion(data: SolicitudCotizacion): Promise<{ success?: boolean; id?: number; error?: string }> {

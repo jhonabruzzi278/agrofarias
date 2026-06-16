@@ -13,7 +13,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const path = context.url.pathname;
 
   const isProtectedApi =
-    path === '/api/cotizador-interno' || path.startsWith('/api/cotizador-interno/');
+    path === '/api/cotizador-interno' || path.startsWith('/api/cotizador-interno/') ||
+    path.startsWith('/api/admin/productos') ||
+    path.startsWith('/api/admin/clientes') ||
+    path.startsWith('/api/admin/categorias');
 
   if (isProtectedApi) {
     const token = context.cookies.get(SESSION_COOKIE)?.value;

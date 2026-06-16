@@ -10,7 +10,7 @@
       <div class="bg-white rounded-xl shadow-lg p-8">
         <div class="text-center mb-6">
           <div class="text-4xl mb-3">🔒</div>
-          <h1 class="text-xl font-bold text-gray-800">Cotizador Interno</h1>
+          <h1 class="text-xl font-bold text-gray-800">Panel Admin</h1>
           <p class="text-sm text-gray-500 mt-1">Agro Farías</p>
         </div>
         <label class="block text-sm font-medium text-gray-600 mb-1">Contraseña</label>
@@ -37,20 +37,23 @@
   <!-- PANEL -->
   <div v-else>
     <div class="fixed top-0 left-0 right-0 bg-green-700 text-white text-xs px-4 py-2 flex items-center justify-between z-10">
-      <span>Cotizador Interno — Agro Farías</span>
+      <span>Panel Admin — Agro Farías</span>
       <button @click="logout" class="text-white/80 hover:text-white underline cursor-pointer bg-transparent border-none text-xs">Salir</button>
     </div>
 
     <div class="pt-10">
       <div class="min-h-screen p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
         <div class="flex items-center gap-3 mb-6">
-          <span class="text-3xl">📝</span>
-          <h1 class="text-2xl font-bold text-gray-800">Cotizador Interno</h1>
-          <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">Admin</span>
+          <span class="text-3xl">🌿</span>
+          <h1 class="text-2xl font-bold text-gray-800">Panel Admin</h1>
+          <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">Agro Farías</span>
         </div>
-        <div class="flex gap-1 mb-6 bg-gray-100 rounded-xl p-1 w-fit">
+        <div class="flex flex-wrap gap-1 mb-6 bg-gray-100 rounded-xl p-1 w-fit">
           <button @click="tab='nueva'" :class="tab==='nueva'?'bg-white shadow-sm text-gray-800':'text-gray-500'" class="px-4 py-2 rounded-lg text-sm font-medium transition cursor-pointer border-none">Nueva cotización</button>
-          <button @click="tab='recibidas';refreshQ()" :class="tab==='recibidas'?'bg-white shadow-sm text-gray-800':'text-gray-500'" class="px-4 py-2 rounded-lg text-sm font-medium transition cursor-pointer border-none">Cotizaciones recibidas <span class="text-xs text-gray-400 ml-1">{{ allQ.length }}</span></button>
+          <button @click="tab='recibidas';refreshQ()" :class="tab==='recibidas'?'bg-white shadow-sm text-gray-800':'text-gray-500'" class="px-4 py-2 rounded-lg text-sm font-medium transition cursor-pointer border-none">Cotizaciones <span class="text-xs text-gray-400 ml-1">{{ allQ.length }}</span></button>
+          <button @click="tab='productos'" :class="tab==='productos'?'bg-white shadow-sm text-gray-800':'text-gray-500'" class="px-4 py-2 rounded-lg text-sm font-medium transition cursor-pointer border-none">Productos</button>
+          <button @click="tab='clientes'" :class="tab==='clientes'?'bg-white shadow-sm text-gray-800':'text-gray-500'" class="px-4 py-2 rounded-lg text-sm font-medium transition cursor-pointer border-none">Clientes</button>
+          <button @click="tab='config'" :class="tab==='config'?'bg-white shadow-sm text-gray-800':'text-gray-500'" class="px-4 py-2 rounded-lg text-sm font-medium transition cursor-pointer border-none">Configuración</button>
         </div>
 
         <div v-show="tab==='nueva'" class="grid grid-cols-1 lg:grid-cols-5 gap-6">
@@ -123,6 +126,11 @@
             </div>
           </div>
         </div>
+
+        <!-- NUEVOS TABS -->
+        <div v-if="tab==='productos'"><AdminProductos @unauthorized="authed = false" /></div>
+        <div v-if="tab==='clientes'"><AdminClientes @unauthorized="authed = false" /></div>
+        <div v-if="tab==='config'"><AdminConfiguracion /></div>
 
         <!-- RECEIVED QUOTES TAB -->
         <div v-show="tab==='recibidas'" class="space-y-5">
@@ -239,6 +247,9 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
+import AdminProductos from './admin/AdminProductos.vue'
+import AdminClientes from './admin/AdminClientes.vue'
+import AdminConfiguracion from './admin/AdminConfiguracion.vue'
 
 const H = { 'Content-Type': 'application/json' }
 
@@ -250,7 +261,7 @@ const loggingIn = ref(false)
 const loginError = ref('')
 
 // --- App state ---
-const tab = ref<'nueva' | 'recibidas'>('nueva')
+const tab = ref<'nueva' | 'recibidas' | 'productos' | 'clientes' | 'config'>('nueva')
 const searchResults = ref<any[]>([])
 const allQ = ref<any[]>([])
 const search = ref('')

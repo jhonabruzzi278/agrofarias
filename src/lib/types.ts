@@ -120,3 +120,42 @@ export interface ProductoDestacadoSanity {
   destacado: boolean
   orden: number
 }
+
+// Admin dashboard types
+export interface WCCustomer {
+  id: number
+  first_name: string
+  last_name: string
+  email: string
+  username: string
+  date_created: string
+  orders_count: number
+  total_spent: string
+  avatar_url: string
+  billing: {
+    phone: string
+    address_1: string
+    city: string
+    state: string
+    country: string
+  }
+}
+
+export interface WCProductPayload {
+  name: string
+  description?: string
+  short_description?: string
+  regular_price?: string
+  sku?: string
+  stock_quantity?: number
+  stock_status?: 'instock' | 'outofstock' | 'onbackorder'
+  status?: 'publish' | 'draft'
+  categories?: Array<{ id: number }>
+  images?: Array<{ id: number }>
+  meta_data?: Array<{ key: string; value: string }>
+}
+
+export interface WCMediaResult {
+  id: number
+  source_url: string
+}
