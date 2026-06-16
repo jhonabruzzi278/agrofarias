@@ -30,6 +30,11 @@
           {{ loggingIn ? 'Ingresando...' : 'Ingresar' }}
         </button>
         <p v-if="loginError" class="text-red-600 text-sm text-center mt-4">{{ loginError }}</p>
+        <div class="text-center mt-5 pt-4 border-t border-gray-100">
+          <a href="/tienda" class="text-sm text-gray-400 hover:text-green-700 transition-colors">
+            ← Ir a la tienda
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -227,6 +232,10 @@
                     class="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition no-underline">
                     ↗ Ver en WooCommerce
                   </a>
+                  <button @click="downloadPDF(q)" :disabled="generatingPDF === q.id"
+                    class="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-gray-50 text-gray-600 hover:bg-gray-100 transition cursor-pointer border border-gray-200 disabled:opacity-50">
+                    {{ generatingPDF === q.id ? '⏳ Generando...' : '⬇ Descargar PDF' }}
+                  </button>
                   <div class="flex items-center gap-1.5 ml-auto">
                     <label class="text-xs text-gray-400">Estado interno:</label>
                     <select :value="q.internalStatus" @change="updateStatus(q, ($event.target as HTMLSelectElement).value)" :disabled="updatingId === q.id"
@@ -250,6 +259,7 @@ import { ref, computed, watch, onMounted } from 'vue'
 import AdminProductos from './admin/AdminProductos.vue'
 import AdminClientes from './admin/AdminClientes.vue'
 import AdminConfiguracion from './admin/AdminConfiguracion.vue'
+import { generateCotizacionPDF } from '../lib/pdf'
 
 const H = { 'Content-Type': 'application/json' }
 
@@ -277,6 +287,7 @@ let debounceTimer: ReturnType<typeof setTimeout> | null = null
 const qSearch = ref('')
 const qStatus = ref('')
 const copiedId = ref<number | null>(null)
+const generatingPDF = ref<number | null>(null)
 
 async function loadQuotes(): Promise<boolean> {
   // Devuelve true si la sesión es válida (200), false si 401.
@@ -446,6 +457,33 @@ async function refreshQ() {
       allQ.value = Array.isArray(json) ? json : (json.data ?? [])
     }
   } catch {} finally { lQ.value = false }
+}
+
+async function downloadPDF(q: any) {
+  if (generatingPDF.value) return
+  generatingPDF.value = q.id
+  try {
+    await generateCotizacionPDF({
+      number: q.number,
+      date_created: q.date_created,
+      customer: {
+        name: q.customer?.name,
+        email: q.customer?.email,
+        phone: q.customer?.phone,
+        company: q.customer?.company,
+      },
+      products: (q.products || []).map((p: any) => ({
+        name: p.name,
+        quantity: p.quantity,
+        total: p.total,
+      })),
+      total: q.total,
+    })
+  } catch (e) {
+    console.error('PDF error:', e)
+  } finally {
+    generatingPDF.value = null
+  }
 }
 
 async function send() {

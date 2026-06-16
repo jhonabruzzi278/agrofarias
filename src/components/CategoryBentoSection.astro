@@ -1,0 +1,161 @@
+---
+interface Props {
+  categorias?: Array<{ id: number; name: string; slug: string; parent: number; count?: number }>
+}
+const { categorias = [] } = Astro.props
+
+// Map de imágenes locales por slug
+const catImages: Record<string, string> = {
+  'herbicidas': '/imagenes optimizadas/herbicidas.webp',
+  'fungicidas': '/imagenes optimizadas/fungicidas.webp',
+  'fertilizantes': '/imagenes optimizadas/fertilizantes.webp',
+  'insecticidas': '/imagenes optimizadas/insecticidas.webp',
+  'proteccion-fitosanitaria': '/imagenes optimizadas/proteccion fitosanitaria.webp',
+  'herramientas-y-repuestos': '/imagenes optimizadas/herramientasrepuestos.webp',
+  'nutricion-vegetal': '/imagenes optimizadas/nutricion vegetal.webp',
+  'riego-y-equipamiento': '/imagenes optimizadas/riego y equipamiento.webp',
+  'acaricidas': '/imagenes optimizadas/acaricidas.webp',
+  'control-de-plagas': '/imagenes optimizadas/control de plagas.webp',
+  'seguridad-agricola': '/imagenes optimizadas/seguridad agricola.webp',
+  'foliares': '/imagenes optimizadas/foliares.webp',
+}
+
+const BENTO_ORDER = [
+  'herbicidas',
+  'fertilizantes',
+  'fungicidas',
+  'proteccion-fitosanitaria',
+  'insecticidas',
+  'herramientas-y-repuestos',
+  'nutricion-vegetal',
+  'riego-y-equipamiento',
+]
+
+// Build display list from WC data or fallback to hardcoded
+const topCats = BENTO_ORDER
+  .map(slug => {
+    const wc = categorias.find(c => c.slug === slug)
+    return wc
+      ? { slug, name: wc.name, count: wc.count ?? 0, image: catImages[slug] }
+      : { slug, name: slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()), count: 0, image: catImages[slug] }
+  })
+  .filter(c => c.image)
+  .slice(0, 8)
+---
+
+<section class="bento-section py-16 bg-white">
+  <div class="large-container">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
+      <div>
+        <span class="text-sm font-bold text-[var(--theme-color)] uppercase tracking-widest mb-2 block">Nuestros Productos</span>
+        <h2 class="text-3xl md:text-4xl font-bold font-title text-[#111]">Encontrá lo que necesitás</h2>
+        <p class="text-gray-500 mt-2 max-w-lg">Líneas completas de insumos para todos tus cultivos.</p>
+      </div>
+      <a href="/tienda" class="inline-flex items-center gap-2 self-start sm:self-auto px-5 py-2.5 rounded-xl border border-gray-200 bg-white text-sm font-semibold text-[#111] hover:bg-[var(--theme-color)] hover:text-white hover:border-[var(--theme-color)] transition-all shadow-sm no-underline shrink-0">
+        Ver toda la tienda
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <!-- Bento grid: 4-col on desktop, 2-col on mobile -->
+    <div class="bento-grid">
+      {topCats.map((cat, i) => {
+        // First card: spans 2 cols + 2 rows (large hero)
+        const isHero = i === 0
+        // Second card: spans 2 cols (wide)
+        const isWide = i === 3
+        return (
+          <a
+            href={`/categoria/${cat.slug}`}
+            class:list={[
+              'bento-card group relative overflow-hidden rounded-2xl bg-gray-100 no-underline',
+              isHero && 'bento-hero',
+              isWide && 'bento-wide',
+            ]}
+          >
+            <img
+              src={cat.image}
+              alt={cat.name}
+              loading="lazy"
+              decoding="async"
+              class="absolute inset-0 w-full h-full object-contain p-6 transition-transform duration-700 group-hover:scale-110"
+            />
+            <!-- Gradient overlay bottom -->
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <!-- Static bottom label -->
+            <div class="absolute bottom-0 left-0 right-0 p-4 translate-y-0 group-hover:-translate-y-1 transition-transform duration-300">
+              <div class="flex items-end justify-between">
+                <div>
+                  <h3 class:list={[
+                    'font-bold text-[#111] group-hover:text-white transition-colors leading-tight',
+                    isHero ? 'text-xl sm:text-2xl' : 'text-sm sm:text-base',
+                  ]}>
+                    {cat.name}
+                  </h3>
+                  {cat.count > 0 && (
+                    <p class="text-xs text-gray-500 group-hover:text-white/70 transition-colors mt-0.5">
+                      {cat.count} producto{cat.count !== 1 ? 's' : ''}
+                    </p>
+                  )}
+                </div>
+                <span class="w-8 h-8 rounded-full bg-white/90 group-hover:bg-[var(--theme-color)] flex items-center justify-center text-[var(--theme-color)] group-hover:text-white transition-all duration-300 shrink-0 ml-2">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </span>
+              </div>
+            </div>
+          </a>
+        )
+      })}
+    </div>
+  </div>
+</section>
+
+<style>
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: auto;
+  gap: 0.75rem;
+}
+
+.bento-card {
+  min-height: 180px;
+  background: #f3f4f6;
+}
+
+.bento-hero {
+  grid-column: span 2;
+  grid-row: span 2;
+  min-height: 380px;
+}
+
+.bento-wide {
+  grid-column: span 2;
+}
+
+@media (max-width: 768px) {
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .bento-hero {
+    grid-column: span 2;
+    grid-row: span 1;
+    min-height: 220px;
+  }
+
+  .bento-wide {
+    grid-column: span 2;
+  }
+
+  .bento-card {
+    min-height: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bento-card {
+    min-height: 130px;
+  }
+}
+</style>
