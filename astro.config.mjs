@@ -2,7 +2,6 @@
 import { defineConfig } from 'astro/config';
 import vue from '@astrojs/vue';
 import tailwindcss from '@tailwindcss/vite';
-import sanity from '@sanity/astro';
 import vercel from '@astrojs/vercel';
 import sitemap from '@astrojs/sitemap';
 
@@ -32,12 +31,6 @@ export default defineConfig({
   },
   integrations: [
     vue(),
-    sanity({
-      projectId: 'zrpklrq5',
-      dataset: 'production',
-      useCdn: true,
-      apiVersion: '2024-01-01',
-    }),
     sitemap({
       serialize(item) {
         if (item.url.includes('/producto/')) {
