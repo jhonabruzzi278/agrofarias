@@ -12,7 +12,10 @@
     decoding="async"
     class="absolute inset-0 w-full h-full object-cover object-center"
   />
-  <div class="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent"></div>
+  <!-- Overlay base suave para mobile (garantiza legibilidad en toda la imagen) -->
+  <div class="absolute inset-0 bg-black/25"></div>
+  <!-- Gradiente izquierda → derecha más intenso para desktop -->
+  <div class="absolute inset-0 bg-gradient-to-r from-black/55 via-black/20 to-transparent"></div>
 
   <div class="relative z-10 large-container h-full flex items-center" style="min-height: clamp(560px, 88vh, 800px)">
     <div class="max-w-xl py-20">
@@ -22,7 +25,7 @@
         Todo para<br />tu cultivo
       </h1>
 
-      <p class="text-white/70 text-lg mb-10 max-w-md leading-relaxed">
+      <p class="text-white/90 text-lg mb-10 max-w-md leading-relaxed">
         Herbicidas, fungicidas, fertilizantes y equipamiento con despacho a todo Chile.
       </p>
 

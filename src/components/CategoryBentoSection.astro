@@ -72,8 +72,9 @@ const topCats = BENTO_ORDER
               class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
             />
 
-            <!-- Gradiente solo desde abajo -->
-            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            <!-- Overlay base + gradiente inferior para texto siempre legible -->
+            <div class="absolute inset-0 bg-black/10"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent"></div>
 
             <!-- Overlay verde en hover -->
             <div class="absolute inset-0 bg-[var(--theme-color)]/15 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
