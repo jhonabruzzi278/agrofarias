@@ -1,58 +1,59 @@
 ---
 ---
 
-<section class="why-section py-16 bg-gray-50">
+<section class="py-20 bg-white border-t border-gray-100">
   <div class="large-container">
-    <div class="text-center mb-12">
-      <span class="text-sm font-bold text-[var(--theme-color)] uppercase tracking-widest mb-2 block">¿Por qué elegirnos?</span>
-      <h2 class="text-3xl md:text-4xl font-bold font-title text-[#111]">Comprometidos con tu producción</h2>
-      <p class="text-gray-500 mt-3 max-w-xl mx-auto">Más de años de experiencia en insumos agrícolas de calidad para el campo chileno.</p>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16 pb-16 border-b border-gray-100">
+      {[
+        { num: '15+', label: 'Años de experiencia' },
+        { num: '500+', label: 'Productos disponibles' },
+        { num: '16', label: 'Regiones de despacho' },
+        { num: '24h', label: 'Respuesta de cotización' },
+      ].map(s => (
+        <div class="text-center">
+          <div class="text-4xl font-bold text-[var(--theme-color)] font-title mb-1">{s.num}</div>
+          <div class="text-gray-500 text-sm">{s.label}</div>
+        </div>
+      ))}
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-      <!-- Card 1 -->
-      <div class="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-md hover:border-[var(--theme-color)]/30 transition-all group">
-        <div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center mb-4 group-hover:bg-[var(--theme-color)] transition-colors">
-          <svg class="w-6 h-6 text-[var(--theme-color)] group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-          </svg>
+    <!-- Features -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      {[
+        {
+          icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
+          title: 'Productos Certificados',
+          desc: 'Solo marcas registradas con certificación SAG.',
+        },
+        {
+          icon: 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z',
+          title: 'Envío a Todo Chile',
+          desc: 'Despacho a las 16 regiones del país.',
+        },
+        {
+          icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
+          title: 'Asesoría Técnica',
+          desc: 'Te ayudamos a elegir el producto ideal.',
+        },
+        {
+          icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2',
+          title: 'Cotización sin Costo',
+          desc: 'Precio especial para compras en volumen.',
+        },
+      ].map(f => (
+        <div>
+          <div class="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-[var(--theme-color)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d={f.icon} />
+            </svg>
+          </div>
+          <h3 class="text-[#111] font-semibold text-base mb-1">{f.title}</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">{f.desc}</p>
         </div>
-        <h3 class="text-[#111] font-bold text-base mb-2">Productos Certificados</h3>
-        <p class="text-gray-500 text-sm leading-relaxed">Trabajamos solo con marcas registradas y productos con certificación SAG.</p>
-      </div>
-
-      <!-- Card 2 -->
-      <div class="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-md hover:border-[var(--theme-color)]/30 transition-all group">
-        <div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center mb-4 group-hover:bg-[var(--theme-color)] transition-colors">
-          <svg class="w-6 h-6 text-[var(--theme-color)] group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-          </svg>
-        </div>
-        <h3 class="text-[#111] font-bold text-base mb-2">Envío a Todo Chile</h3>
-        <p class="text-gray-500 text-sm leading-relaxed">Despachamos a cualquier región del país con tiempos de entrega competitivos.</p>
-      </div>
-
-      <!-- Card 3 -->
-      <div class="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-md hover:border-[var(--theme-color)]/30 transition-all group">
-        <div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center mb-4 group-hover:bg-[var(--theme-color)] transition-colors">
-          <svg class="w-6 h-6 text-[var(--theme-color)] group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-          </svg>
-        </div>
-        <h3 class="text-[#111] font-bold text-base mb-2">Asesoría Técnica</h3>
-        <p class="text-gray-500 text-sm leading-relaxed">Nuestro equipo técnico te guía en la selección del producto adecuado para tu cultivo.</p>
-      </div>
-
-      <!-- Card 4 -->
-      <div class="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-md hover:border-[var(--theme-color)]/30 transition-all group">
-        <div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center mb-4 group-hover:bg-[var(--accent-color)] transition-colors">
-          <svg class="w-6 h-6 text-[var(--accent-color)] group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-          </svg>
-        </div>
-        <h3 class="text-[#111] font-bold text-base mb-2">Cotización Personalizada</h3>
-        <p class="text-gray-500 text-sm leading-relaxed">Precio especial para compras al por mayor. Pedí tu cotización sin compromiso.</p>
-      </div>
+      ))}
     </div>
+
   </div>
 </section>

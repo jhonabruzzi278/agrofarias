@@ -1,54 +1,31 @@
 ---
-import { fetchCTA } from '../lib/sanity'
-
-interface CTAData {
-  _id: string
-  titulo: string
-  subtitulo: string
-  textoBoton: string
-  urlBoton: string
-  imagenFondoUrl: string
-}
-
-const fallbackCTA: CTAData = {
-  _id: 'fallback-cta',
-  titulo: 'Solicitar Presupuesto',
-  subtitulo: 'Completa tus datos y te enviaremos una cotización personalizada a la brevedad.',
-  textoBoton: 'Solicitar presupuesto',
-  urlBoton: '/cotizar',
-  imagenFondoUrl: '',
-}
-
-let cta: CTAData
-
-try {
-  const data = await fetchCTA()
-  cta = data ? {
-    _id: data._id,
-    titulo: data.titulo,
-    subtitulo: data.subtitulo,
-    textoBoton: data.textoBoton,
-    urlBoton: data.urlBoton,
-    imagenFondoUrl: data.imagenFondoUrl,
-  } : fallbackCTA
-} catch {
-  cta = fallbackCTA
-}
 ---
 
-<section class="cta-section py-16 md:py-20 bg-white">
-  <div class="large-container">
-    <div class="bg-gray-50 rounded-2xl border border-gray-200 p-8 md:p-12 lg:p-16 flex flex-col lg:flex-row items-center justify-between gap-8">
-      <div class="lg:w-2/3 text-center lg:text-left">
-        <h2 class="text-2xl md:text-3xl font-bold font-title text-[#111] mb-3">{cta.titulo}</h2>
-        <p class="text-gray-600 text-base md:text-lg max-w-xl">{cta.subtitulo}</p>
-      </div>
-      <div class="flex-shrink-0">
-        <a href={cta.urlBoton} class="inline-flex items-center gap-2 px-8 py-4 bg-[var(--theme-color)] text-white font-semibold rounded-xl hover:bg-[var(--theme-color-3)] transition-all duration-300 shadow-md hover:shadow-lg">
-          {cta.textoBoton}
-          <i class="fas fa-arrow-right text-sm"></i>
-        </a>
-      </div>
+<section class="relative overflow-hidden py-24">
+  <img
+    src="/asesoria-campo.webp"
+    alt=""
+    class="absolute inset-0 w-full h-full object-cover object-center"
+    loading="lazy"
+    decoding="async"
+  />
+  <div class="absolute inset-0 bg-black/65"></div>
+
+  <div class="relative z-10 large-container text-center">
+    <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold font-title text-white mb-4">
+      ¿Listo para cotizar?
+    </h2>
+    <p class="text-white/65 text-base md:text-lg max-w-md mx-auto mb-8">
+      Completá tus datos y recibís una propuesta en menos de 24 horas. Sin compromiso.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-3 justify-center">
+      <a href="/cotizar" class="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[var(--theme-color)] hover:bg-[var(--theme-color-3)] text-white font-semibold rounded-lg text-sm transition-colors no-underline">
+        Solicitar cotización
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="/tienda" class="inline-flex items-center justify-center px-8 py-3.5 border border-white/30 hover:border-white/60 text-white font-semibold rounded-lg text-sm transition-colors no-underline">
+        Ver productos
+      </a>
     </div>
   </div>
 </section>

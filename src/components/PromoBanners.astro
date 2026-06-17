@@ -1,100 +1,63 @@
 ---
-import { fetchPromoBanners } from '../lib/sanity'
-
-interface PromoBanner {
-  _id: string
-  titulo: string
-  subtitulo: string
-  precio: string
-  textoBoton: string
-  urlBoton: string
-  orden: number
-  imagenUrl: string
-}
-
-const fallbackBanners: PromoBanner[] = [
+const lineas = [
   {
-    _id: 'fallback-1',
-    titulo: 'Nutrición Vegetal',
-    subtitulo: 'Nutrición completa',
+    categoria: 'Herbicidas',
+    tagline: 'Control de malezas',
+    precio: 'Desde $12.990',
+    imagen: '/imagenes optimizadas/herbicidas.webp',
+    url: '/categoria/herbicidas',
+  },
+  {
+    categoria: 'Fertilizantes',
+    tagline: 'Nutrición para tus cultivos',
     precio: 'Desde $25.990',
-    textoBoton: 'Fertilizantes',
-    urlBoton: '/categoria/fertilizantes',
-    orden: 1,
-    imagenUrl: '',
+    imagen: '/imagenes optimizadas/fertilizantes.webp',
+    url: '/categoria/fertilizantes',
   },
   {
-    _id: 'fallback-2',
-    titulo: 'Herramientas y Repuestos',
-    subtitulo: 'Línea Profesional',
-    precio: 'Desde $34.990',
-    textoBoton: 'Herramientas',
-    urlBoton: '/categoria/herramientas-y-repuestos',
-    orden: 2,
-    imagenUrl: '',
-  },
-  {
-    _id: 'fallback-3',
-    titulo: 'Seguridad Agrícola',
-    subtitulo: 'EPP Certificado',
-    precio: 'Desde $15.990',
-    textoBoton: 'Protección',
-    urlBoton: '/categoria/seguridad-agricola',
-    orden: 3,
-    imagenUrl: '',
+    categoria: 'Fungicidas',
+    tagline: 'Protección fitosanitaria',
+    precio: 'Desde $18.990',
+    imagen: '/imagenes optimizadas/fungicidas.webp',
+    url: '/categoria/fungicidas',
   },
 ]
-
-let banners: PromoBanner[] = []
-
-try {
-  const data = await fetchPromoBanners()
-  banners = data && data.length > 0 ? data : fallbackBanners
-} catch {
-  banners = fallbackBanners
-}
 ---
 
-<section class="promo-section py-16 bg-gradient-to-b from-gray-50 to-white">
+<section class="py-20 bg-gray-50">
   <div class="large-container">
-    <div class="flex items-center justify-between mb-10">
-      <div>
-        <span class="text-sm font-bold text-[var(--accent-color)] uppercase tracking-widest mb-1 block">Ofertas</span>
-        <h2 class="text-3xl md:text-4xl font-bold font-title text-[#111]">Promociones Destacadas</h2>
-      </div>
-      <div class="hidden sm:block w-16 h-1 bg-[var(--accent-color)] rounded-full"></div>
+
+    <div class="flex items-end justify-between mb-10">
+      <h2 class="text-2xl md:text-3xl font-bold font-title text-[#111]">Líneas destacadas</h2>
+      <a href="/tienda" class="text-sm font-semibold text-[var(--theme-color)] hover:underline no-underline hidden sm:block">
+        Ver todo →
+      </a>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {
-        banners.map((banner, i) => (
-          <div class="promo-card group" style={`animation-delay: ${i * 0.1}s`}>
-            <a href={banner.urlBoton} class="block relative rounded-2xl overflow-hidden bg-white border border-gray-200 shadow-sm transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[var(--theme-color)]/10 hover:border-[var(--theme-color)]/30">
-              <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--theme-color)] via-[var(--theme-color-2)] to-[var(--accent-color)]"></div>
-              {
-                banner.imagenUrl && (
-                  <div class="overflow-hidden">
-                    <img src={banner.imagenUrl} alt={banner.titulo} width="400" height="192" loading="lazy" decoding="async" class="w-full h-48 object-cover transition-transform duration-700 group-hover:scale-110" />
-                  </div>
-                )
-              }
-              <div class="p-6">
-                <span class="inline-block text-xs font-semibold text-[var(--theme-color)] uppercase tracking-wider bg-[var(--theme-color)]/5 px-3 py-1 rounded-full mb-3">{banner.subtitulo}</span>
-                <h2 class="text-xl font-bold font-title text-[#111] mb-2 leading-tight">{banner.titulo}</h2>
-                <div class="flex items-baseline gap-1 mb-4">
-                  <span class="text-sm text-gray-500">Desde</span>
-                  <span class="text-2xl font-bold text-[var(--theme-color)]">{banner.precio}</span>
-                </div>
-                <div class="flex items-center justify-between pt-4 border-t border-gray-100">
-                  <span class="text-sm font-semibold text-[var(--theme-color)] group-hover:text-[var(--theme-color-3)] transition-colors">{banner.textoBoton}</span>
-                  <span class="w-10 h-10 rounded-full bg-[var(--theme-color)]/10 flex items-center justify-center text-[var(--theme-color)] transition-all duration-300 group-hover:bg-[var(--theme-color)] group-hover:text-white group-hover:scale-110">
-                    <i class="fas fa-arrow-right text-sm"></i>
-                  </span>
-                </div>
-              </div>
-            </a>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {lineas.map(linea => (
+        <a href={linea.url} class="group relative overflow-hidden rounded-xl no-underline block" style="min-height: 300px">
+          <img
+            src={linea.imagen}
+            alt={linea.categoria}
+            loading="lazy"
+            decoding="async"
+            class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
+
+          <div class="absolute bottom-0 left-0 right-0 p-5">
+            <p class="text-white/70 text-xs font-medium uppercase tracking-wider mb-1">{linea.precio}</p>
+            <h3 class="text-white font-bold text-lg mb-0.5">{linea.categoria}</h3>
+            <p class="text-white/65 text-sm">{linea.tagline}</p>
           </div>
-        ))
-      }
+        </a>
+      ))}
     </div>
+
+    <div class="mt-4 sm:hidden text-center">
+      <a href="/tienda" class="text-sm font-semibold text-[var(--theme-color)] no-underline">Ver todo →</a>
+    </div>
+
   </div>
 </section>

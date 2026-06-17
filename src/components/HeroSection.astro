@@ -1,26 +1,10 @@
 ---
-interface Props {
-  imageUrl?: string
-  titulo?: string
-  subtitulo?: string
-  textoBoton?: string
-  urlBoton?: string
-}
-
-const {
-  imageUrl = '/farmer-spraying-fertilizer-pest-control-and-plant-2026-03-04-17-37-40-utc.JPG',
-  titulo = 'Todo para tu cultivo',
-  subtitulo = 'Herbicidas, fungicidas, fertilizantes, equipamiento y más — entregamos a todo Chile con asesoría técnica especializada.',
-  textoBoton = 'Ver tienda',
-  urlBoton = '/tienda',
-} = Astro.props
 ---
 
-<section class="hero-section relative w-full overflow-hidden" style="min-height: clamp(480px, 90vh, 780px)">
-  <!-- Background image (Sanity o fallback local) -->
+<section class="hero-section relative w-full overflow-hidden" style="min-height: clamp(560px, 88vh, 800px)">
   <img
-    src={imageUrl}
-    alt="Insumos agrícolas Agro Farías"
+    src="/hero-campo-agrofarias.webp"
+    alt="Campos agrícolas Chile"
     width="1920"
     height="1080"
     fetchpriority="high"
@@ -28,75 +12,30 @@ const {
     decoding="async"
     class="absolute inset-0 w-full h-full object-cover object-center"
   />
+  <div class="absolute inset-0 bg-black/55"></div>
+  <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
 
-  <!-- Gradients -->
-  <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/10"></div>
-  <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+  <div class="relative z-10 large-container h-full flex items-center" style="min-height: clamp(560px, 88vh, 800px)">
+    <div class="max-w-xl py-20">
+      <p class="text-[var(--accent-color)] text-sm font-semibold uppercase tracking-widest mb-4">Insumos Agrícolas · Chile</p>
 
-  <!-- Content -->
-  <div class="relative z-10 large-container h-full flex items-center" style="min-height: clamp(480px, 90vh, 780px)">
-    <div class="max-w-2xl py-16">
-
-      <!-- Badge -->
-      <span class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white/90 text-xs font-semibold uppercase tracking-widest px-4 py-2 rounded-full mb-6">
-        <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent-color)] animate-pulse inline-block"></span>
-        Agro Farías — Insumos Agrícolas
-      </span>
-
-      <!-- Headline desde Sanity o fallback -->
-      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-5 font-title">
-        {titulo.includes(' ') ? (
-          <>
-            {titulo.split(' ').slice(0, -1).join(' ')}<br />
-            <span class="text-[var(--accent-color)]">{titulo.split(' ').slice(-1)[0]}</span>
-          </>
-        ) : (
-          <span class="text-[var(--accent-color)]">{titulo}</span>
-        )}
+      <h1 class="text-5xl sm:text-6xl font-bold text-white leading-tight mb-5 font-title">
+        Todo para<br />tu cultivo
       </h1>
 
-      <!-- Subtítulo desde Sanity o fallback -->
-      <p class="text-lg sm:text-xl text-white/80 mb-8 max-w-xl leading-relaxed">
-        {subtitulo}
+      <p class="text-white/70 text-lg mb-10 max-w-md leading-relaxed">
+        Herbicidas, fungicidas, fertilizantes y equipamiento con despacho a todo Chile.
       </p>
 
-      <!-- CTAs -->
-      <div class="flex flex-col sm:flex-row gap-3 mb-10">
-        <a
-          href={urlBoton}
-          class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-[var(--theme-color)] hover:bg-[var(--theme-color-3)] text-white font-bold rounded-xl text-base transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 no-underline"
-        >
-          {textoBoton}
+      <div class="flex flex-col sm:flex-row gap-3">
+        <a href="/tienda" class="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[var(--theme-color)] hover:bg-[var(--theme-color-3)] text-white font-semibold rounded-lg text-sm transition-colors no-underline">
+          Ver productos
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
-        <a
-          href="/cotizar"
-          class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/30 text-white font-semibold rounded-xl text-base transition-all duration-300 no-underline"
-        >
-          Solicitar cotización
+        <a href="/cotizar" class="inline-flex items-center justify-center px-8 py-3.5 border border-white/30 hover:border-white/60 text-white font-semibold rounded-lg text-sm transition-colors no-underline">
+          Cotizar ahora
         </a>
       </div>
-
-      <!-- Trust indicators -->
-      <div class="flex flex-wrap gap-x-6 gap-y-2">
-        <span class="flex items-center gap-1.5 text-white/70 text-sm">
-          <svg class="w-4 h-4 text-[var(--accent-color)] shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          Envío a todo Chile
-        </span>
-        <span class="flex items-center gap-1.5 text-white/70 text-sm">
-          <svg class="w-4 h-4 text-[var(--accent-color)] shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          Asesoría técnica
-        </span>
-        <span class="flex items-center gap-1.5 text-white/70 text-sm">
-          <svg class="w-4 h-4 text-[var(--accent-color)] shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          Productos certificados
-        </span>
-      </div>
     </div>
-  </div>
-
-  <!-- Scroll hint -->
-  <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 animate-bounce hidden sm:flex flex-col items-center gap-1">
-    <svg class="w-5 h-5 text-white/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
   </div>
 </section>
