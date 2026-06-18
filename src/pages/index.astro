@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import HeaderUpper from '../components/HeaderUpper.vue';
 import HeaderLower from '../components/HeaderLower.vue';
 import HeroSection from '../components/HeroSection.astro';
+import BenefitsStrip from '../components/BenefitsStrip.astro';
 import CategoryBentoSection from '../components/CategoryBentoSection.astro';
 import WhyUsSection from '../components/WhyUsSection.astro';
 import PromoBanners from '../components/PromoBanners.astro';
@@ -36,6 +37,8 @@ try {
   </header>
 
   <HeroSection />
+
+  <BenefitsStrip />
 
   <CategoryBentoSection categorias={categorias} />
 
