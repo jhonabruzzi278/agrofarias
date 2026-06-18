@@ -2,28 +2,28 @@
 import Layout from '../layouts/Layout.astro';
 import HeaderUpper from '../components/HeaderUpper.vue';
 import HeaderLower from '../components/HeaderLower.vue';
-import HeroSection from '../components/HeroSection.astro';
-import BenefitsStrip from '../components/BenefitsStrip.astro';
-import CategoryBentoSection from '../components/CategoryBentoSection.astro';
-import WhyUsSection from '../components/WhyUsSection.astro';
-import PromoBanners from '../components/PromoBanners.astro';
 import ProductGrid from '../components/ProductGrid.vue';
-import CTASection from '../components/CTASection.astro';
-import Footer from '../components/Footer.vue';
+import FooterMinimal from '../components/FooterMinimal.vue';
 import { fetchProductos, fetchCategorias } from '../lib/woocommerce';
 import type { ProductoWC } from '../lib/types';
 
 export const prerender = false;
 
-let productos: ProductoWC[] = [];
+let foliaresProductos: ProductoWC[] = [];
+let fertilizantesProductos: ProductoWC[] = [];
+let destacadosProductos: ProductoWC[] = [];
 let categorias: Array<{ id: number; name: string; slug: string; parent: number }> = [];
 
 try {
-  const [prods, cats] = await Promise.all([
-    fetchProductos({ perPage: 12 }),
+  const [foliares, fertilizantes, destacados, cats] = await Promise.all([
+    fetchProductos({ categoria: 'foliares', perPage: 5 }),
+    fetchProductos({ categoria: 'fertilizantes', perPage: 5 }),
+    fetchProductos({ perPage: 5 }),
     fetchCategorias(),
   ]);
-  productos = prods;
+  foliaresProductos = foliares;
+  fertilizantesProductos = fertilizantes;
+  destacadosProductos = destacados;
   categorias = cats;
 } catch (e) {
   console.error('[index] fetch error:', e);
@@ -36,21 +36,142 @@ try {
     <HeaderLower client:only="vue" />
   </header>
 
-  <HeroSection />
+  <!-- Separación visual entre navbar y banner -->
+  <div class="h-1 bg-gray-100"></div>
 
-  <BenefitsStrip />
+  <!-- ═══ HERO BANNER ═══ -->
+  <a href="/tienda" class="block w-full overflow-hidden" aria-label="Ver todos los productos en la tienda">
+    <img
+      src="/banner1.png"
+      alt="Agro Farías - Insumos Agrícolas"
+      width="1920"
+      height="1080"
+      fetchpriority="high"
+      loading="eager"
+      decoding="async"
+      class="w-full block hover:brightness-95 transition-[filter] duration-300"
+    />
+  </a>
 
-  <CategoryBentoSection categorias={categorias} />
+  <!-- ═══ FOLIARES ═══ -->
+  <ProductGrid
+    client:only="vue"
+    productos={foliaresProductos}
+    title="Foliares"
+    categoryLink="/categoria/foliares"
+    bgClass="bg-white"
+  />
 
-  <div class="products-placeholder min-h-[400px] contain-layout">
-    <ProductGrid client:only="vue" productos={productos} title="Productos Destacados" />
-  </div>
+  <!-- ═══ FERTILIZANTES ═══ -->
+  <ProductGrid
+    client:only="vue"
+    productos={fertilizantesProductos}
+    title="Fertilizantes"
+    categoryLink="/categoria/fertilizantes"
+    bgClass="bg-gray-50"
+  />
 
-  <WhyUsSection />
+  <!-- ═══ BANNER RODENTICIDAS (clickeable) ═══ -->
+  <a
+    href="/categoria/rodenticidas"
+    class="block w-full overflow-hidden"
+    aria-label="Ver productos rodenticidas"
+  >
+    <img
+      src="/BANNERRODONTICIDAS.jpg"
+      alt="Rodenticidas Agro Farías"
+      width="1920"
+      height="400"
+      loading="lazy"
+      decoding="async"
+      class="w-full block object-cover object-center hover:brightness-95 transition-[filter] duration-300"
+      style="height: clamp(120px, 32vw, 420px)"
+    />
+  </a>
 
-  <PromoBanners />
+  <!-- ═══ PRODUCTOS DESTACADOS (entre rodenticidas y el grid) ═══ -->
+  <ProductGrid
+    client:only="vue"
+    productos={destacadosProductos}
+    title="Productos Destacados"
+    categoryLink="/tienda"
+    bgClass="bg-white"
+  />
 
-  <CTASection />
+  <!-- ═══ GRID DE 3 IMÁGENES ═══ -->
+  <section class="py-10 bg-gray-50">
+    <div class="large-container">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6">
 
-  <Footer client:only="vue" categorias={categorias} />
+        <!-- Fertilizantes -->
+        <a
+          href="/categoria/fertilizantes"
+          class="block overflow-hidden rounded-xl shadow-sm hover:shadow-lg transition-shadow group relative"
+          aria-label="Ver fertilizantes"
+        >
+          <div class="aspect-[4/3] overflow-hidden">
+            <img
+              src="/flatlay-productos.webp"
+              alt="Fertilizantes"
+              width="600"
+              height="450"
+              loading="lazy"
+              decoding="async"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+          </div>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-4">
+            <span class="text-white font-bold text-lg drop-shadow">Fertilizantes</span>
+          </div>
+        </a>
+
+        <!-- Semillas -->
+        <a
+          href="/categoria/semillas"
+          class="block overflow-hidden rounded-xl shadow-sm hover:shadow-lg transition-shadow group relative"
+          aria-label="Ver semillas"
+        >
+          <div class="aspect-[4/3] overflow-hidden">
+            <img
+              src="/banner-maiz-mobile-515x412.jpg"
+              alt="Semillas"
+              width="515"
+              height="412"
+              loading="lazy"
+              decoding="async"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+          </div>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-4">
+            <span class="text-white font-bold text-lg drop-shadow">Semillas</span>
+          </div>
+        </a>
+
+        <!-- Foliares -->
+        <a
+          href="/categoria/foliares"
+          class="block overflow-hidden rounded-xl shadow-sm hover:shadow-lg transition-shadow group relative"
+          aria-label="Ver foliares"
+        >
+          <div class="aspect-[4/3] overflow-hidden">
+            <img
+              src="/banner-urea-desktop-515x412.jpg"
+              alt="Foliares"
+              width="515"
+              height="412"
+              loading="lazy"
+              decoding="async"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+          </div>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-4">
+            <span class="text-white font-bold text-lg drop-shadow">Foliares</span>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <FooterMinimal client:only="vue" categorias={categorias} />
 </Layout>
