@@ -1,11 +1,14 @@
 ---
 ---
 
-<section class="py-20 bg-white border-t border-gray-100">
+<section class="py-20 bg-[var(--theme-color-3)]">
   <div class="large-container">
 
+    <!-- Kicker label -->
+    <p class="text-white/50 text-xs font-semibold uppercase tracking-widest mb-10">Por qué elegir Agro Farías</p>
+
     <!-- Stats -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16 pb-16 border-b border-gray-100">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16 pb-16 border-b border-white/15">
       {[
         { num: '15+', label: 'Años de experiencia' },
         { num: '500+', label: 'Productos disponibles' },
@@ -13,8 +16,8 @@
         { num: '24h', label: 'Respuesta de cotización' },
       ].map(s => (
         <div class="text-center">
-          <div class="text-4xl font-bold text-[var(--theme-color)] font-title mb-1">{s.num}</div>
-          <div class="text-gray-500 text-sm">{s.label}</div>
+          <div class="text-4xl font-bold text-[var(--accent-color)] font-title mb-1">{s.num}</div>
+          <div class="text-white/70 text-sm">{s.label}</div>
         </div>
       ))}
     </div>
@@ -44,13 +47,13 @@
         },
       ].map(f => (
         <div>
-          <div class="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center mb-4">
-            <svg class="w-5 h-5 text-[var(--theme-color)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d={f.icon} />
             </svg>
           </div>
-          <h3 class="text-[#111] font-semibold text-base mb-1">{f.title}</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">{f.desc}</p>
+          <h3 class="text-white font-semibold text-base mb-1">{f.title}</h3>
+          <p class="text-white/70 text-sm leading-relaxed">{f.desc}</p>
         </div>
       ))}
     </div>
