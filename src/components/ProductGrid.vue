@@ -1,9 +1,9 @@
 <template>
-  <section class="shop-section py-20 bg-white">
+  <section class="shop-section py-12 bg-white">
     <div class="large-container">
-      <div class="flex items-center justify-between mb-12" v-if="title">
+      <div class="flex items-center justify-between mb-6" v-if="title">
         <div class="sec-title mb-0">
-          <h2 class="text-3xl md:text-4xl font-bold font-title text-[#111]">{{ title }}</h2>
+          <h2 class="text-xl md:text-2xl font-semibold text-gray-800">{{ title }}</h2>
         </div>
         <a v-if="showAllLink" href="/tienda" class="hidden sm:inline-flex theme-btn btn-one">
           Ver todos

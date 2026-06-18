@@ -17,7 +17,7 @@
       <div class="flex items-center gap-4">
         <span class="flex items-center gap-1.5 text-white/60 text-xs">
           <i class="fas fa-clock text-[10px]"></i>
-          Lun-Vie 8:00-18:00 · Sáb 9:00-13:00
+          Lun-Vie 8:00 - 17:30
         </span>
         <div class="flex items-center gap-2 pl-4 border-l border-white/20">
           <a :href="SITE_CONFIG.social.facebook" target="_blank" rel="noopener noreferrer" class="w-5 h-5 flex items-center justify-center text-white/60 hover:text-white transition-colors" aria-label="Facebook">

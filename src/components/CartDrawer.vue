@@ -6,8 +6,8 @@
     :aria-label="'Ver cotización, ' + totalItems + ' productos'"
     @click="open = true"
   >
-    <div class="w-11 h-11 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 transition-all duration-200">
-      <i class="fas fa-shopping-cart text-lg text-white group-hover:scale-110 transition-transform"></i>
+    <div class="w-11 h-11 flex items-center justify-center rounded-xl bg-gray-100 hover:bg-theme/10 transition-all duration-200">
+      <i class="fas fa-shopping-cart text-lg text-[var(--theme-color)] group-hover:scale-110 transition-transform"></i>
     </div>
     <Transition name="bounce">
       <span
