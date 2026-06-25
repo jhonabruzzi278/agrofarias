@@ -19,11 +19,13 @@ export default defineConfig({
     isr: {
       expiration: 3600,
       // El ISR cachea por path e IGNORA el query string y las cookies. Estas
-      // rutas dependen de query params (tienda) o de auth/cookies (APIs), así
-      // que NO deben cachearse: hacerlo rompe paginación/búsqueda/filtros y
-      // podría servir respuestas de API saltándose el middleware de sesión.
+      // rutas dependen de query params (tienda), de auth/cookies (APIs y panel
+      // admin) o son 100% dinámicas, así que NO deben cachearse: hacerlo rompe
+      // paginación/búsqueda/filtros, podría servir respuestas de API saltándose
+      // el middleware de sesión, y en /admin sirve HTML stale que referencia
+      // assets de un deploy anterior (404 en chunks como jspdf tras un deploy).
       // Las páginas SEO por path (/producto, /categoria, /) sí siguen con ISR.
-      exclude: [/^\/tienda/, /^\/api\//],
+      exclude: [/^\/tienda/, /^\/api\//, /^\/admin/],
     },
   }),
   vite: {
