@@ -3,6 +3,8 @@ export const prerender = false;
 import type { APIContext } from 'astro';
 import { checkRateLimit, getClientIP } from '../../../lib/security';
 import { SESSION_COOKIE, verifySession } from '../../../lib/session';
+import { fetchAllProductos } from '../../../lib/woocommerce';
+import { filterProductos, toProductoLite } from '../../../lib/productFilter';
 
 export async function GET({ request, cookies }: APIContext) {
   if (!(await verifySession(cookies.get(SESSION_COOKIE)?.value))) {
@@ -35,53 +37,22 @@ export async function GET({ request, cookies }: APIContext) {
       });
     }
 
-    const wpUrl = import.meta.env.WORDPRESS_URL as string;
-    const wcKey = import.meta.env.WC_CONSUMER_KEY as string;
-    const wcSecret = import.meta.env.WC_CONSUMER_SECRET as string;
+    // Misma fuente que la tienda pública: catálogo cacheado (L1/L2) + filtro
+    // compartido. Así ambos extraen los productos de la misma forma y con la
+    // misma semántica de búsqueda (nombre + descripción corta).
+    const categoriaId = category ? Number(category) : undefined;
+    const productos = await fetchAllProductos();
 
-    if (!wpUrl || !wcKey || !wcSecret) {
-      return new Response(JSON.stringify({ error: 'Servicio no disponible' }), {
-        status: 503,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-
-    const auth = Buffer.from(`${wcKey}:${wcSecret}`).toString('base64');
-
-    // Búsqueda por texto: 30 resultados. Navegación por categoría: hasta 100
-    // ordenados alfabéticamente para listar el catálogo de esa familia.
-    const params = new URLSearchParams({
-      status: 'publish',
-      per_page: search ? '30' : '100',
-    });
-    if (search) params.set('search', search);
-    if (category) params.set('category', category);
-    if (!search) {
-      params.set('orderby', 'title');
-      params.set('order', 'asc');
-    }
-
-    const apiUrl = `${wpUrl}/wp-json/wc/v3/products?${params.toString()}`;
-
-    const res = await fetch(apiUrl, {
-      headers: { 'Authorization': `Basic ${auth}`, 'Content-Type': 'application/json' },
+    // Búsqueda por texto: hasta 30 resultados. Navegación por categoría:
+    // hasta 100 ordenados alfabéticamente para listar la familia completa.
+    const filtrados = filterProductos(productos, {
+      search,
+      categoriaId: Number.isFinite(categoriaId) ? categoriaId : undefined,
+      sort: search ? 'default' : 'name-asc',
     });
 
-    if (!res.ok) {
-      console.error('[productos] WooCommerce error:', res.status);
-      return new Response(JSON.stringify({ error: 'Error al buscar productos' }), {
-        status: 502,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-
-    const productos = await res.json();
-    const data = productos.map((p: Record<string, unknown>) => ({
-      id: p.id,
-      name: p.name,
-      slug: p.slug,
-      image: ((p.images as Array<{ src: string }>)?.[0]?.src) || '',
-    }));
+    const limite = search ? 30 : 100;
+    const data = filtrados.slice(0, limite).map(toProductoLite);
 
     return new Response(JSON.stringify({ success: true, data }), {
       status: 200,

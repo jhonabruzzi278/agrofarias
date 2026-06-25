@@ -5,7 +5,9 @@ import HeaderLower from '../../components/HeaderLower.vue';
 import QuoteButton from '../../components/QuoteButton.vue';
 import Footer from '../../components/Footer.vue';
 import { fetchAllProductos, fetchCategorias } from '../../lib/woocommerce';
+import { filterProductos } from '../../lib/productFilter';
 import type { ProductoWC } from '../../lib/types';
+import type { ProductFilterOpts } from '../../lib/productFilter';
 
 export const prerender = false;
 
@@ -33,37 +35,12 @@ try {
   productos = [];
 }
 
-let filteredProducts = productos.filter(p => {
-  if (categoriaSlug) {
-    if (!p.categories?.some(c => c.slug === categoriaSlug)) return false;
-  }
-  if (searchQuery) {
-    const q = searchQuery.toLowerCase();
-    return p.name.toLowerCase().includes(q) || stripHtml(p.short_description).toLowerCase().includes(q);
-  }
-  return true;
+const filteredProducts = filterProductos(productos, {
+  search: searchQuery,
+  categoriaSlug,
+  stock: stockParam === 'available' ? 'available' : '',
+  sort: ['name-asc', 'name-desc', 'stock'].includes(sortParam) ? (sortParam as ProductFilterOpts['sort']) : 'default',
 });
-
-if (stockParam === 'available') {
-  filteredProducts = filteredProducts.filter(p => p.stock_status === 'instock');
-}
-
-if (sortParam === 'name-asc') {
-  filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
-} else if (sortParam === 'name-desc') {
-  filteredProducts.sort((a, b) => b.name.localeCompare(a.name));
-} else if (sortParam === 'stock') {
-  filteredProducts.sort((a, b) => {
-    if (a.stock_status === 'instock' && b.stock_status !== 'instock') return -1;
-    if (a.stock_status !== 'instock' && b.stock_status === 'instock') return 1;
-    return 0;
-  });
-}
-
-function stripHtml(html?: string): string {
-  if (!html) return ''
-  return html.replace(/<[^>]*>/g, '')
-}
 
 const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE));
 // `?page=abc` => parseInt NaN; clamp a 1 para no romper el slice ni mostrar "Página NaN".
