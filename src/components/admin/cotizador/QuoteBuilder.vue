@@ -66,6 +66,7 @@
     <!-- Datos del cliente -->
     <div class="border-t border-gray-200 pt-5 space-y-4">
       <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Datos del cliente</h2>
+      <ClientPicker @select="onClientSelect" @create="$emit('create-client')" />
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div>
           <label class="block text-xs font-medium text-gray-600 mb-1">Nombre *</label>
@@ -106,7 +107,8 @@
 
 <script setup lang="ts">
 import { fp } from './formatters'
-import type { QuoteLineItem } from './types'
+import ClientPicker from './ClientPicker.vue'
+import type { QuoteLineItem, ClientOption } from './types'
 
 defineProps<{
   items: QuoteLineItem[]
@@ -123,6 +125,7 @@ defineEmits<{
   (e: 'change-price', index: number, value: number): void
   (e: 'remove', index: number): void
   (e: 'send'): void
+  (e: 'create-client'): void
 }>()
 
 const cN = defineModel<string>('cN', { required: true })
@@ -130,4 +133,12 @@ const cE = defineModel<string>('cE', { required: true })
 const cP = defineModel<string>('cP', { required: true })
 const cC = defineModel<string>('cC', { required: true })
 const cM = defineModel<string>('cM', { required: true })
+
+// Al elegir un cliente registrado, autocompletamos nombre/email/teléfono.
+// Los campos siguen siendo editables y la empresa queda manual (WC no la guarda).
+function onClientSelect(c: ClientOption) {
+  cN.value = `${c.first_name || ''} ${c.last_name || ''}`.trim()
+  cE.value = c.email || ''
+  cP.value = c.billing?.phone || ''
+}
 </script>

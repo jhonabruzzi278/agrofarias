@@ -35,6 +35,15 @@ export interface QuoteProduct {
   total: number | string
 }
 
+/** Cliente registrado (WooCommerce customer) para el selector de cotización. */
+export interface ClientOption {
+  id: number
+  first_name: string
+  last_name: string
+  email: string
+  billing?: { phone?: string }
+}
+
 /** Cotización recibida tal como la devuelve `/api/cotizador-interno/quotes`. */
 export interface ReceivedQuote {
   id: number

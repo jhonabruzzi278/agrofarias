@@ -222,7 +222,8 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
 
-const emit = defineEmits<{ (e: 'unauthorized'): void }>()
+const props = defineProps<{ autoCreate?: boolean }>()
+const emit = defineEmits<{ (e: 'unauthorized'): void; (e: 'create-consumed'): void }>()
 
 const H = { 'Content-Type': 'application/json' }
 
@@ -291,7 +292,15 @@ async function loadCustomers() {
   } catch {} finally { loading.value = false }
 }
 
-onMounted(() => loadCustomers())
+onMounted(() => {
+  loadCustomers()
+  // Si entramos al tab por el atajo "Nuevo cliente" del cotizador, abrimos el
+  // modal de creación una sola vez y avisamos para que el padre resetee el flag.
+  if (props.autoCreate) {
+    openCreate()
+    emit('create-consumed')
+  }
+})
 watch([page, perPage], () => loadCustomers())
 watch(search, () => {
   if (debounceTimer) clearTimeout(debounceTimer)

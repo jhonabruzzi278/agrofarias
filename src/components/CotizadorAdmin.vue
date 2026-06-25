@@ -66,13 +66,14 @@
               @change-price="cu"
               @remove="ri"
               @send="send"
+              @create-client="goCreateClient"
             />
           </div>
         </div>
 
         <!-- OTROS TABS -->
         <div v-if="tab==='productos'"><AdminProductos @unauthorized="authed = false" /></div>
-        <div v-if="tab==='clientes'"><AdminClientes @unauthorized="authed = false" /></div>
+        <div v-if="tab==='clientes'"><AdminClientes :autoCreate="autoCreateClient" @unauthorized="authed = false" @create-consumed="autoCreateClient = false" /></div>
         <div v-if="tab==='config'"><AdminConfiguracion /></div>
 
         <!-- COTIZACIONES RECIBIDAS -->
@@ -118,6 +119,14 @@ import { useReceivedQuotes } from './admin/cotizador/useReceivedQuotes'
 import type { SearchProduct } from './admin/cotizador/types'
 
 const tab = ref<'nueva' | 'recibidas' | 'productos' | 'clientes' | 'config'>('nueva')
+
+// Cuando desde "Nueva cotización" se pide crear un cliente: vamos al tab
+// Clientes y abrimos el modal de creación (one-shot, lo resetea AdminClientes).
+const autoCreateClient = ref(false)
+function goCreateClient() {
+  autoCreateClient.value = true
+  tab.value = 'clientes'
+}
 
 // --- Cotizaciones recibidas (también provee la carga/probe de sesión) ---
 const {
