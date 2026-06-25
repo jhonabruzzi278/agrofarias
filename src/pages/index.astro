@@ -4,7 +4,7 @@ import HeaderUpper from '../components/HeaderUpper.vue';
 import HeaderLower from '../components/HeaderLower.vue';
 import ProductGrid from '../components/ProductGrid.vue';
 import Footer from '../components/Footer.vue';
-import { fetchProductosPorCategoria, fetchCategorias } from '../lib/woocommerce';
+import { fetchAllProductos, fetchCategorias } from '../lib/woocommerce';
 import type { ProductoWC } from '../lib/types';
 
 export const prerender = false;
@@ -15,23 +15,29 @@ let fertilizantesProductos: ProductoWC[] = [];
 let categorias: Array<{ id: number; name: string; slug: string; parent: number }> = [];
 
 try {
-  // Primero obtenemos categorías para resolver los IDs numéricos
-  // (WooCommerce exige ID en el filtro &category=, no el slug)
-  categorias = await fetchCategorias();
+  [categorias] = await Promise.all([fetchCategorias()]);
+  const todosProductos = await fetchAllProductos();
 
-  const foliaresId = categorias.find(c => c.slug === 'foliares')?.id;
-  const rodenticidaId = categorias.find(c => c.slug === 'rodenticidas')?.id;
-  const fertilizantesId = categorias.find(c => c.slug === 'fertilizantes')?.id;
+  // Devuelve los IDs de una categoría padre + todos sus hijos directos,
+  // para que el filtro en memoria sea equivalente al filtro &category= de WC.
+  function resolveIds(slug: string): number[] {
+    const parent = categorias.find(c => c.slug === slug);
+    if (!parent) return [];
+    const children = categorias.filter(c => c.parent === parent.id).map(c => c.id);
+    return [parent.id, ...children];
+  }
 
-  const [foliares, rodenticidas, fertilizantes] = await Promise.all([
-    foliaresId ? fetchProductosPorCategoria(foliaresId, 5) : Promise.resolve([]),
-    rodenticidaId ? fetchProductosPorCategoria(rodenticidaId, 5) : Promise.resolve([]),
-    fertilizantesId ? fetchProductosPorCategoria(fertilizantesId, 5) : Promise.resolve([]),
-  ]);
+  function pickFromCategory(slug: string, limit: number): ProductoWC[] {
+    const ids = resolveIds(slug);
+    if (ids.length === 0) return [];
+    return todosProductos
+      .filter(p => p.categories?.some(c => ids.includes(c.id)))
+      .slice(0, limit);
+  }
 
-  foliaresProductos = foliares;
-  rodenticidaProductos = rodenticidas;
-  fertilizantesProductos = fertilizantes;
+  foliaresProductos = pickFromCategory('foliares', 5);
+  rodenticidaProductos = pickFromCategory('rodenticidas', 5);
+  fertilizantesProductos = pickFromCategory('fertilizantes', 5);
 } catch (e) {
   console.error('[index] fetch error:', e);
 }
