@@ -203,7 +203,7 @@ export async function fetchCategorias(): Promise<CategoriaWC[]> {
     return kvCached
   }
 
-  const url = `${WC_API}/products/categories?per_page=50`
+  const url = `${WC_API}/products/categories?per_page=100&orderby=name&order=asc&hide_empty=false`
   const data = await (await wcFetch(url)).json()
   setCache('categorias', data)
   await kvSet('wc:categorias', data)

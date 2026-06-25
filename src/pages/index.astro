@@ -3,28 +3,35 @@ import Layout from '../layouts/Layout.astro';
 import HeaderUpper from '../components/HeaderUpper.vue';
 import HeaderLower from '../components/HeaderLower.vue';
 import ProductGrid from '../components/ProductGrid.vue';
-import FooterMinimal from '../components/FooterMinimal.vue';
-import { fetchProductos, fetchCategorias } from '../lib/woocommerce';
+import Footer from '../components/Footer.vue';
+import { fetchProductosPorCategoria, fetchCategorias } from '../lib/woocommerce';
 import type { ProductoWC } from '../lib/types';
 
 export const prerender = false;
 
 let foliaresProductos: ProductoWC[] = [];
+let rodenticidaProductos: ProductoWC[] = [];
 let fertilizantesProductos: ProductoWC[] = [];
-let destacadosProductos: ProductoWC[] = [];
 let categorias: Array<{ id: number; name: string; slug: string; parent: number }> = [];
 
 try {
-  const [foliares, fertilizantes, destacados, cats] = await Promise.all([
-    fetchProductos({ categoria: 'foliares', perPage: 5 }),
-    fetchProductos({ categoria: 'fertilizantes', perPage: 5 }),
-    fetchProductos({ perPage: 5 }),
-    fetchCategorias(),
+  // Primero obtenemos categorías para resolver los IDs numéricos
+  // (WooCommerce exige ID en el filtro &category=, no el slug)
+  categorias = await fetchCategorias();
+
+  const foliaresId = categorias.find(c => c.slug === 'foliares')?.id;
+  const rodenticidaId = categorias.find(c => c.slug === 'rodenticidas')?.id;
+  const fertilizantesId = categorias.find(c => c.slug === 'fertilizantes')?.id;
+
+  const [foliares, rodenticidas, fertilizantes] = await Promise.all([
+    foliaresId ? fetchProductosPorCategoria(foliaresId, 5) : Promise.resolve([]),
+    rodenticidaId ? fetchProductosPorCategoria(rodenticidaId, 5) : Promise.resolve([]),
+    fertilizantesId ? fetchProductosPorCategoria(fertilizantesId, 5) : Promise.resolve([]),
   ]);
+
   foliaresProductos = foliares;
+  rodenticidaProductos = rodenticidas;
   fertilizantesProductos = fertilizantes;
-  destacadosProductos = destacados;
-  categorias = cats;
 } catch (e) {
   console.error('[index] fetch error:', e);
 }
@@ -36,80 +43,119 @@ try {
     <HeaderLower client:only="vue" />
   </header>
 
-  <!-- Separación visual entre navbar y banner -->
   <div class="h-1 bg-gray-100"></div>
 
-  <!-- ═══ HERO BANNER ═══ -->
-  <a href="/tienda" class="block w-full overflow-hidden" aria-label="Ver todos los productos en la tienda">
-    <img
-      src="/banner1.png"
-      alt="Agro Farías - Insumos Agrícolas"
-      width="1920"
-      height="1080"
-      fetchpriority="high"
-      loading="eager"
-      decoding="async"
-      class="w-full block hover:brightness-95 transition-[filter] duration-300"
-    />
+  <!-- ═══ HERO: BANNER FOLIARES ═══ -->
+  <a
+    href="/categoria/foliares"
+    class="banner-link group"
+    aria-label="Ver productos foliares"
+  >
+    <div class="banner-hero-ratio relative overflow-hidden">
+      <img
+        src="/bannerfoliares.webp"
+        alt="Foliares - Agro Farías"
+        width="1920"
+        height="600"
+        fetchpriority="high"
+        loading="eager"
+        decoding="async"
+        class="banner-img"
+      />
+      <div class="banner-overlay" aria-hidden="true"></div>
+      <div class="banner-cta" aria-hidden="true">
+        Ver productos
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+    </div>
   </a>
 
-  <!-- ═══ FOLIARES ═══ -->
+  <!-- ═══ FOLIARES DESTACADOS ═══ -->
   <ProductGrid
     client:only="vue"
     productos={foliaresProductos}
-    title="Foliares"
+    title="Foliares Destacados"
     categoryLink="/categoria/foliares"
     bgClass="bg-white"
   />
 
-  <!-- ═══ FERTILIZANTES ═══ -->
+  <!-- ═══ BANNER RODENTICIDAS ═══ -->
+  <a
+    href="/categoria/rodenticidas"
+    class="banner-link group"
+    aria-label="Ver productos rodenticidas"
+  >
+    <div class="banner-mid-ratio relative overflow-hidden">
+      <img
+        src="/banner-rodenticidas.jpg"
+        alt="Rodenticidas - Agro Farías"
+        width="1920"
+        height="480"
+        loading="lazy"
+        decoding="async"
+        class="banner-img"
+      />
+      <div class="banner-overlay" aria-hidden="true"></div>
+      <div class="banner-cta" aria-hidden="true">
+        Ver productos
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+    </div>
+  </a>
+
+  <!-- ═══ RODENTICIDAS DESTACADOS ═══ -->
   <ProductGrid
     client:only="vue"
-    productos={fertilizantesProductos}
-    title="Fertilizantes"
-    categoryLink="/categoria/fertilizantes"
+    productos={rodenticidaProductos}
+    title="Rodenticidas Destacados"
+    categoryLink="/categoria/rodenticidas"
     bgClass="bg-gray-50"
   />
 
-  <!-- ═══ BANNER RODENTICIDAS (clickeable) ═══ -->
+  <!-- ═══ BANNER FERTILIZANTES ═══ -->
   <a
-    href="/categoria/rodenticidas"
-    class="block w-full overflow-hidden"
-    aria-label="Ver productos rodenticidas"
+    href="/categoria/fertilizantes"
+    class="banner-link group"
+    aria-label="Ver productos fertilizantes"
   >
-    <img
-      src="/BANNERRODONTICIDAS.jpg"
-      alt="Rodenticidas Agro Farías"
-      width="1920"
-      height="400"
-      loading="lazy"
-      decoding="async"
-      class="w-full block object-cover object-center hover:brightness-95 transition-[filter] duration-300"
-      style="height: clamp(120px, 32vw, 420px)"
-    />
+    <div class="banner-mid-ratio relative overflow-hidden">
+      <img
+        src="/bannerfertilizantes.webp"
+        alt="Fertilizantes - Agro Farías"
+        width="1920"
+        height="480"
+        loading="lazy"
+        decoding="async"
+        class="banner-img"
+      />
+      <div class="banner-overlay" aria-hidden="true"></div>
+      <div class="banner-cta" aria-hidden="true">
+        Ver productos
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+    </div>
   </a>
 
-  <!-- ═══ PRODUCTOS DESTACADOS (entre rodenticidas y el grid) ═══ -->
+  <!-- ═══ FERTILIZANTES DESTACADOS ═══ -->
   <ProductGrid
     client:only="vue"
-    productos={destacadosProductos}
-    title="Productos Destacados"
-    categoryLink="/tienda"
+    productos={fertilizantesProductos}
+    title="Fertilizantes Destacados"
+    categoryLink="/categoria/fertilizantes"
     bgClass="bg-white"
   />
 
-  <!-- ═══ GRID DE 3 IMÁGENES ═══ -->
+  <!-- ═══ GRID DE 3 CATEGORÍAS ═══ -->
   <section class="py-10 bg-gray-50">
     <div class="large-container">
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6">
 
-        <!-- Fertilizantes -->
         <a
           href="/categoria/fertilizantes"
-          class="block overflow-hidden rounded-xl shadow-sm hover:shadow-lg transition-shadow group relative"
+          class="cat-card group"
           aria-label="Ver fertilizantes"
         >
-          <div class="aspect-[4/3] overflow-hidden">
+          <div class="aspect-[4/3] overflow-hidden rounded-xl">
             <img
               src="/flatlay-productos.webp"
               alt="Fertilizantes"
@@ -117,21 +163,20 @@ try {
               height="450"
               loading="lazy"
               decoding="async"
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
             />
           </div>
-          <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-4">
-            <span class="text-white font-bold text-lg drop-shadow">Fertilizantes</span>
+          <div class="absolute inset-0 rounded-xl bg-gradient-to-t from-black/60 via-black/10 to-transparent flex items-end p-4">
+            <span class="text-white font-bold text-lg drop-shadow-md">Fertilizantes</span>
           </div>
         </a>
 
-        <!-- Semillas -->
         <a
           href="/categoria/semillas"
-          class="block overflow-hidden rounded-xl shadow-sm hover:shadow-lg transition-shadow group relative"
+          class="cat-card group"
           aria-label="Ver semillas"
         >
-          <div class="aspect-[4/3] overflow-hidden">
+          <div class="aspect-[4/3] overflow-hidden rounded-xl">
             <img
               src="/banner-maiz-mobile-515x412.jpg"
               alt="Semillas"
@@ -139,21 +184,20 @@ try {
               height="412"
               loading="lazy"
               decoding="async"
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
             />
           </div>
-          <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-4">
-            <span class="text-white font-bold text-lg drop-shadow">Semillas</span>
+          <div class="absolute inset-0 rounded-xl bg-gradient-to-t from-black/60 via-black/10 to-transparent flex items-end p-4">
+            <span class="text-white font-bold text-lg drop-shadow-md">Semillas</span>
           </div>
         </a>
 
-        <!-- Foliares -->
         <a
           href="/categoria/foliares"
-          class="block overflow-hidden rounded-xl shadow-sm hover:shadow-lg transition-shadow group relative"
+          class="cat-card group"
           aria-label="Ver foliares"
         >
-          <div class="aspect-[4/3] overflow-hidden">
+          <div class="aspect-[4/3] overflow-hidden rounded-xl">
             <img
               src="/banner-urea-desktop-515x412.jpg"
               alt="Foliares"
@@ -161,11 +205,11 @@ try {
               height="412"
               loading="lazy"
               decoding="async"
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
             />
           </div>
-          <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-4">
-            <span class="text-white font-bold text-lg drop-shadow">Foliares</span>
+          <div class="absolute inset-0 rounded-xl bg-gradient-to-t from-black/60 via-black/10 to-transparent flex items-end p-4">
+            <span class="text-white font-bold text-lg drop-shadow-md">Foliares</span>
           </div>
         </a>
 
@@ -173,5 +217,148 @@ try {
     </div>
   </section>
 
-  <FooterMinimal client:only="vue" categorias={categorias} />
+  <Footer client:only="vue" categorias={categorias} />
 </Layout>
+
+<style>
+  /* ── Banner links ───────────────────────────────────────── */
+  .banner-link {
+    display: block;
+    width: 100%;
+    cursor: pointer;
+    text-decoration: none;
+    /* Focus ring visible solo para teclado */
+    outline: none;
+  }
+
+  .banner-link:focus-visible {
+    outline: 3px solid var(--accent-color);
+    outline-offset: -3px;
+  }
+
+  /* Hero: 4:3 en móvil → 16:7 en tablet → 16:5 en desktop */
+  .banner-hero-ratio {
+    aspect-ratio: 4 / 3;
+  }
+
+  @media (min-width: 640px) {
+    .banner-hero-ratio {
+      aspect-ratio: 16 / 7;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .banner-hero-ratio {
+      aspect-ratio: 16 / 5;
+    }
+  }
+
+  /* Intermedio: 5:2 en móvil → 21:5 en desktop */
+  .banner-mid-ratio {
+    aspect-ratio: 5 / 2;
+  }
+
+  @media (min-width: 640px) {
+    .banner-mid-ratio {
+      aspect-ratio: 21 / 5;
+    }
+  }
+
+  /* Imagen que llena el contenedor con aspect-ratio */
+  .banner-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    /* Zoom sutil al hacer hover */
+    transition: transform 0.5s ease, filter 0.3s ease;
+    will-change: transform;
+  }
+
+  .banner-link:hover .banner-img,
+  .banner-link:focus-visible .banner-img {
+    transform: scale(1.03);
+    filter: brightness(0.92);
+  }
+
+  /* Capa oscura sobre la imagen al hover */
+  .banner-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgb(0 0 0 / 0);
+    transition: background 0.3s ease;
+    pointer-events: none;
+  }
+
+  .banner-link:hover .banner-overlay,
+  .banner-link:focus-visible .banner-overlay {
+    background: rgb(0 0 0 / 0.08);
+  }
+
+  /* Pill CTA que aparece al hover */
+  .banner-cta {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--accent-color);
+    color: #111;
+    font-weight: 700;
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    box-shadow: 0 4px 16px rgb(0 0 0 / 0.25);
+    pointer-events: none;
+    /* Animación: aparece deslizándose desde abajo */
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+
+  @media (min-width: 640px) {
+    .banner-cta {
+      bottom: 1.5rem;
+      right: 2rem;
+      font-size: 1rem;
+      padding: 0.625rem 1.25rem;
+    }
+  }
+
+  .banner-link:hover .banner-cta,
+  .banner-link:focus-visible .banner-cta {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── Category cards ─────────────────────────────────────── */
+  .cat-card {
+    display: block;
+    position: relative;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgb(0 0 0 / 0.08);
+    cursor: pointer;
+    text-decoration: none;
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+    outline: none;
+  }
+
+  .cat-card:hover {
+    box-shadow: 0 8px 24px rgb(0 0 0 / 0.16);
+    transform: translateY(-2px);
+  }
+
+  .cat-card:focus-visible {
+    outline: 3px solid var(--accent-color);
+    outline-offset: 3px;
+  }
+
+  /* Previene que el aspect-ratio interno sea sobrepasado por el overflow hidden del padre */
+  .cat-card .aspect-\[4\/3\] {
+    border-radius: inherit;
+  }
+</style>

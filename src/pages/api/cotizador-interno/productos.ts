@@ -23,7 +23,17 @@ export async function GET({ request, cookies }: APIContext) {
 
   try {
     const url = new URL(request.url);
-    const search = url.searchParams.get('search') || '';
+    const search = (url.searchParams.get('search') || '').trim();
+    const category = (url.searchParams.get('category') || '').trim();
+
+    // Sin término ni categoría no se busca nada (evita traer todo el catálogo
+    // sin intención y deja el panel limpio al abrir).
+    if (!search && !category) {
+      return new Response(JSON.stringify({ success: true, data: [] }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
 
     const wpUrl = import.meta.env.WORDPRESS_URL as string;
     const wcKey = import.meta.env.WC_CONSUMER_KEY as string;
@@ -37,9 +47,21 @@ export async function GET({ request, cookies }: APIContext) {
     }
 
     const auth = Buffer.from(`${wcKey}:${wcSecret}`).toString('base64');
-    const apiUrl = search
-      ? `${wpUrl}/wp-json/wc/v3/products?search=${encodeURIComponent(search)}&per_page=20&status=publish`
-      : `${wpUrl}/wp-json/wc/v3/products?per_page=100&page=1&status=publish`;
+
+    // Búsqueda por texto: 30 resultados. Navegación por categoría: hasta 100
+    // ordenados alfabéticamente para listar el catálogo de esa familia.
+    const params = new URLSearchParams({
+      status: 'publish',
+      per_page: search ? '30' : '100',
+    });
+    if (search) params.set('search', search);
+    if (category) params.set('category', category);
+    if (!search) {
+      params.set('orderby', 'title');
+      params.set('order', 'asc');
+    }
+
+    const apiUrl = `${wpUrl}/wp-json/wc/v3/products?${params.toString()}`;
 
     const res = await fetch(apiUrl, {
       headers: { 'Authorization': `Basic ${auth}`, 'Content-Type': 'application/json' },

@@ -64,12 +64,17 @@
         <div v-show="tab==='nueva'" class="grid grid-cols-1 lg:grid-cols-5 gap-6">
           <!-- LEFT: Search -->
           <div class="lg:col-span-2 space-y-4">
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-              <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Buscar producto</h2>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 space-y-3">
+              <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Buscar producto</h2>
               <input v-model="search" type="text" placeholder="Escribí el nombre del producto..." class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition text-sm" />
-              <div v-if="search.trim()" class="mt-1 text-xs text-gray-400">{{ searching ? 'Buscando...' : searchResults.length + ' resultado' + (searchResults.length !== 1 ? 's' : '') }}</div>
+              <select v-model="selectedCat" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition text-sm">
+                <option value="">Todas las categorías</option>
+                <option v-for="c in categories" :key="c.id" :value="String(c.id)">{{ c.name }} ({{ c.count }})</option>
+              </select>
+              <div v-if="search.trim() || selectedCat" class="text-xs text-gray-400">{{ searching ? 'Buscando...' : searchResults.length + ' resultado' + (searchResults.length !== 1 ? 's' : '') }}</div>
+              <p v-else class="text-xs text-gray-400">Escribí un nombre o elegí una categoría para listar productos.</p>
             </div>
-            <div v-if="search.trim() && !searching" class="space-y-2 overflow-y-auto max-h-[calc(100vh-320px)]">
+            <div v-if="(search.trim() || selectedCat) && !searching" class="space-y-2 overflow-y-auto max-h-[calc(100vh-360px)]">
               <div v-if="searchResults.length === 0" class="text-center text-gray-400 py-10 text-sm">No se encontraron productos.</div>
               <div v-for="p in searchResults" :key="p.id" class="flex items-center gap-3 bg-white rounded-lg border border-gray-200 p-3 shadow-sm hover:shadow transition cursor-pointer">
                 <img :src="p.image" :alt="p.name" class="w-12 h-12 rounded-lg object-cover bg-gray-100 shrink-0" loading="lazy" decoding="async" />
@@ -275,6 +280,8 @@ const tab = ref<'nueva' | 'recibidas' | 'productos' | 'clientes' | 'config'>('nu
 const searchResults = ref<any[]>([])
 const allQ = ref<any[]>([])
 const search = ref('')
+const selectedCat = ref('')
+const categories = ref<{ id: number; name: string; count: number }[]>([])
 const items = ref<{ d: any; q: number; u: number }[]>([])
 const cN = ref(''); const cE = ref(''); const cP = ref(''); const cC = ref(''); const cM = ref('')
 const sending = ref(false)
@@ -303,6 +310,7 @@ async function loadQuotes(): Promise<boolean> {
 onMounted(async () => {
   try {
     authed.value = await loadQuotes()
+    if (authed.value) loadCategories()
   } catch {
     authed.value = false
   } finally {
@@ -320,6 +328,7 @@ async function login() {
       password.value = ''
       authed.value = true
       await loadQuotes().catch(() => {})
+      loadCategories()
     } else {
       loginError.value = 'Contraseña incorrecta'
     }
@@ -335,20 +344,34 @@ async function logout() {
   authed.value = false
 }
 
-function doSearch(term: string) {
-  if (!term.trim()) { searchResults.value = []; return }
+async function loadCategories() {
+  try {
+    const r = await fetch('/api/admin/categorias', { headers: H })
+    if (r.ok) categories.value = (await r.json()).categories ?? []
+  } catch {}
+}
+
+function runSearch() {
+  const term = search.value.trim()
+  if (!term && !selectedCat.value) { searchResults.value = []; searching.value = false; return }
   searching.value = true
   if (debounceTimer) clearTimeout(debounceTimer)
   debounceTimer = setTimeout(async () => {
     try {
-      const r = await fetch(`/api/cotizador-interno/productos?search=${encodeURIComponent(term.trim())}`, { headers: H })
-      if (r.ok) searchResults.value = await r.json()
+      const params = new URLSearchParams()
+      if (term) params.set('search', term)
+      if (selectedCat.value) params.set('category', selectedCat.value)
+      const r = await fetch(`/api/cotizador-interno/productos?${params.toString()}`, { headers: H })
+      if (r.ok) {
+        const json = await r.json()
+        searchResults.value = Array.isArray(json) ? json : (json.data ?? [])
+      }
     } catch {}
     searching.value = false
   }, 300)
 }
 
-watch(search, (v) => doSearch(v))
+watch([search, selectedCat], () => runSearch())
 
 const total = computed(() => items.value.reduce((s, i) => s + i.q * i.u, 0))
 const tProd = computed(() => items.value.reduce((s, i) => s + i.q, 0))
