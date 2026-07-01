@@ -30,9 +30,9 @@ export const CATEGORY_IMAGES: Record<string, string> = {
 export const SITE_CONFIG = {
   name: 'Agro Farías',
   url: 'https://agrofarias.cl',
-  phone: '+56 9 6512 4122',
-  phoneHref: 'tel:+56965124122',
-  whatsapp: '56965124122',
+  phone: '+56 9 7392 6319',
+  phoneHref: 'tel:+56973926319',
+  whatsapp: '56973926319',
   email: 'contacto@agrofarias.cl',
   emailHref: 'mailto:contacto@agrofarias.cl',
   address: ADDRESS,
@@ -42,6 +42,6 @@ export const SITE_CONFIG = {
   social: {
     facebook: 'https://facebook.com/agrofarias',
     instagram: 'https://instagram.com/agrofarias',
-    whatsapp: 'https://wa.me/56965124122',
+    whatsapp: 'https://wa.me/56973926319',
   },
 } as const
