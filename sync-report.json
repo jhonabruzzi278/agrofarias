@@ -1,0 +1,2048 @@
+{
+  "timestamp": "2026-07-22T15:00:37.417Z",
+  "dryRun": false,
+  "totalProducts": 320,
+  "totalImagesLocal": 177,
+  "matched": 85,
+  "updated": [
+    {
+      "id": 239,
+      "oldName": "Absoluto 70 WP 250 g",
+      "newName": "Absoluto 70 WP 250 g",
+      "imageId": 1026,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/absoluto-70-wp-2.webp",
+      "file": "absoluto-70-wp.webp",
+      "slug": "absoluto-70-wp-x-250-g"
+    },
+    {
+      "id": 241,
+      "oldName": "Aceite Springhill 5 L",
+      "newName": "Aceite Springhill 5 L",
+      "imageId": 1027,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/aceite-springhill-1.webp",
+      "file": "aceite-springhill.webp",
+      "slug": "aceite-springhill-x-5-l"
+    },
+    {
+      "id": 17,
+      "oldName": "Agribest 1 Unidad",
+      "newName": "Agribest 1 Unidad",
+      "imageId": 1028,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/agribest-1.webp",
+      "file": "agribest.webp",
+      "slug": "agribest-x-1"
+    },
+    {
+      "id": 214,
+      "oldName": "Agrocopper Sp98 1 kg Bayer",
+      "newName": "Agrocopper Sp98 1 kg Bayer",
+      "imageId": 1029,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/agrocopper-sp-1.webp",
+      "file": "agrocopper-sp.webp",
+      "slug": "agrocopper-sp98-1-kg"
+    },
+    {
+      "id": 252,
+      "oldName": "Ajax 50 WP 50 g",
+      "newName": "Ajax 50 WP 50 g",
+      "imageId": 1030,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/ajax-50-wp-1.webp",
+      "file": "ajax-50-wp.webp",
+      "slug": "ajax-50-wp-x-50-g"
+    },
+    {
+      "id": 16,
+      "oldName": "Alga-600 5 kg",
+      "newName": "Alga-600 5 kg",
+      "imageId": 1031,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/alga600-1.webp",
+      "file": "alga600.webp",
+      "slug": "alga-600-x-5-kg"
+    },
+    {
+      "id": 19,
+      "oldName": "Algafert 5 L",
+      "newName": "Algafert 5 L",
+      "imageId": 1032,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/algafert-1.webp",
+      "file": "algafert.webp",
+      "slug": "algafert-5-l"
+    },
+    {
+      "id": 173,
+      "oldName": "Algasoil 20 kg",
+      "newName": "Algasoil 20 kg",
+      "imageId": 1033,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/algasoil-1.webp",
+      "file": "algasoil.webp",
+      "slug": "algasoil-x-20-kg"
+    },
+    {
+      "id": 24,
+      "oldName": "Algrow 20 L",
+      "newName": "Algrow 20 L",
+      "imageId": 1034,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/algrow-1.webp",
+      "file": "algrow.webp",
+      "slug": "algrow-x-20-l"
+    },
+    {
+      "id": 215,
+      "oldName": "Aliette 1 kg",
+      "newName": "Aliette 1 kg",
+      "imageId": 1035,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/aliette-80-wp-1.webp",
+      "file": "aliette-80-wp.webp",
+      "slug": "aliette-1-kg"
+    },
+    {
+      "id": 25,
+      "oldName": "Amino Energy 1 kg",
+      "newName": "Amino Energy 1 kg",
+      "imageId": 1036,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/amino-energy-02-1.webp",
+      "file": "amino-energy-02.webp",
+      "slug": "amino-energy-1kl-kilo"
+    },
+    {
+      "id": 235,
+      "oldName": "Previcure Energy 840 SL L",
+      "newName": "Previcure Energy 840 SL L",
+      "imageId": 1037,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/amino-energy-1.webp",
+      "file": "amino-energy.webp",
+      "slug": "previcure-energy-840-sl-litro"
+    },
+    {
+      "id": 26,
+      "oldName": "Aminoterra 20 Bidón",
+      "newName": "Aminoterra 20 Bidón",
+      "imageId": 1038,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/aminoterra-1.webp",
+      "file": "aminoterra.webp",
+      "slug": "aminoterra-x-20-bidon"
+    },
+    {
+      "id": 216,
+      "oldName": "Amistar Top 1 L",
+      "newName": "Amistar Top 1 L",
+      "imageId": 1039,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/amistar-top-1.webp",
+      "file": "amistar-top.webp",
+      "slug": "amistar-top-x-1-l"
+    },
+    {
+      "id": 174,
+      "oldName": "Basacote Plus 3m",
+      "newName": "Basacote Plus 3m",
+      "imageId": 1040,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/basacote-plus-3m-1.webp",
+      "file": "basacote-plus-3m.webp",
+      "slug": "basacote-plus-3m"
+    },
+    {
+      "id": 176,
+      "oldName": "Basacote Plus 9m",
+      "newName": "Basacote Plus 9m",
+      "imageId": 1041,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/basacote-plus-9m-1.webp",
+      "file": "basacote-plus-9m.webp",
+      "slug": "basacote-plus-9m"
+    },
+    {
+      "id": 244,
+      "oldName": "Cyperkill 100 mL",
+      "newName": "Cyperkill 100 mL",
+      "imageId": 1042,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/bifentrin-100-ec-1.webp",
+      "file": "bifentrin-100-ec.webp",
+      "slug": "cyperkill-100-ml"
+    },
+    {
+      "id": 40,
+      "oldName": "Bioveca Raiz 500 g",
+      "newName": "Bioveca Raiz 500 g",
+      "imageId": 1043,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/bioveca-raiz-1.webp",
+      "file": "bioveca-raiz.webp",
+      "slug": "bioveca-raiz-500-g"
+    },
+    {
+      "id": 43,
+      "oldName": "Brotone 5 L",
+      "newName": "Brotone 5 L",
+      "imageId": 1044,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/brotone-1.webp",
+      "file": "brotone.webp",
+      "slug": "brotone-x-5-l"
+    },
+    {
+      "id": 45,
+      "oldName": "Brotovalle 5 L Fervalle",
+      "newName": "Brotovalle 5 L Fervalle",
+      "imageId": 1045,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/brotovalle-n-1.webp",
+      "file": "brotovalle-n.webp",
+      "slug": "brotovalle-x-5-l"
+    },
+    {
+      "id": 221,
+      "oldName": "Cercobin 1 kg",
+      "newName": "Cercobin 1 kg",
+      "imageId": 1046,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/cercobin-m-1.webp",
+      "file": "cercobin-m.webp",
+      "slug": "cercobin-1-kg"
+    },
+    {
+      "id": 47,
+      "oldName": "Citogrower 1 L",
+      "newName": "Citogrower 1 L",
+      "imageId": 1047,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/cito-grower-1.webp",
+      "file": "cito-grower.webp",
+      "slug": "citogrower-x-1-l"
+    },
+    {
+      "id": 300,
+      "oldName": "Cuchillo Tomatey Mesa Swiss Classic 2uni",
+      "newName": "Cuchillo Tomatey Mesa Swiss Classic 2uni",
+      "imageId": 1048,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/classic-sd-02-1.webp",
+      "file": "classic-sd-02.webp",
+      "slug": "cuchillo-tomatey-mesa-swiss-classic-2uni"
+    },
+    {
+      "id": 187,
+      "oldName": "Novatec Classic 12-8-16 25 kg",
+      "newName": "Novatec Classic 12-8-16 25 kg",
+      "imageId": 1049,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/classic-sd-camouflage-02-1.webp",
+      "file": "classic-sd-camouflage-02.webp",
+      "slug": "novatec-classic-12-8-16-x-25-kg"
+    },
+    {
+      "id": 257,
+      "oldName": "Cortador 48% SL 1 L",
+      "newName": "Cortador 48% SL 1 L",
+      "imageId": 1050,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/cortador-48-sl-1.webp",
+      "file": "cortador-48-sl.webp",
+      "slug": "cortador-48-sl-x-1-l"
+    },
+    {
+      "id": 259,
+      "oldName": "Cortador Full 20 L",
+      "newName": "Cortador Full 20 L",
+      "imageId": 1051,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/cortador-full-1.webp",
+      "file": "cortador-full.webp",
+      "slug": "cortador-full-20-l"
+    },
+    {
+      "id": 196,
+      "oldName": "Ultrasol Crecimiento Saco",
+      "newName": "Ultrasol Crecimiento Saco",
+      "imageId": 1052,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/crecimiento-1.webp",
+      "file": "crecimiento.webp",
+      "slug": "ultrasol-crecimiento-saco"
+    },
+    {
+      "id": 320,
+      "oldName": "Gorro de Lana, Deluxe, Rojo",
+      "newName": "Gorro de Lana, Deluxe, Rojo",
+      "imageId": 1053,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/deluxe-tinker-1.webp",
+      "file": "deluxe-tinker.webp",
+      "slug": "gorro-de-lana-deluxe-rojo"
+    },
+    {
+      "id": 53,
+      "oldName": "Eckosil 1 L",
+      "newName": "Eckosil 1 L",
+      "imageId": 1054,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/eckosil-1.webp",
+      "file": "eckosil.webp",
+      "slug": "eckosil-x-1-l"
+    },
+    {
+      "id": 175,
+      "oldName": "Basacote Plus 6 M",
+      "newName": "Basacote Plus 6 M",
+      "imageId": 1055,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/evolhumic-plus-1.webp",
+      "file": "evolhumic-plus.webp",
+      "slug": "basacote-plus-6-m"
+    },
+    {
+      "id": 194,
+      "oldName": "Super Fosfato Triple Saco",
+      "newName": "Super Fosfato Triple Saco",
+      "imageId": 1056,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/fosfato-diamonico-1.webp",
+      "file": "fosfato-diamonico.webp",
+      "slug": "super-fosfato-triple-saco"
+    },
+    {
+      "id": 65,
+      "oldName": "Fosfimax 40-20 5 L",
+      "newName": "Fosfimax 40-20 5 L",
+      "imageId": 1057,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/fosfimax-40-20-1.webp",
+      "file": "fosfimax-40-20.webp",
+      "slug": "fosfimax-40-20-x-5-l"
+    },
+    {
+      "id": 67,
+      "oldName": "Fosfimax 60-40- 1 Unidad",
+      "newName": "Fosfimax 60-40- 1 Unidad",
+      "imageId": 1058,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/fosfimax-60-40-sp-1.webp",
+      "file": "fosfimax-60-40-sp.webp",
+      "slug": "fosfimax-60-40-x-1"
+    },
+    {
+      "id": 224,
+      "oldName": "Frontal 425 SC 1 L",
+      "newName": "Frontal 425 SC 1 L",
+      "imageId": 1059,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/frontal-425-sc-1.webp",
+      "file": "frontal-425-sc.webp",
+      "slug": "frontal-425-sc-x-1-l"
+    },
+    {
+      "id": 72,
+      "oldName": "Frutaliv 1 L",
+      "newName": "Frutaliv 1 L",
+      "imageId": 1060,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/fruta-liv-1.webp",
+      "file": "fruta-liv.webp",
+      "slug": "frutaliv-x-1-l"
+    },
+    {
+      "id": 80,
+      "oldName": "Foliar Harvest More 10-55-10 x 1 kg",
+      "newName": "Harv More 10-55-10 1 kg",
+      "imageId": 1061,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/harvest-more-10-55-10-1.webp",
+      "file": "harvest-more-10-55-10.webp",
+      "slug": "harvest-more-10-55-10-x-1-kg"
+    },
+    {
+      "id": 84,
+      "oldName": "Hortihydro 22 kg",
+      "newName": "Hortihydro 22 kg",
+      "imageId": 1062,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/hortihydro-1.webp",
+      "file": "hortihydro.webp",
+      "slug": "hortihydro-x-22-kg"
+    },
+    {
+      "id": 86,
+      "oldName": "Humic Total 10 kg",
+      "newName": "Humic Total 10 kg",
+      "imageId": 1063,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/humic-total-1.webp",
+      "file": "humic-total.webp",
+      "slug": "humic-total-x-10-kg"
+    },
+    {
+      "id": 226,
+      "oldName": "Impulso 25sc 1 L",
+      "newName": "Impulso 25sc 1 L",
+      "imageId": 1064,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/impulso-25-sc-1.webp",
+      "file": "impulso-25-sc.webp",
+      "slug": "impulso-25sc-1-l"
+    },
+    {
+      "id": 248,
+      "oldName": "Karate Zeon 1 L",
+      "newName": "Karate Zeon 1 L",
+      "imageId": 1065,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/karate-1.webp",
+      "file": "karate.webp",
+      "slug": "karate-zeon-1-l"
+    },
+    {
+      "id": 93,
+      "oldName": "Levoamin Unidad",
+      "newName": "Levoamin Unidad",
+      "imageId": 1066,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/levoamin-1.webp",
+      "file": "levoamin.webp",
+      "slug": "levoamin"
+    },
+    {
+      "id": 95,
+      "oldName": "Maorvalle 20 Bidón",
+      "newName": "Maorvalle 20 Bidón",
+      "imageId": 1067,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/maorvalle-1.webp",
+      "file": "maorvalle.webp",
+      "slug": "maorvalle-20-bidon"
+    },
+    {
+      "id": 98,
+      "oldName": "Maxifrut 5 L",
+      "newName": "Maxifrut 5 L",
+      "imageId": 1068,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/maxi-frut-1.webp",
+      "file": "maxi-frut.webp",
+      "slug": "maxifrut-x-5-l"
+    },
+    {
+      "id": 229,
+      "oldName": "Metalaxil 58 Mz 1 kg",
+      "newName": "Metalaxil 58 Mz 1 kg",
+      "imageId": 1069,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/metalaxil-mz-58-wp-1.webp",
+      "file": "metalaxil-mz-58-wp.webp",
+      "slug": "metalaxil-58-mz-x-1-kg"
+    },
+    {
+      "id": 182,
+      "oldName": "Mezcla Monog 12-12-17 Durasop 25 Saco",
+      "newName": "Mezcla Monog 12-12-17 Durasop 25 Saco",
+      "imageId": 1070,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/mezcla-ganadora-1.webp",
+      "file": "mezcla-ganadora.webp",
+      "slug": "mezcla-monog-12-12-17-x-25-saco"
+    },
+    {
+      "id": 102,
+      "oldName": "Micromix Basic 5 L",
+      "newName": "Micromix Basic 5 L",
+      "imageId": 1071,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/micromix-basic-1.webp",
+      "file": "micromix-basic.webp",
+      "slug": "micromix-basic-x-5-l"
+    },
+    {
+      "id": 108,
+      "oldName": "Nanoser Mg 250 g",
+      "newName": "Nanoser Mg 250 g",
+      "imageId": 1072,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/nanoser-00-52-34-02-1.webp",
+      "file": "nanoser-00-52-34-02.webp",
+      "slug": "nanoser-mg-250-g"
+    },
+    {
+      "id": 106,
+      "oldName": "Nanoser 00-52-34 1 kg",
+      "newName": "Nanoser 00-52-34 1 kg",
+      "imageId": 1073,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/nanoser-00-52-34-1.webp",
+      "file": "nanoser-00-52-34.webp",
+      "slug": "nanoser-00-52-34-1-kg"
+    },
+    {
+      "id": 107,
+      "oldName": "Nanoser 19-19-19 1 kg",
+      "newName": "Nanoser 19-19-19 1 kg",
+      "imageId": 1074,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/nanoser-energy-19-19-19-1.webp",
+      "file": "nanoser-energy-19-19-19.webp",
+      "slug": "nanoser-19-19-19-x-1-kg"
+    },
+    {
+      "id": 183,
+      "oldName": "Nitracid 10 L",
+      "newName": "Nitracid 10 L",
+      "imageId": 1075,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/nitracid-15-1.webp",
+      "file": "nitracid-15.webp",
+      "slug": "nitracid-10-l"
+    },
+    {
+      "id": 109,
+      "oldName": "Nitrate Balancer 1 L",
+      "newName": "Nitrate Balancer 1 L",
+      "imageId": 1076,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/nitrate-balancer-1.webp",
+      "file": "nitrate-balancer.webp",
+      "slug": "nitrate-balancer-x-1-l"
+    },
+    {
+      "id": 189,
+      "oldName": "Novatec Solub 21 25 kg",
+      "newName": "Novatec Solub 21 25 kg",
+      "imageId": 1077,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/novatec-solub-21-1.webp",
+      "file": "novatec-solub-21.webp",
+      "slug": "novatec-solub-21-25-kg"
+    },
+    {
+      "id": 110,
+      "oldName": "Nutrifol K 5 kg",
+      "newName": "Nutrifol K 5 kg",
+      "imageId": 1078,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/nutrifol-k-1.webp",
+      "file": "nutrifol-k.webp",
+      "slug": "nutrifol-k-x-5-kg"
+    },
+    {
+      "id": 111,
+      "oldName": "Nutrifol P 5 kg",
+      "newName": "Nutrifol P 5 kg",
+      "imageId": 1079,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/nutrifol-p-1.webp",
+      "file": "nutrifol-p.webp",
+      "slug": "nutrifol-p-x-5-kg"
+    },
+    {
+      "id": 230,
+      "oldName": "Fungicida Ospo VI55 x 5 kg",
+      "newName": "Ospo Vi55 5 kg",
+      "imageId": 1080,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/ospo-vi55-1.webp",
+      "file": "ospo-vi55.webp",
+      "slug": "ospo-vi55-x-5-kg"
+    },
+    {
+      "id": 232,
+      "oldName": "Fungicida Phyton 27 x 1 L",
+      "newName": "Phyton 27 1 L",
+      "imageId": 1081,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/phyton-27.webp",
+      "file": "phyton-27.webp",
+      "slug": "phyton-27-x-1-l"
+    },
+    {
+      "id": 233,
+      "oldName": "Fungicida Podastik Max 15 L",
+      "newName": "Podastik Max 15 L",
+      "imageId": 1082,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/podastik-max.webp",
+      "file": "podastik-max.webp",
+      "slug": "podastik-max-15-l"
+    },
+    {
+      "id": 265,
+      "oldName": "Herbicida Rango 480 SL x 20 L",
+      "newName": "Rango 480 SL 20 L",
+      "imageId": 1083,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/rango-480-sl.webp",
+      "file": "rango-480-sl.webp",
+      "slug": "rango-480-sl-x-20-l"
+    },
+    {
+      "id": 266,
+      "oldName": "Herbicida Rango Full x 20 L",
+      "newName": "Rango Full 20 L",
+      "imageId": 1084,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/rango-full-02.webp",
+      "file": "rango-full-02.webp",
+      "slug": "rango-full-x-20-l"
+    },
+    {
+      "id": 267,
+      "oldName": "Herbicida Rangofull x 1 L",
+      "newName": "Rango Full 1 L",
+      "imageId": 1085,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/rango-full.webp",
+      "file": "rango-full.webp",
+      "slug": "rangofull-x-1-l"
+    },
+    {
+      "id": 280,
+      "oldName": "Rodenticida Raticida Rastop Molienda 200 g",
+      "newName": "Raticida Rastop Molienda 200 g",
+      "imageId": 1086,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/rastop.webp",
+      "file": "rastop.webp",
+      "slug": "raticida-rastop-molienda-200-g"
+    },
+    {
+      "id": 237,
+      "oldName": "Fungicida Ridomil Gold Mz x 1 kg",
+      "newName": "Ridomil Gold Mz 1 kg",
+      "imageId": 1087,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/ridomil-gold-mz-68-wg.webp",
+      "file": "ridomil-gold-mz-68-wg.webp",
+      "slug": "ridomil-gold-mz-x-1-kg"
+    },
+    {
+      "id": 334,
+      "oldName": "Herramienta Victorinox Set 4 Vasos Redondos Vidrio",
+      "newName": "Set 4 Vasos Redondos Vidrio",
+      "imageId": 1088,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/set-aventura.webp",
+      "file": "set-aventura.webp",
+      "slug": "set-4-vasos-redondos-vidrio"
+    },
+    {
+      "id": 128,
+      "oldName": "Foliar Silium x 5 L",
+      "newName": "Silium 5 L",
+      "imageId": 1089,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/silium.webp",
+      "file": "silium.webp",
+      "slug": "silium-x-5-l"
+    },
+    {
+      "id": 135,
+      "oldName": "Foliar Stoller Boro 01 L",
+      "newName": "Stoller Boro 01 L",
+      "imageId": 1090,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/stoller-k.webp",
+      "file": "stoller-k.webp",
+      "slug": "stoller-boro-01-l"
+    },
+    {
+      "id": 172,
+      "oldName": "Fertilizante Agri Suelo Base Frutillas 20 L",
+      "newName": "Agri Suelo Base Frutillas 20 L",
+      "imageId": 1091,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/suelo-base-berries-02.webp",
+      "file": "suelo-base-berries-02.webp",
+      "slug": "agri-suelo-base-frutillas-20-l"
+    },
+    {
+      "id": 171,
+      "oldName": "Fertilizante Agri Suelo Base Frutillas 10 L",
+      "newName": "Agri Suelo Base Frutillas 10 L",
+      "imageId": 1092,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/suelo-base-berries.webp",
+      "file": "suelo-base-berries.webp",
+      "slug": "agri-suelo-base-frutillas-10-l"
+    },
+    {
+      "id": 255,
+      "oldName": "Herbicida Centurion Super x 1 L",
+      "newName": "Centurion Super 1 L",
+      "imageId": 1093,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/super-tinker.webp",
+      "file": "super-tinker.webp",
+      "slug": "centurion-super-x-1-l"
+    },
+    {
+      "id": 140,
+      "oldName": "Foliar Tecbom x 1 L",
+      "newName": "Tec Bom 1 L",
+      "imageId": 1094,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/tecbom.webp",
+      "file": "tecbom.webp",
+      "slug": "tecbom-x-1-l"
+    },
+    {
+      "id": 145,
+      "oldName": "Foliar Terra Sorb Foliar x 5 L",
+      "newName": "Terra Sorb Foliar 5 L",
+      "imageId": 1095,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/terra-sorb-foliar.webp",
+      "file": "terra-sorb-foliar.webp",
+      "slug": "terra-sorb-foliar-x-5-l"
+    },
+    {
+      "id": 146,
+      "oldName": "Foliar Terra Sorb Radicular x 1",
+      "newName": "Terra Sorb Radicular 1",
+      "imageId": 1096,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/terra-sorb-radicular.webp",
+      "file": "terra-sorb-radicular.webp",
+      "slug": "terra-sorb-radicular-x-1-l"
+    },
+    {
+      "id": 250,
+      "oldName": "Insecticida Natur'l Oleo 200 L",
+      "newName": "Natur'l Oleo 200 L",
+      "imageId": 1097,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/topas-200-ew.webp",
+      "file": "topas-200-ew.webp",
+      "slug": "naturl-oleo-200-l-tambor"
+    },
+    {
+      "id": 273,
+      "oldName": "Molusquicida Toximol kg",
+      "newName": "Toximol kg",
+      "imageId": 1098,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/toximol.webp",
+      "file": "toximol.webp",
+      "slug": "toximol-kg-kilo"
+    },
+    {
+      "id": 149,
+      "oldName": "Foliar Trainer x 5 L",
+      "newName": "Trainer 5 L",
+      "imageId": 1099,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/trainer-02.webp",
+      "file": "trainer-02.webp",
+      "slug": "trainer-x-5-l"
+    },
+    {
+      "id": 148,
+      "oldName": "Foliar Trainer x 20 L",
+      "newName": "Trainer 20 L",
+      "imageId": 1100,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/trainer.webp",
+      "file": "trainer.webp",
+      "slug": "trainer-x-20-l"
+    },
+    {
+      "id": 152,
+      "oldName": "Foliar Transflo Brot Up x 5 L",
+      "newName": "Transflo Brot Up 5 L",
+      "imageId": 1101,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/transflo-brot-up.webp",
+      "file": "transflo-brot-up.webp",
+      "slug": "transflo-brot-up-x-5-l"
+    },
+    {
+      "id": 200,
+      "oldName": "Fertilizante Ultrasol K Acid x 25 kg",
+      "newName": "Ultrasol K Acid 25 kg",
+      "imageId": 1102,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/ultrasol-k-acid.webp",
+      "file": "ultrasol-k-acid.webp",
+      "slug": "ultrasol-k-acid-x-25-kg"
+    },
+    {
+      "id": 207,
+      "oldName": "Fertilizante Ultrasol Sop Ws 9,5 kg 9.5 kg",
+      "newName": "Ultrasol Sop WS 9, 5 kg 9.5 kg",
+      "imageId": 1103,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/ultrasol.webp",
+      "file": "ultrasol.webp",
+      "slug": "ultrasol-sop-ws-95-kg-9-5-kg"
+    },
+    {
+      "id": 208,
+      "oldName": "Fertilizante Up-sorber-x-18-L",
+      "newName": "Up-Sorber-X-18-L",
+      "imageId": 1104,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/up-sorber.webp",
+      "file": "up-sorber.webp",
+      "slug": "up-sorber-x-18-l"
+    },
+    {
+      "id": 156,
+      "oldName": "Foliar Veca Bloom x 5 L",
+      "newName": "Veca Bloom 5 L",
+      "imageId": 1105,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/veca-bloom.webp",
+      "file": "veca-bloom.webp",
+      "slug": "veca-bloom-x-5-l"
+    },
+    {
+      "id": 157,
+      "oldName": "Foliar Veca Humic Root x 20 L",
+      "newName": "Veca Humic Root 20 L",
+      "imageId": 1106,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/veca-humic-root.webp",
+      "file": "veca-humic-root.webp",
+      "slug": "veca-humic-root-x-20-l"
+    },
+    {
+      "id": 158,
+      "oldName": "Foliar Veca Max Fulvic 45% x 20 L",
+      "newName": "Veca Max Fulvic 45% 20 L",
+      "imageId": 1107,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/veca-max.webp",
+      "file": "veca-max.webp",
+      "slug": "veca-max-fulvic-45-x-20-l"
+    },
+    {
+      "id": 155,
+      "oldName": "Foliar Veca Bloom x 1 L",
+      "newName": "Veca Bloom 1 L",
+      "imageId": 1108,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/veca-move-02.webp",
+      "file": "veca-move-02.webp",
+      "slug": "veca-bloom-x-1-l"
+    },
+    {
+      "id": 154,
+      "oldName": "Foliar Veca Amin Sugar 5 L",
+      "newName": "Veca Amin Sugar 5 L",
+      "imageId": 1109,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/veca-move.webp",
+      "file": "veca-move.webp",
+      "slug": "veca-amin-sugar-5-l"
+    },
+    {
+      "id": 153,
+      "oldName": "Foliar Veca Amin Sugar 1 L",
+      "newName": "Veca Amin Sugar 1 L",
+      "imageId": 1110,
+      "imageUrl": "https://api.agrofarias.cl/wp-content/uploads/2026/07/vecamin-sugar.webp",
+      "file": "vecamin-sugar.webp",
+      "slug": "veca-amin-sugar-1-l"
+    }
+  ],
+  "errors": [],
+  "unmatchedImages": [
+    "acaban-050-sc.webp",
+    "agrimek.webp",
+    "azoxystrobin-250-sc-solchem.webp",
+    "break.webp",
+    "camper.webp",
+    "catalogo-victorinox-02.webp",
+    "catalogo-victorinox.webp",
+    "classic-sd-camouflage.webp",
+    "classic-sd-color-azul.webp",
+    "classic-sd-color-morado.webp",
+    "classic-sd-color-naranja.webp",
+    "classic-sd-color-rosado.webp",
+    "classic-sd-color-turquesa.webp",
+    "classic-sd-color-verde.webp",
+    "classic-sd-edicion-edelweiss.webp",
+    "classic-sd.webp",
+    "climber-02.webp",
+    "climber-03.webp",
+    "climber-04.webp",
+    "climber-05.webp",
+    "climber.webp",
+    "cyber-tool-m.webp",
+    "dash-hc.webp",
+    "evoke-bsh-alox.webp",
+    "evoke-wood-alox.webp",
+    "hortimix-soft-water-12-4-25.webp",
+    "kanemite-15-sc.webp",
+    "key-feeds-micromix.webp",
+    "llavero-multifuncion.webp",
+    "map.webp",
+    "mcpa-750-sl.webp",
+    "multi-herramienta-swiss-tool-spirit-x-plus-ratchet.webp",
+    "navaja-angler.webp",
+    "navaja-classic-colors-cotton-candy.webp",
+    "navaja-classic-colors-electric-lavender.webp",
+    "navaja-classic-sd-alox-edicion-especial-2025-02.webp",
+    "navaja-classic-sd-alox-edicion-especial-2025.webp",
+    "navaja-classic-sd-cherry-blossom.webp",
+    "navaja-classic-sd-fire-opal.webp",
+    "navaja-classic-sd-paris-style-02.webp",
+    "navaja-classic-sd-paris-style.webp",
+    "navaja-del-soldado-suizo-08-color-verde-negro-victorinox.webp",
+    "navaja-equestrian-color-rojo.webp",
+    "navaja-escort.webp",
+    "navaja-evoke-alox-azul-rojo.webp",
+    "navaja-evoke-alox-rojo.webp",
+    "navaja-evoke-bs-alox-negro.webp",
+    "navaja-evoke-bsh-alox-azul-camuflado.webp",
+    "navaja-explorer-color-rojo-victorinox.webp",
+    "navaja-fisherman.webp",
+    "navaja-forester-m-grip.webp",
+    "navaja-forester-wood-color-nuez-victorinox.webp",
+    "navaja-hiker.webp",
+    "navaja-hunter-color-rojo.webp",
+    "navaja-huntsman-de-madera-color-nuez.webp",
+    "navaja-outrider-roja-victorinox.webp",
+    "navaja-outrider.webp",
+    "navaja-rally.webp",
+    "navaja-sentinel-clip-color-negro.webp",
+    "navaja-spartan-de-madera-color-nuez.webp",
+    "navaja-sportsman-color-rojo-victorinox.webp",
+    "navaja-swiss-army-1.webp",
+    "navaja-victorinox-02.webp",
+    "navaja-victorinox.webp",
+    "producto-sin-identificar.webp",
+    "quadrus.webp",
+    "ranger-55-wood.webp",
+    "ranger-78-m-grip.webp",
+    "reglone.webp",
+    "rizoactivbio.webp",
+    "set-perfecto.webp",
+    "set-victorinox-llavero-navaja-02.webp",
+    "set-victorinox-llavero-navaja.webp",
+    "set-victorinox-para-cualquier-aventura.webp",
+    "skipper.webp",
+    "spartan-02.webp",
+    "spartan.webp",
+    "stamin-up.webp",
+    "super-fosfato-triple.webp",
+    "swiss-champ-02.webp",
+    "swiss-champ-03.webp",
+    "swiss-champ-04.webp",
+    "swiss-champ-wood.webp",
+    "swiss-champ.webp",
+    "switch-62-5-wg.webp",
+    "tarjetero-compacto.webp",
+    "termoregulador.webp",
+    "tripp.webp",
+    "wenger.webp",
+    "winspray-miscible-coa.webp",
+    "work-champ.webp",
+    "x-cyte.webp"
+  ],
+  "productsWithoutImage": [
+    {
+      "id": 335,
+      "name": "Herramienta Victorinox Termo Sifon 1.9L",
+      "slug": "termo-sifon-1-9l"
+    },
+    {
+      "id": 333,
+      "name": "Herramienta Victorinox Sacacorcho, C/corta",
+      "slug": "sacacorcho-c-corta-capsula-negro-rojo"
+    },
+    {
+      "id": 332,
+      "name": "Herramienta Victorinox Rescuetool de 111 Mm",
+      "slug": "rescuetool-111-mm-14-funciones-fluc"
+    },
+    {
+      "id": 331,
+      "name": "Herramienta Victorinox Plato Redondo Piedra Pizarra 25CM",
+      "slug": "plato-redondo-piedra-pizarra-25cm"
+    },
+    {
+      "id": 330,
+      "name": "Herramienta Victorinox Plato Giratorio Piedra Pizarra Pizza",
+      "slug": "plato-giratorio-piedra-pizarra-pizza"
+    },
+    {
+      "id": 329,
+      "name": "Herramienta Victorinox Plancha Iron Cast 50.8-23.4CM",
+      "slug": "plancha-iron-cast-50-8-23-4cm"
+    },
+    {
+      "id": 328,
+      "name": "Herramienta Victorinox Pelador Ypso, Aserrado Doble Filo",
+      "slug": "pelador-ypso-aserrado-doble-filo"
+    },
+    {
+      "id": 326,
+      "name": "Herramienta Victorinox Pelador De Papas, Rex, Alumino Rojo",
+      "slug": "pelador-de-papas-rex-alumino-rojo"
+    },
+    {
+      "id": 325,
+      "name": "Herramienta Victorinox Pelador De Papas, Filo Doble, Mango Madera",
+      "slug": "pelador-de-papas-filo-doble-mango-madera"
+    },
+    {
+      "id": 324,
+      "name": "Herramienta Victorinox Gorro Golf,rojo",
+      "slug": "gorro-golfrojo"
+    },
+    {
+      "id": 323,
+      "name": "Herramienta Victorinox Gorro Golf,negro",
+      "slug": "gorro-golfnegro"
+    },
+    {
+      "id": 322,
+      "name": "Herramienta Victorinox Gorro De Lana, Rojo",
+      "slug": "gorro-de-lana-rojo"
+    },
+    {
+      "id": 321,
+      "name": "Herramienta Victorinox Gorro De Lana, Gris",
+      "slug": "gorro-de-lana-gris"
+    },
+    {
+      "id": 319,
+      "name": "Herramienta Victorinox Gorro De Lana, Deluxe , Gris",
+      "slug": "gorro-de-lana-deluxe-gris"
+    },
+    {
+      "id": 318,
+      "name": "Herramienta Victorinox Estuche Cuero C/cordon, Style Icon",
+      "slug": "estuche-cuero-c-cordon-style-icon"
+    },
+    {
+      "id": 317,
+      "name": "Herramienta Victorinox Estuche Cuero C/cordon, Dark Ilusion",
+      "slug": "estuche-cuero-c-cordon-dark-ilusion"
+    },
+    {
+      "id": 316,
+      "name": "Herramienta Victorinox Estu, 32,PIEL,CAFE,ADHESIVO",
+      "slug": "estu-32pielcafeadhesivo"
+    },
+    {
+      "id": 315,
+      "name": "Herramienta Victorinox Estu, 29,PIEL,NEGRO,ADHESIVO",
+      "slug": "estu-29pielnegroadhesivo"
+    },
+    {
+      "id": 314,
+      "name": "Herramienta Victorinox Estu, 15,PIEL,CAFE,ADHESIVO",
+      "slug": "estu-15pielcafeadhesivo"
+    },
+    {
+      "id": 313,
+      "name": "Herramienta Victorinox Estu, 14,PIEL,CEFE,ADHESIVO",
+      "slug": "estu-14pielcefeadhesivo"
+    },
+    {
+      "id": 312,
+      "name": "Herramienta Victorinox Cuchillo Verd,punt Mango ROJO 10CM",
+      "slug": "cuchillo-verdpunt-mango-roj0-10cm"
+    },
+    {
+      "id": 311,
+      "name": "Herramienta Victorinox Cuchillo Verd,punt Mango Ny Neg 10",
+      "slug": "cuchillo-verdpunt-mango-ny-neg-10"
+    },
+    {
+      "id": 310,
+      "name": "Herramienta Victorinox Cuchillo Verd,dent,punt Mango Ny Neg 8CM",
+      "slug": "cuchillo-verddentpunt-mango-ny-neg-8cm"
+    },
+    {
+      "id": 309,
+      "name": "Herramienta Victorinox Cuchillo Verd, 2 Und, Puntiagudo,nylon Naranja",
+      "slug": "cuchillo-verd-2-und-puntiagudonylon-naranja"
+    },
+    {
+      "id": 308,
+      "name": "Herramienta Victorinox Cuchillo Verd Hoj Rect Mang 8 Cm Rojo",
+      "slug": "cuchillo-verd-hoj-rect-mang-8-cm-rojo"
+    },
+    {
+      "id": 307,
+      "name": "Herramienta Victorinox Cuchillo Verd Hoj Rect Mang 8 Cm Negro",
+      "slug": "cuchillo-verd-hoj-rect-mang-8-cm-negro"
+    },
+    {
+      "id": 306,
+      "name": "Herramienta Victorinox Cuchillo VERD,2U,PUNT Mango Negro 8CM",
+      "slug": "cuchillo-verd2upunt-mango-negro-8cm"
+    },
+    {
+      "id": 305,
+      "name": "Herramienta Victorinox Cuchillo VERD,2U,DENT+LISO Verde 10 Cm",
+      "slug": "cuchillo-verd2udentliso-verde-10-cm"
+    },
+    {
+      "id": 304,
+      "name": "Herramienta Victorinox Cuchillo VERD,2U,DENT+LISO Rosado 10 Cm",
+      "slug": "cuchillo-verd2udentliso-rosado-10-cm"
+    },
+    {
+      "id": 303,
+      "name": "Herramienta Victorinox Cuchillo VERD,2U,DENT+LISO Negro 10CM",
+      "slug": "cuchillo-verd2udentliso-negro-10cm"
+    },
+    {
+      "id": 302,
+      "name": "Herramienta Victorinox Cuchillo VERD,2U,DENT+LISO Naranja 10 Cm",
+      "slug": "cuchillo-verd2udentliso-naranja-10-cm"
+    },
+    {
+      "id": 301,
+      "name": "Herramienta Victorinox Cuchillo VERD,2U,DENT+LISO Amarillo 10 Cm",
+      "slug": "cuchillo-verd2udentliso-amarillo-10-cm"
+    },
+    {
+      "id": 299,
+      "name": "Herramienta Victorinox Cuchillo Prm",
+      "slug": "cuchillo-prm"
+    },
+    {
+      "id": 298,
+      "name": "Herramienta Victorinox Cuchillo Hammer Mediano",
+      "slug": "cuchillo-hammer-mediano"
+    },
+    {
+      "id": 297,
+      "name": "Herramienta Victorinox Cuchillo Hammer Grande",
+      "slug": "cuchillo-hammer-grande"
+    },
+    {
+      "id": 296,
+      "name": "Victorinox Cuchillo Chopper Con Funda Rustic Colecction",
+      "slug": "cuchillo-chopper-con-funda-rustic-colecction"
+    },
+    {
+      "id": 295,
+      "name": "Herramienta Victorinox Cuchillo Carnicero, SWIBO,26CM",
+      "slug": "cuchillo-carnicero-swibo26cm"
+    },
+    {
+      "id": 294,
+      "name": "Herramienta Victorinox Cuchillo Carnicero, Hoja Recta, Mango Fibrox",
+      "slug": "cuchillo-carnicero-hoja-recta-mango-fibrox"
+    },
+    {
+      "id": 287,
+      "name": "Herramienta Victorinox Afilador De Cuchillos Gris/negro",
+      "slug": "afilador-de-cuchillos-gris-negro"
+    },
+    {
+      "id": 286,
+      "name": "Herramienta Victorinox Afilador De Cuchillos Chicos",
+      "slug": "afilador-de-cuchillos-chicos"
+    },
+    {
+      "id": 284,
+      "name": "Herramienta Victorinox Aceite Para Multitool, 10ml, Blister 10 ml",
+      "slug": "aceite-para-multitool-10ml-blister-10-ml"
+    },
+    {
+      "id": 271,
+      "name": "Molusquicida Clartex +r x 25 kg",
+      "slug": "clartex-r-x-25-kg"
+    },
+    {
+      "id": 262,
+      "name": "Herbicida Glifosato 480 % 5 L",
+      "slug": "glifosato-480-5-l"
+    },
+    {
+      "id": 261,
+      "name": "Herbicida Glifosato 480 % 20 L",
+      "slug": "glifosato-480-20-l"
+    },
+    {
+      "id": 260,
+      "name": "Herbicida Cortador x 5 L",
+      "slug": "cortador-x-5-l"
+    },
+    {
+      "id": 258,
+      "name": "Herbicida Cortador 480% 20 L",
+      "slug": "cortador-480-20-l"
+    },
+    {
+      "id": 254,
+      "name": "Herbicida Arco 2,4D x 20 L",
+      "slug": "arco-24d-x-20-l"
+    },
+    {
+      "id": 247,
+      "name": "Insecticida Karate Zeon 0.25 L Und",
+      "slug": "karate-zeon-0-25-l-und"
+    },
+    {
+      "id": 245,
+      "name": "Insecticida Cyperkill Litro",
+      "slug": "cyperkill-litro"
+    },
+    {
+      "id": 242,
+      "name": "Insecticida Aceite Winspray 20 L",
+      "slug": "aceite-winspray-20-l"
+    },
+    {
+      "id": 240,
+      "name": "Insecticida Aceite Springhill x 1 L",
+      "slug": "aceite-springhill-x-1-l"
+    },
+    {
+      "id": 199,
+      "name": "Fertilizante Ultrasol Inicial Frutilla",
+      "slug": "ultrasol-inicial-frutilla-saco"
+    },
+    {
+      "id": 198,
+      "name": "Fertilizante Ultrasol Fruta x 25 kg",
+      "slug": "ultrasol-fruta-x-25-kg"
+    },
+    {
+      "id": 192,
+      "name": "Fertilizante Sulfato Potasio Crist Saco",
+      "slug": "sulfato-potasio-crist-saco"
+    },
+    {
+      "id": 179,
+      "name": "Fertilizante Fosfato Monoamonico Saco",
+      "slug": "fosfato-monoamonico-saco"
+    },
+    {
+      "id": 170,
+      "name": "Fertilizante Agri Produccion Frutillas 5 L",
+      "slug": "agri-produccion-frutillas-5-l"
+    },
+    {
+      "id": 169,
+      "name": "Fertilizante Agri Produccion Frutilla 10 L",
+      "slug": "agri-produccion-frutilla-10-l"
+    },
+    {
+      "id": 168,
+      "name": "Fertilizante Agri Crecimiento Frutillas 5 L",
+      "slug": "agri-crecimiento-frutillas-5-l"
+    },
+    {
+      "id": 166,
+      "name": "Fertilizante Agri Crecimiento Frutillas 10 L",
+      "slug": "agri-crecimiento-frutillas-10-l"
+    },
+    {
+      "id": 163,
+      "name": "Foliar x Cite Litro",
+      "slug": "x-cite-litro"
+    },
+    {
+      "id": 161,
+      "name": "Foliar Xilemove 02 x 20 L",
+      "slug": "xilemove-02-x-20-l"
+    },
+    {
+      "id": 151,
+      "name": "Foliar Transflo Brot Up x 20 L",
+      "slug": "transflo-brot-up-x-20-l"
+    },
+    {
+      "id": 143,
+      "name": "Foliar Terra Sorb Foliar x 1 L",
+      "slug": "terra-sorb-foliar-x-1-l"
+    },
+    {
+      "id": 141,
+      "name": "Foliar Terra Radicular x 20 L",
+      "slug": "terra-radicular-x-20-l"
+    },
+    {
+      "id": 139,
+      "name": "Foliar Tec Bom x 5 Litro",
+      "slug": "tec-bom-x-5-litro"
+    },
+    {
+      "id": 138,
+      "name": "Foliar Tec Bom x 20 Bidón",
+      "slug": "tec-bom-x-20-bidon"
+    },
+    {
+      "id": 136,
+      "name": "Foliar Stop Spi 5L Nt Bidón",
+      "slug": "stop-spi-5l-bidon"
+    },
+    {
+      "id": 133,
+      "name": "Foliar Stimulate Unidad",
+      "slug": "stimulate"
+    },
+    {
+      "id": 126,
+      "name": "Foliar Silium x 1 L",
+      "slug": "silium-x-1-l"
+    },
+    {
+      "id": 122,
+      "name": "Foliar Rootex x 1 kg",
+      "slug": "rootex-x-1-kg"
+    },
+    {
+      "id": 120,
+      "name": "Foliar Rizogen 5 L",
+      "slug": "rizogen-5-l"
+    },
+    {
+      "id": 101,
+      "name": "Foliar Micromix Basic 1 L",
+      "slug": "micromix-basic-1-l"
+    },
+    {
+      "id": 87,
+      "name": "Foliar Ibicalcio Neutrasal 1 x 15 L",
+      "slug": "ibicalcio-neutrasal-1-x-15-l"
+    },
+    {
+      "id": 85,
+      "name": "Foliar Hortimix x 15 kg",
+      "slug": "hortimix-x-15-kg"
+    },
+    {
+      "id": 75,
+      "name": "Foliar Harv More 20-20-20 25 kg",
+      "slug": "harv-more-20-20-20-25-kg"
+    },
+    {
+      "id": 62,
+      "name": "Foliar Foly Zime x 20 L",
+      "slug": "foly-zime-x-20-l"
+    },
+    {
+      "id": 38,
+      "name": "Foliar Biofruit 600 g",
+      "slug": "biofruit-600-g"
+    },
+    {
+      "id": 32,
+      "name": "Foliar Basfoliar Kelp SL 5 L",
+      "slug": "basfoliar-kelp-sl-5-l"
+    },
+    {
+      "id": 22,
+      "name": "Foliar Algrow x 1 L",
+      "slug": "algrow-x-1-l"
+    },
+    {
+      "id": 20,
+      "name": "Foliar Algrow x 1 L",
+      "slug": "algarium-x-1-l"
+    },
+    {
+      "id": 15,
+      "name": "Foliar ALGA-600 kg",
+      "slug": "alga-600-kg"
+    }
+  ],
+  "productsWithImage": [
+    {
+      "id": 327,
+      "name": "Herramienta Victorinox Pelador De Tomate/kiwi, Filo Doble Dentado, Rojo",
+      "slug": "pelador-de-tomate-kiwi-filo-doble-dentado-rojo"
+    },
+    {
+      "id": 293,
+      "name": "Herramienta Victorinox Cordon 65 Mm Rojo/negro",
+      "slug": "cordon-65-mm-rojo-negro"
+    },
+    {
+      "id": 292,
+      "name": "Herramienta Victorinox Cordon 65 Mm El Negro",
+      "slug": "cordon-65-mm-el-negro"
+    },
+    {
+      "id": 291,
+      "name": "Herramienta Victorinox City.sport 34, Bk Whe Dial, Blk Silicone",
+      "slug": "city-sport-34-bk-whe-dial-blk-silicone"
+    },
+    {
+      "id": 290,
+      "name": "Herramienta Victorinox Bateria 7PCS Granite Line",
+      "slug": "bateria-7pcs-granite-line"
+    },
+    {
+      "id": 289,
+      "name": "Herramienta Victorinox Afilador Para Multiherramientas",
+      "slug": "afilador-para-multiherramientas"
+    },
+    {
+      "id": 288,
+      "name": "Herramienta Victorinox Afilador De Cuchillos, Rodillo Ceramico",
+      "slug": "afilador-de-cuchillos-rodillo-ceramico"
+    },
+    {
+      "id": 285,
+      "name": "Herramienta Victorinox Afilador De Cuchillo Rodillo Ceramico Rojo",
+      "slug": "afilador-de-cuchillo-rodillo-ceramico-rojo"
+    },
+    {
+      "id": 283,
+      "name": "Herramienta Victorinox Abrelatas Universal, Rojo",
+      "slug": "abrelatas-universal-rojo"
+    },
+    {
+      "id": 282,
+      "name": "Herramienta Victorinox Abrelatas Universal, Negro",
+      "slug": "abrelatas-universal-negro"
+    },
+    {
+      "id": 281,
+      "name": "Rodenticida Raticida Rasto Bloque Mini 500 g",
+      "slug": "raticida-rastop-pellet-500-g"
+    },
+    {
+      "id": 278,
+      "name": "Rodenticida Raticida Rasto Pellet 250 g",
+      "slug": "raticida-rasto-pellet-250-g"
+    },
+    {
+      "id": 277,
+      "name": "Rodenticida Raticida Rastop Mini Bloque 250g",
+      "slug": "raticida-rasto-bloque-mini-500-g"
+    },
+    {
+      "id": 276,
+      "name": "Adherente Silwet Unidad",
+      "slug": "silwet"
+    },
+    {
+      "id": 275,
+      "name": "Adherente Nitro Fix Ntx 21 x 5 L",
+      "slug": "giberplus-liquido-x-5-l"
+    },
+    {
+      "id": 274,
+      "name": "Adherente Nitro Fix Ntx 21 x 1 L",
+      "slug": "giberplus-liquido-x-1-l"
+    },
+    {
+      "id": 272,
+      "name": "Molusquicida Toximol Pellet x 10 kg",
+      "slug": "toximol-pellet-x-10-kg"
+    },
+    {
+      "id": 270,
+      "name": "Molusquicida Clartex +r x 1 kg",
+      "slug": "clartex-r-x-1-kg"
+    },
+    {
+      "id": 269,
+      "name": "Acaricida Abamax x 5 L",
+      "slug": "abamax-x-5-l"
+    },
+    {
+      "id": 268,
+      "name": "Acaricida Abamax 1.8 EC Litro",
+      "slug": "abamax-1-8-ec-litro"
+    },
+    {
+      "id": 264,
+      "name": "Herbicida Rango 480 SL x 1 L",
+      "slug": "rango-480-sl-x-1-l"
+    },
+    {
+      "id": 263,
+      "name": "Herbicida Glifosato 480 % x 1 L",
+      "slug": "glifosato-480-x-1-l"
+    },
+    {
+      "id": 256,
+      "name": "Herbicida Cortadol Full 1 L",
+      "slug": "cortadol-full-1-l"
+    },
+    {
+      "id": 253,
+      "name": "Herbicida Arco 2,4 D x 1 L",
+      "slug": "arco-24-d-x-1-l"
+    },
+    {
+      "id": 251,
+      "name": "Herbicida Ajax 50 WP x 10 g Anasac",
+      "slug": "ajax-50-wp-x-10-g"
+    },
+    {
+      "id": 249,
+      "name": "Insecticida Natur'l Oleo 20 L",
+      "slug": "naturl-oleo-20-l"
+    },
+    {
+      "id": 246,
+      "name": "Insecticida Delegate 300 g",
+      "slug": "delegate-300-g"
+    },
+    {
+      "id": 243,
+      "name": "Insecticida Bull x 1",
+      "slug": "bull-x-1"
+    },
+    {
+      "id": 238,
+      "name": "Fungicida Score 250 EC x 1 L",
+      "slug": "score-250-ec-x-1-l"
+    },
+    {
+      "id": 236,
+      "name": "Fungicida Quadris 5 L Syngenta",
+      "slug": "quadris-5-l-bidon"
+    },
+    {
+      "id": 234,
+      "name": "Fungicida Premiado 250 EC Litro",
+      "slug": "premiado-250-ec-litro"
+    },
+    {
+      "id": 231,
+      "name": "Fungicida Phyton 27 250 ML",
+      "slug": "phyton-27-250-ml"
+    },
+    {
+      "id": 228,
+      "name": "Fungicida Luna Tranquility x 5 L",
+      "slug": "luna-tranquility-x-5-l"
+    },
+    {
+      "id": 227,
+      "name": "Fungicida Luna Experience 400 SC 1 L",
+      "slug": "luna-experience-400-sc-1-l"
+    },
+    {
+      "id": 225,
+      "name": "Fungicida Goldazim 500SC Litro",
+      "slug": "goldazim-500sc-litro"
+    },
+    {
+      "id": 223,
+      "name": "Fungicida Defense 80 WP Kilo",
+      "slug": "defense-80-wp-kilo"
+    },
+    {
+      "id": 222,
+      "name": "Fungicida Dagger 50 WP Kilo",
+      "slug": "dagger-50-wp-kilo"
+    },
+    {
+      "id": 220,
+      "name": "Fungicida Caldera 250 EC Litro",
+      "slug": "caldera-250-ec-litro"
+    },
+    {
+      "id": 219,
+      "name": "Fungicida Benomyl Kilo",
+      "slug": "benomyl-kilo"
+    },
+    {
+      "id": 218,
+      "name": "Fungicida Bellis Kilo",
+      "slug": "bellis-kilo"
+    },
+    {
+      "id": 217,
+      "name": "Fungicida Azufre Floable An 20 L",
+      "slug": "azufre-floable-an-20-l"
+    },
+    {
+      "id": 213,
+      "name": "Fungicida Acoidal WG 25 kg BASF",
+      "slug": "acoidal-wg-25-kg"
+    },
+    {
+      "id": 212,
+      "name": "Fungicida Acoidal Flo x 10 L",
+      "slug": "acoidal-flo-x-10-l"
+    },
+    {
+      "id": 211,
+      "name": "Fungicida Ácido Fosforoso 25 kg",
+      "slug": "acido-fosforoso-25-kg"
+    },
+    {
+      "id": 210,
+      "name": "Fungicida Ácido Fosfórico x 25 kg",
+      "slug": "acido-fosforico-x-25-kg"
+    },
+    {
+      "id": 209,
+      "name": "Fertilizante Urea Granulada Saco",
+      "slug": "urea-granulada-saco"
+    },
+    {
+      "id": 206,
+      "name": "Fertilizante Ultrasol Prop (12-58-3)",
+      "slug": "ultrasol-prop-12-58-3-saco"
+    },
+    {
+      "id": 205,
+      "name": "Fertilizante Ultrasol Palto 22-5-12 Saco",
+      "slug": "ultrasol-palto-22-5-12-saco"
+    },
+    {
+      "id": 204,
+      "name": "Fertilizante Ultrasol Nit-one 25-0-5 Saco",
+      "slug": "ultrasol-nit-one-25-0-5-saco"
+    },
+    {
+      "id": 203,
+      "name": "Fertilizante Ultrasol Multiproposito Saco",
+      "slug": "ultrasol-multiproposito-saco"
+    },
+    {
+      "id": 202,
+      "name": "Fertilizante Ultrasol Magnit x 25 kg",
+      "slug": "ultrasol-magnit-x-25-kg"
+    },
+    {
+      "id": 201,
+      "name": "Fertilizante Ultrasol Kplus x 25 kg",
+      "slug": "ultrasol-kplus-x-25-kg"
+    },
+    {
+      "id": 197,
+      "name": "Fertilizante Ultrasol Desarrollo x 25 kg",
+      "slug": "ultrasol-desarrollo-x-25-kg"
+    },
+    {
+      "id": 195,
+      "name": "Fertilizante Ultrasol Calcium x 25 kg",
+      "slug": "ultrasol-calcium-x-25-kg"
+    },
+    {
+      "id": 193,
+      "name": "Fertilizante Sulfato Zinc 25 kg",
+      "slug": "sulfato-zinc-25-kg"
+    },
+    {
+      "id": 191,
+      "name": "Fertilizante Sulfato De Magnesio Saco",
+      "slug": "sulfato-de-magnesio-saco"
+    },
+    {
+      "id": 190,
+      "name": "Fertilizante Salitre Pro K x 25 kg",
+      "slug": "salitre-pro-k-x-25-kg"
+    },
+    {
+      "id": 188,
+      "name": "Fertilizante Novatec N-max 25 kg",
+      "slug": "novatec-n-max-25-kg"
+    },
+    {
+      "id": 186,
+      "name": "Fertilizante Nitrato Potasio Crist Saco",
+      "slug": "nitrato-potasio-crist-saco"
+    },
+    {
+      "id": 185,
+      "name": "Fertilizante Nitrato Magnesio Saco",
+      "slug": "nitrato-magnesio-saco"
+    },
+    {
+      "id": 184,
+      "name": "Fertilizante Nitrato De Calcio 25 kg",
+      "slug": "nitrato-de-calcio-25-kg"
+    },
+    {
+      "id": 181,
+      "name": "Fertilizante Hakaphos Base 25 kg",
+      "slug": "hakaphos-base-25-kg"
+    },
+    {
+      "id": 180,
+      "name": "Fertilizante Fosfato Monopotasico Saco",
+      "slug": "fosfato-monopotasico-saco"
+    },
+    {
+      "id": 178,
+      "name": "Fertilizante Fosfato Monoamónico Granulado Saco",
+      "slug": "fosfato-monoamonico-granulado-saco"
+    },
+    {
+      "id": 177,
+      "name": "Fertilizante Calcinit B x 25 kg",
+      "slug": "calcinit-b-x-25-kg"
+    },
+    {
+      "id": 167,
+      "name": "Fertilizante Agri Crecimiento Frutillas 20 L",
+      "slug": "agri-crecimiento-frutillas-20-l"
+    },
+    {
+      "id": 165,
+      "name": "Fertilizante Agri Balance Suelo Base 5 L",
+      "slug": "agri-balance-suelo-base-5-l"
+    },
+    {
+      "id": 164,
+      "name": "Fertilizante Ácido Bórico 25 kg",
+      "slug": "acido-borico-25-kg"
+    },
+    {
+      "id": 162,
+      "name": "Foliar Zurich x 15 L",
+      "slug": "zurich-x-15-l"
+    },
+    {
+      "id": 160,
+      "name": "Foliar Xilemove 02 x 10 L",
+      "slug": "xilemove-02-x-10-l"
+    },
+    {
+      "id": 159,
+      "name": "Foliar Vitafoils Ca-b-zn Bidón",
+      "slug": "vitafoils-ca-b-zn-bidon"
+    },
+    {
+      "id": 150,
+      "name": "Foliar Transflo Brot Up x 1 L",
+      "slug": "transflo-brot-up-x-1-l"
+    },
+    {
+      "id": 147,
+      "name": "Foliar Trainer x 1 L",
+      "slug": "trainer-x-1-l"
+    },
+    {
+      "id": 144,
+      "name": "Foliar Terra Sorb Foliar x 20 L",
+      "slug": "terra-sorb-foliar-x-20-l"
+    },
+    {
+      "id": 142,
+      "name": "Foliar Terra Radicular x 5 L",
+      "slug": "terra-radicular-x-5-l"
+    },
+    {
+      "id": 137,
+      "name": "Foliar Suelo Fert HF-80 x 25 Saco",
+      "slug": "suelo-fert-hf-80-x-25-saco"
+    },
+    {
+      "id": 134,
+      "name": "Foliar Stimulate x 20 L",
+      "slug": "stimulate-x-20-l"
+    },
+    {
+      "id": 132,
+      "name": "Foliar Stimulate Fruits Ziser Unidad",
+      "slug": "stimulate-fruits"
+    },
+    {
+      "id": 131,
+      "name": "Foliar Stimplex x 10 L",
+      "slug": "stimplex-x-10-l"
+    },
+    {
+      "id": 130,
+      "name": "Foliar Spurt 5 L",
+      "slug": "spurt-5-l"
+    },
+    {
+      "id": 129,
+      "name": "Foliar Soilactive 1 L",
+      "slug": "soilactive-1-l"
+    },
+    {
+      "id": 127,
+      "name": "Foliar Silium x 20 L",
+      "slug": "silium-x-20-l"
+    },
+    {
+      "id": 125,
+      "name": "Foliar Sett Calcio 20 L",
+      "slug": "sett-calcio-20-l"
+    },
+    {
+      "id": 124,
+      "name": "Foliar Rootgrow Unidad",
+      "slug": "rootgrow"
+    },
+    {
+      "id": 123,
+      "name": "Foliar Rootex x 10 kg",
+      "slug": "rootex-x-10-kg"
+    },
+    {
+      "id": 121,
+      "name": "Foliar Root Feed Concentrado 20 L",
+      "slug": "root-feed-concentrado-20-l"
+    },
+    {
+      "id": 119,
+      "name": "Foliar Rizogen 1 Unidad",
+      "slug": "rizogen-1"
+    },
+    {
+      "id": 118,
+      "name": "Foliar Rizoactive Bio Unidad",
+      "slug": "rizoactive-bio"
+    },
+    {
+      "id": 117,
+      "name": "Foliar Pilatus Unidad",
+      "slug": "pilatus"
+    },
+    {
+      "id": 116,
+      "name": "Foliar Phytness x 1 L",
+      "slug": "phytness-x-1-l"
+    },
+    {
+      "id": 115,
+      "name": "Foliar Photon 50SG Env 100 g",
+      "slug": "photon-50sg-env-100-g"
+    },
+    {
+      "id": 114,
+      "name": "Foliar Pampercrop Dry 5 L",
+      "slug": "pampercrop-dry-5-l"
+    },
+    {
+      "id": 113,
+      "name": "Foliar Pack Producción Frutillas 4 Tambores Paquete",
+      "slug": "pack-produccion-frutillas-4-tambores-paquete"
+    },
+    {
+      "id": 112,
+      "name": "Foliar Octogon x 1 L",
+      "slug": "octogon-x-1-l"
+    },
+    {
+      "id": 105,
+      "name": "Foliar Nanocrop Calcio x 1 L",
+      "slug": "nanocrop-calcio-x-1-l"
+    },
+    {
+      "id": 104,
+      "name": "Foliar Molibo x 5 kg",
+      "slug": "molibo-x-5-kg"
+    },
+    {
+      "id": 103,
+      "name": "Foliar Mobet Bidón",
+      "slug": "mobet-bidon"
+    },
+    {
+      "id": 100,
+      "name": "Foliar Microcat Ten x 5 L",
+      "slug": "microcat-ten-x-5-l"
+    },
+    {
+      "id": 99,
+      "name": "Foliar Metalosate Calcio Unidad",
+      "slug": "metalosate-calcio"
+    },
+    {
+      "id": 97,
+      "name": "Foliar Maxifrut x 20 L",
+      "slug": "maxifrut-x-20-l"
+    },
+    {
+      "id": 96,
+      "name": "Foliar Maxifrut x 1 L",
+      "slug": "maxifrut-x-1-l"
+    },
+    {
+      "id": 94,
+      "name": "Foliar Levoamin x 5 Bidón",
+      "slug": "levoamin-x-5-bidon"
+    },
+    {
+      "id": 92,
+      "name": "Foliar Kendal x 1 L",
+      "slug": "kendal-x-1-l"
+    },
+    {
+      "id": 91,
+      "name": "Foliar Kamasol Humic 20 kg",
+      "slug": "kamasol-humic-20-kg"
+    },
+    {
+      "id": 90,
+      "name": "Foliar Kaliter Novosal x 5 L",
+      "slug": "kaliter-novosal-x-5-l"
+    },
+    {
+      "id": 89,
+      "name": "Foliar Kaliter GB-30 Bidón",
+      "slug": "kaliter-gb-30-bidon"
+    },
+    {
+      "id": 88,
+      "name": "Foliar KAMAB-26 S x 1.5 kg",
+      "slug": "kamab-26-s-x-1-5-kg"
+    },
+    {
+      "id": 83,
+      "name": "Foliar Hortiboost x 10 L",
+      "slug": "hortiboost-x-10-l"
+    },
+    {
+      "id": 82,
+      "name": "Foliar Hortiboost x 1 L",
+      "slug": "hortiboost-x-1-l"
+    },
+    {
+      "id": 81,
+      "name": "Harv More 10-55-10 25 kg",
+      "slug": "harvest-more-10-55-10-x-25-kg"
+    },
+    {
+      "id": 79,
+      "name": "Foliar Harv More 5-5-45 25 kg",
+      "slug": "harv-more-5-5-45-25-kg"
+    },
+    {
+      "id": 78,
+      "name": "Foliar Harv More 5-5-45 1 kg",
+      "slug": "harv-more-5-5-45-1-kg"
+    },
+    {
+      "id": 77,
+      "name": "Foliar Harv More 30-10-10 25 kg",
+      "slug": "harv-more-30-10-10-25-kg"
+    },
+    {
+      "id": 76,
+      "name": "Foliar Harv More 30-10-10 1 kg",
+      "slug": "harv-more-30-10-10-1-kg"
+    },
+    {
+      "id": 74,
+      "name": "Foliar Harv More 20-20-20 1 kg",
+      "slug": "harv-more-20-20-20-1-kg"
+    },
+    {
+      "id": 73,
+      "name": "Foliar Fusamel Paste 14-11-55 x 20 kg",
+      "slug": "fusamel-paste-14-11-55-x-20-kg"
+    },
+    {
+      "id": 71,
+      "name": "Foliar Frutaliv 5 L",
+      "slug": "frutaliv-5-l"
+    },
+    {
+      "id": 70,
+      "name": "Foliar Frutaliv 20 L Bioamerica Bidón",
+      "slug": "frutaliv-20-l-bidon"
+    },
+    {
+      "id": 69,
+      "name": "Foliar Fosmax x 5 L Fervalle",
+      "slug": "fosmax-x-5-l"
+    },
+    {
+      "id": 68,
+      "name": "Foliar Fosmax x 20 L Fervalle",
+      "slug": "fosmax-x-20-l"
+    },
+    {
+      "id": 66,
+      "name": "Foliar Fosfimax 60-40 x 10 Saco",
+      "slug": "fosfimax-60-40-x-10-saco"
+    },
+    {
+      "id": 64,
+      "name": "Foliar Fosfimax 40-20 x 1 L",
+      "slug": "fosfimax-40-20-x-1-l"
+    },
+    {
+      "id": 63,
+      "name": "Foliar Fosfimax 20 L Bidón",
+      "slug": "fosfimax-20-l-bidon"
+    },
+    {
+      "id": 61,
+      "name": "Foliar Foly Zime x 10 L",
+      "slug": "foly-zime-x-10-l"
+    },
+    {
+      "id": 60,
+      "name": "Foliar Foly Zime Litro",
+      "slug": "foly-zime-litro"
+    },
+    {
+      "id": 59,
+      "name": "Foliar Foliplus x 1 L",
+      "slug": "foliplus-x-1-l"
+    },
+    {
+      "id": 58,
+      "name": "Foliar Flanquer Box x 5 L",
+      "slug": "flanquer-box-x-5-l"
+    },
+    {
+      "id": 57,
+      "name": "Foliar Flanquer Box x 20 L",
+      "slug": "flanquer-box-x-20-l"
+    },
+    {
+      "id": 56,
+      "name": "Foliar Flanquer Box x 1 L",
+      "slug": "flanquer-box-x-1-l"
+    },
+    {
+      "id": 55,
+      "name": "Foliar Evolhumic Bidon x 19",
+      "slug": "evolhumic-x-19"
+    },
+    {
+      "id": 54,
+      "name": "Foliar Ethylen 48 SL 1 L",
+      "slug": "ethylen-48-sl-1-l"
+    },
+    {
+      "id": 52,
+      "name": "Foliar Defender Calcio x 5 L",
+      "slug": "defender-calcio-x-5-l"
+    },
+    {
+      "id": 51,
+      "name": "Foliar Defender Calcio x 1 Litro",
+      "slug": "defender-calcio-x-1-litro"
+    },
+    {
+      "id": 50,
+      "name": "Foliar Cuvalle x 20 L",
+      "slug": "cuvalle-x-20-l"
+    },
+    {
+      "id": 49,
+      "name": "Foliar Cuperdem 5 L",
+      "slug": "cuperdem-5-l"
+    },
+    {
+      "id": 48,
+      "name": "Foliar Cuperdem 1 L",
+      "slug": "cuperdem-1-l"
+    },
+    {
+      "id": 46,
+      "name": "Foliar Bsoil x 20 L",
+      "slug": "bsoil-x-20-l"
+    },
+    {
+      "id": 44,
+      "name": "Foliar Brotovalle x 1 L",
+      "slug": "brotovalle-x-1-l"
+    },
+    {
+      "id": 42,
+      "name": "Foliar Brotone x 1 L",
+      "slug": "brotone-x-1-l"
+    },
+    {
+      "id": 41,
+      "name": "Foliar Botanfoliar Bidón",
+      "slug": "botanfoliar-bidon"
+    },
+    {
+      "id": 39,
+      "name": "Foliar Biophyt x 1 Litro",
+      "slug": "biophyt-x-1-litro"
+    },
+    {
+      "id": 37,
+      "name": "Foliar Bioaminol L 20 L",
+      "slug": "bioaminol-l-20-l"
+    },
+    {
+      "id": 36,
+      "name": "Foliar Bio-improver 1 L",
+      "slug": "bio-improver-1-l"
+    },
+    {
+      "id": 35,
+      "name": "Foliar Bio Forge x 20 L",
+      "slug": "bio-forge-x-20-l"
+    },
+    {
+      "id": 34,
+      "name": "Foliar Bio Forge x 1 L",
+      "slug": "bio-forge-x-1-l"
+    },
+    {
+      "id": 33,
+      "name": "Foliar Basfoliar Kelp x 20 Bidón",
+      "slug": "basfoliar-kelp-x-20-bidon"
+    },
+    {
+      "id": 31,
+      "name": "Foliar Basfoliar Kelp SL 1 L",
+      "slug": "basfoliar-kelp-sl-1-l"
+    },
+    {
+      "id": 30,
+      "name": "Foliar Basel 5 L",
+      "slug": "basel-5-l"
+    },
+    {
+      "id": 29,
+      "name": "Foliar Back-mo Bidón",
+      "slug": "back-mo-bidon"
+    },
+    {
+      "id": 28,
+      "name": "Foliar BRIO440 1 L",
+      "slug": "brio440-1-l"
+    },
+    {
+      "id": 27,
+      "name": "Foliar Avivo 1 L",
+      "slug": "avivo-1-l"
+    },
+    {
+      "id": 23,
+      "name": "Foliar Algrow x 10 L",
+      "slug": "algrow-x-10-l"
+    },
+    {
+      "id": 21,
+      "name": "Foliar Algarium x 20 L",
+      "slug": "algarium-x-20-l"
+    },
+    {
+      "id": 18,
+      "name": "Foliar Algafert 1 L",
+      "slug": "algafert-1-l"
+    }
+  ]
+}
