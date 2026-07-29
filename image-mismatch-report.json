@@ -1,0 +1,114 @@
+[
+  {
+    "product_id": 334,
+    "product_name": "Set 4 Vasos Redondos Vidrio",
+    "current_image": "https://api.agrofarias.cl/wp-content/uploads/2026/07/set-aventura-1.webp",
+    "current_image_id": 1173,
+    "proposed_image": null,
+    "proposed_source": null
+  },
+  {
+    "product_id": 320,
+    "product_name": "Gorro de Lana, Deluxe, Rojo",
+    "current_image": "https://api.agrofarias.cl/wp-content/uploads/2026/07/deluxe-tinker-2.webp",
+    "current_image_id": 1138,
+    "proposed_image": null,
+    "proposed_source": null
+  },
+  {
+    "product_id": 300,
+    "product_name": "Cuchillo Tomatey Mesa Swiss Classic 2uni",
+    "current_image": "https://api.agrofarias.cl/wp-content/uploads/2026/07/classic-sd-02-2.webp",
+    "current_image_id": 1133,
+    "proposed_image": null,
+    "proposed_source": null
+  },
+  {
+    "product_id": 281,
+    "product_name": "Rodenticida Raticida Rasto Bloque Mini 500 g",
+    "current_image": "https://api.agrofarias.cl/wp-content/uploads/2026/05/Rodenticida-Raticida-Rastop-Pellet-500-g.webp",
+    "current_image_id": 416,
+    "proposed_image": "https://api.agrofarias.cl/wp-content/uploads/2026/05/Rodenticida-Raticida-Rasto-Pellet-250-g.webp",
+    "proposed_source": "Rodenticida Raticida Rasto Pellet 250 g (id 278)"
+  },
+  {
+    "product_id": 274,
+    "product_name": "Adherente Nitro Fix Ntx 21 x 1 L",
+    "current_image": "https://api.agrofarias.cl/wp-content/uploads/2026/05/Adherente-Giberplus-Liquido-x-1-L-1.webp",
+    "current_image_id": 424,
+    "proposed_image": "https://api.agrofarias.cl/wp-content/uploads/2026/05/nitro_fix.jpg",
+    "proposed_source": "Adherente Nitro Fix Ntx 21 x 5 L (id 275)"
+  },
+  {
+    "product_id": 250,
+    "product_name": "Natur'l Oleo 200 L",
+    "current_image": "https://api.agrofarias.cl/wp-content/uploads/2026/07/topas-200-ew-1.webp",
+    "current_image_id": 1182,
+    "proposed_image": "https://api.agrofarias.cl/wp-content/uploads/2026/05/Insecticida-Naturl-Oleo-20-L-Unidad-para-control-de-insectos-segun-etiqueta.webp",
+    "proposed_source": "Insecticida Natur'l Oleo 20 L (id 249)"
+  },
+  {
+    "product_id": 244,
+    "product_name": "Cyperkill 100 mL",
+    "current_image": "https://api.agrofarias.cl/wp-content/uploads/2026/07/bifentrin-100-ec-2.webp",
+    "current_image_id": 1127,
+    "proposed_image": null,
+    "proposed_source": null
+  },
+  {
+    "product_id": 194,
+    "product_name": "Super Fosfato Triple Saco",
+    "current_image": "https://api.agrofarias.cl/wp-content/uploads/2026/07/fosfato-diamonico-2.webp",
+    "current_image_id": 1141,
+    "proposed_image": "https://api.agrofarias.cl/wp-content/uploads/2026/07/super-tinker-1.webp",
+    "proposed_source": "Centurion Super 1 L (id 255)"
+  },
+  {
+    "product_id": 182,
+    "product_name": "Mezcla Monog 12-12-17 Durasop 25 Saco",
+    "current_image": "https://api.agrofarias.cl/wp-content/uploads/2026/07/mezcla-ganadora-2.webp",
+    "current_image_id": 1155,
+    "proposed_image": null,
+    "proposed_source": null
+  },
+  {
+    "product_id": 168,
+    "product_name": "Fertilizante Agri Crecimiento Frutillas 5 L",
+    "current_image": "https://api.agrofarias.cl/wp-content/uploads/2026/05/Fertilizante-Agri-Produccion.webp",
+    "current_image_id": 353,
+    "proposed_image": "https://api.agrofarias.cl/wp-content/uploads/2026/05/Fertilizante-Agri-Produccion.webp",
+    "proposed_source": "Fertilizante Agri Crecimiento Frutillas 20 L (id 167)"
+  },
+  {
+    "product_id": 167,
+    "product_name": "Fertilizante Agri Crecimiento Frutillas 20 L",
+    "current_image": "https://api.agrofarias.cl/wp-content/uploads/2026/05/Fertilizante-Agri-Produccion.webp",
+    "current_image_id": 353,
+    "proposed_image": "https://api.agrofarias.cl/wp-content/uploads/2026/05/Fertilizante-Agri-Produccion.webp",
+    "proposed_source": "Fertilizante Agri Crecimiento Frutillas 5 L (id 168)"
+  },
+  {
+    "product_id": 166,
+    "product_name": "Fertilizante Agri Crecimiento Frutillas 10 L",
+    "current_image": "https://api.agrofarias.cl/wp-content/uploads/2026/05/Fertilizante-Agri-Produccion.webp",
+    "current_image_id": 353,
+    "proposed_image": "https://api.agrofarias.cl/wp-content/uploads/2026/05/Fertilizante-Agri-Produccion.webp",
+    "proposed_source": "Fertilizante Agri Crecimiento Frutillas 5 L (id 168)"
+  },
+  {
+    "product_id": 154,
+    "product_name": "Veca Amin Sugar 5 L",
+    "current_image": "https://api.agrofarias.cl/wp-content/uploads/2026/07/veca-move-1.webp",
+    "current_image_id": 1194,
+    "proposed_image": "https://api.agrofarias.cl/wp-content/uploads/2026/07/vecamin-sugar-1.webp",
+    "proposed_source": "Veca Amin Sugar 1 L (id 153)"
+  },
+  {
+    "product_id": 153,
+    "product_name": "Veca Amin Sugar 1 L",
+    "current_image": "https://api.agrofarias.cl/wp-content/uploads/2026/07/vecamin-sugar-1.webp",
+    "current_image_id": 1195,
+    "proposed_image": "https://api.agrofarias.cl/wp-content/uploads/2026/07/veca-move-1.webp",
+    "proposed_source": "Veca Amin Sugar 5 L (id 154)"
+  }
+]
