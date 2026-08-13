@@ -13,7 +13,7 @@ function unauthorized() {
 
 async function guard(cookies: APIContext['cookies'], request: Request) {
   if (!(await verifySession(cookies.get(SESSION_COOKIE)?.value))) return unauthorized();
-  const { allowed } = await checkRateLimit(getClientIP(request));
+  const { allowed } = await checkRateLimit(getClientIP(request), 'admin-client-detail');
   if (!allowed) return new Response(JSON.stringify({ error: 'Demasiadas solicitudes' }), { status: 429, headers: JSON_HEADERS });
   return null;
 }

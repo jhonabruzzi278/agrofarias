@@ -15,7 +15,7 @@ export async function GET({ request, cookies }: APIContext) {
   }
 
   const ip = getClientIP(request);
-  const { allowed } = await checkRateLimit(ip);
+  const { allowed } = await checkRateLimit(ip, 'admin-quotes');
   if (!allowed) {
     return new Response(JSON.stringify({ error: 'Demasiadas solicitudes' }), {
       status: 429,

@@ -40,12 +40,13 @@
 import { onMounted, ref } from 'vue'
 
 type Status = 'pending' | 'ok' | 'error'
-interface Service { id: string; name: string; detail: string; endpoint: string; status: Status; latency: number | null }
+interface Service { id: 'session' | 'catalog' | 'products'; name: string; detail: string; status: Status; latency: number | null }
+interface HealthResult { ok: boolean; latency: number; detail: string }
 
 const services = ref<Service[]>([
-  { id: 'session', name: 'Sesión administrativa', detail: 'Autenticación y permisos del panel', endpoint: '/api/cotizador-interno/quotes', status: 'pending', latency: null },
-  { id: 'catalog', name: 'Catálogo WooCommerce', detail: 'Categorías y disponibilidad del catálogo', endpoint: '/api/admin/categorias', status: 'pending', latency: null },
-  { id: 'products', name: 'Administración de productos', detail: 'Lectura protegida de productos', endpoint: '/api/admin/productos?per_page=1', status: 'pending', latency: null },
+  { id: 'session', name: 'Sesión administrativa', detail: 'Autenticación y permisos del panel', status: 'pending', latency: null },
+  { id: 'catalog', name: 'Catálogo WooCommerce', detail: 'Categorías y disponibilidad del catálogo', status: 'pending', latency: null },
+  { id: 'products', name: 'Administración de productos', detail: 'Lectura protegida de productos', status: 'pending', latency: null },
 ])
 const checking = ref(false)
 const copied = ref(false)
@@ -54,23 +55,35 @@ function statusLabel(status: Status) {
   return status === 'ok' ? 'Operativo' : status === 'error' ? 'Requiere atención' : 'Sin comprobar'
 }
 
-async function check(service: Service) {
-  const start = performance.now()
-  try {
-    const response = await fetch(service.endpoint, { headers: { Accept: 'application/json' } })
-    service.latency = Math.round(performance.now() - start)
-    service.status = response.ok ? 'ok' : 'error'
-  } catch {
-    service.latency = Math.round(performance.now() - start)
-    service.status = 'error'
-  }
-}
-
 async function runChecks() {
   checking.value = true
   services.value.forEach((service) => { service.status = 'pending'; service.latency = null })
-  await Promise.all(services.value.map(check))
-  checking.value = false
+  try {
+    const response = await fetch('/api/admin/health', {
+      credentials: 'same-origin',
+      cache: 'no-store',
+      headers: { Accept: 'application/json' },
+    })
+    if (response.status === 401) {
+      window.location.reload()
+      return
+    }
+    if (!response.ok) throw new Error(`Health check ${response.status}`)
+    const payload = await response.json() as { services?: Record<Service['id'], HealthResult> }
+    for (const service of services.value) {
+      const result = payload.services?.[service.id]
+      service.status = result?.ok ? 'ok' : 'error'
+      service.latency = Number.isFinite(result?.latency) ? result!.latency : null
+      if (result?.detail) service.detail = result.detail
+    }
+  } catch {
+    services.value.forEach((service) => {
+      service.status = 'error'
+      service.detail = 'No se pudo completar la comprobación'
+    })
+  } finally {
+    checking.value = false
+  }
 }
 
 async function copyAddress() {

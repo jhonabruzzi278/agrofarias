@@ -17,7 +17,7 @@ function tooMany() {
 
 async function guard(cookies: APIContext['cookies'], request: Request) {
   if (!(await verifySession(cookies.get(SESSION_COOKIE)?.value))) return unauthorized();
-  const { allowed } = await checkRateLimit(getClientIP(request));
+  const { allowed } = await checkRateLimit(getClientIP(request), 'admin-product-detail');
   if (!allowed) return tooMany();
   return null;
 }

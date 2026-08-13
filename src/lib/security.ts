@@ -23,11 +23,15 @@ function getRatelimit(): Ratelimit | null {
   return ratelimit
 }
 
-export async function checkRateLimit(ip: string): Promise<{ allowed: boolean; remaining: number }> {
+export async function checkRateLimit(ip: string, scope = 'general'): Promise<{ allowed: boolean; remaining: number }> {
   const rl = getRatelimit()
   if (!rl) return { allowed: true, remaining: 10 } // sin KV: no bloquear
   try {
-    const { success, remaining } = await rl.limit(ip)
+    // Cada superficie mantiene su propia cuota. Antes, login, productos,
+    // clientes y cotizaciones compartían la misma clave por IP; el uso normal
+    // del dashboard agotaba la cuota de los demás módulos.
+    const safeScope = scope.replace(/[^a-z0-9:_-]/gi, '').slice(0, 64) || 'general'
+    const { success, remaining } = await rl.limit(`${safeScope}:${ip}`)
     return { allowed: success, remaining: Math.max(0, remaining) }
   } catch (e) {
     // Fallback: si Redis falla, permitir (no quiebres el sitio).

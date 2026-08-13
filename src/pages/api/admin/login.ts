@@ -7,7 +7,7 @@ import { checkRateLimit, getClientIP } from '../../../lib/security';
 export const POST: APIRoute = async ({ request, cookies }) => {
   try {
     const ip = getClientIP(request);
-    const { allowed } = await checkRateLimit(ip);
+    const { allowed } = await checkRateLimit(ip, 'admin-login');
     if (!allowed) {
       return new Response(JSON.stringify({ error: 'Demasiados intentos. Espera un momento.' }), {
         status: 429,

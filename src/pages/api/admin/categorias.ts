@@ -12,7 +12,7 @@ export async function GET({ request, cookies }: APIContext) {
     return new Response(JSON.stringify({ error: 'No autorizado' }), { status: 401, headers: JSON_HEADERS });
   }
 
-  const { allowed } = await checkRateLimit(getClientIP(request));
+  const { allowed } = await checkRateLimit(getClientIP(request), 'admin-categories');
   if (!allowed) {
     return new Response(JSON.stringify({ error: 'Demasiadas solicitudes' }), { status: 429, headers: JSON_HEADERS });
   }
