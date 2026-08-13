@@ -23,6 +23,7 @@ export interface ProductoLite {
   name: string
   slug: string
   image: string
+  price: number
 }
 
 export function stripHtml(html?: string): string {
@@ -78,5 +79,6 @@ export function toProductoLite(p: ProductoWC): ProductoLite {
     name: p.name,
     slug: p.slug,
     image: p.images?.[0]?.src || '',
+    price: Math.max(0, Number(p.regular_price || 0)),
   }
 }

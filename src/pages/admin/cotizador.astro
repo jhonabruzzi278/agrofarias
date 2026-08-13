@@ -2,9 +2,6 @@
 import '../../styles/global.css';
 import CotizadorAdmin from '../../components/CotizadorAdmin.vue';
 export const prerender = false;
-if (Astro.url.hostname !== 'admin.agrofarias.cl' && !import.meta.env.DEV) {
-  return Astro.redirect('https://admin.agrofarias.cl', 308);
-}
 // La página no contiene secretos: el componente maneja login + panel y la
 // autenticación es 100% server-side (cookie de sesión HMAC). El template se
 // compila en build (SFC), por lo que no se usa eval en runtime → CSP limpio.

@@ -1,7 +1,10 @@
 <template>
   <div class="space-y-4">
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 space-y-3">
-      <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Buscar producto</h2>
+      <div class="flex items-center justify-between gap-3">
+        <h2 class="text-sm font-semibold text-gray-700">Buscar producto</h2>
+        <span class="text-[10px] font-semibold tracking-wide uppercase text-green-700">Catálogo en vivo</span>
+      </div>
       <input
         v-model="search"
         type="text"
@@ -29,7 +32,10 @@
         class="flex items-center gap-3 bg-white rounded-lg border border-gray-200 p-3 shadow-sm hover:shadow transition cursor-pointer"
       >
         <img :src="p.image" :alt="p.name" class="w-12 h-12 rounded-lg object-cover bg-gray-100 shrink-0" loading="lazy" decoding="async" />
-        <div class="flex-1 min-w-0"><p class="text-sm font-medium text-gray-800 truncate">{{ p.name }}</p></div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium text-gray-800 truncate">{{ p.name }}</p>
+          <p class="text-xs mt-0.5" :class="p.price > 0 ? 'text-green-700' : 'text-amber-600'">{{ p.price > 0 ? fp(p.price) : 'Precio por definir' }}</p>
+        </div>
         <button
           v-if="!isAdded(p.id)"
           @click="$emit('add', p)"
@@ -45,6 +51,7 @@
 
 <script setup lang="ts">
 import type { SearchProduct, SearchCategory } from './types'
+import { fp } from './formatters'
 
 defineProps<{
   categories: SearchCategory[]

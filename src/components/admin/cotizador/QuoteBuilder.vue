@@ -1,8 +1,12 @@
 <template>
   <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 space-y-5">
-    <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">
-      Cotización actual ({{ items.length }} producto{{ items.length !== 1 ? 's' : '' }})
-    </h2>
+    <div class="flex items-center justify-between gap-3">
+      <div>
+        <h2 class="text-sm font-semibold text-gray-800">Cotización actual</h2>
+        <p class="text-xs text-gray-400 mt-1">{{ items.length }} producto{{ items.length !== 1 ? 's' : '' }} · borrador guardado automáticamente</p>
+      </div>
+      <button v-if="items.length" type="button" @click="$emit('reset')" class="text-xs font-medium text-gray-500 hover:text-red-600 bg-transparent border-none cursor-pointer">Limpiar</button>
+    </div>
     <div v-if="items.length === 0" class="text-center text-gray-400 py-10 text-sm">Buscá y agregá productos desde la izquierda.</div>
     <div v-else class="space-y-3">
       <div class="overflow-x-auto">
@@ -95,7 +99,7 @@
 
     <!-- Enviar -->
     <div class="border-t border-gray-200 pt-5 space-y-3">
-      <button @click="$emit('send')" :disabled="sending" class="w-full bg-green-700 hover:bg-green-800 disabled:bg-gray-400 text-white font-medium py-3 rounded-lg transition text-sm cursor-pointer border-none">
+      <button @click="$emit('send')" :disabled="sending || items.length === 0" class="w-full bg-green-700 hover:bg-green-800 disabled:bg-gray-400 text-white font-medium py-3 rounded-lg transition text-sm cursor-pointer border-none">
         <span v-if="sending">Enviando cotización...</span>
         <span v-else>Enviar cotización</span>
       </button>
@@ -124,6 +128,7 @@ defineEmits<{
   (e: 'change-qty', index: number, value: number): void
   (e: 'change-price', index: number, value: number): void
   (e: 'remove', index: number): void
+  (e: 'reset'): void
   (e: 'send'): void
   (e: 'create-client'): void
 }>()

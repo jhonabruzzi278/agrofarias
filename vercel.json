@@ -1,6 +1,5 @@
 {
   "redirects": [
-    { "source": "/admin", "destination": "https://admin.agrofarias.cl", "permanent": true },
     { "source": "/categorias", "destination": "/tienda", "permanent": true },
     { "source": "/categorias/:path*", "destination": "/tienda", "permanent": true }
   ],

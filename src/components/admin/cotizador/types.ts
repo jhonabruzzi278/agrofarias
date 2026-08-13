@@ -6,6 +6,7 @@ export interface SearchProduct {
   name: string
   slug: string
   image: string
+  price: number
 }
 
 /** Categoría para el selector de búsqueda. */

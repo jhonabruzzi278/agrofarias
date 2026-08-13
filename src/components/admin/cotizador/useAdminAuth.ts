@@ -49,7 +49,8 @@ export function useAdminAuth(opts: UseAdminAuthOptions) {
         authed.value = true
         opts.onAuthenticated?.()
       } else {
-        loginError.value = 'Contraseña incorrecta'
+        const payload = await r.json().catch(() => null) as { error?: string } | null
+        loginError.value = payload?.error || (r.status === 429 ? 'Demasiados intentos. Esperá un momento.' : 'No se pudo iniciar sesión.')
       }
     } catch {
       loginError.value = 'Error de conexión'
