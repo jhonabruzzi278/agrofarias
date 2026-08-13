@@ -1,16 +1,6 @@
 {
-  "rewrites": [
-    {
-      "source": "/",
-      "destination": "/admin/cotizador",
-      "has": [
-        { "type": "host", "value": "admin.agrofarias.cl" }
-      ]
-    }
-  ],
   "redirects": [
     { "source": "/admin", "destination": "https://admin.agrofarias.cl", "permanent": true },
-    { "source": "/admin/cotizador", "destination": "https://admin.agrofarias.cl", "permanent": true },
     { "source": "/categorias", "destination": "/tienda", "permanent": true },
     { "source": "/categorias/:path*", "destination": "/tienda", "permanent": true }
   ],

@@ -25,7 +25,7 @@ export default defineConfig({
       // el middleware de sesión, y en /admin sirve HTML stale que referencia
       // assets de un deploy anterior (404 en chunks como jspdf tras un deploy).
       // Las páginas SEO por path (/producto, /categoria, /) sí siguen con ISR.
-      exclude: [/^\/tienda/, /^\/api\//, /^\/admin/],
+      exclude: [/^\/$/, /^\/tienda/, /^\/api\//, /^\/admin/],
     },
   }),
   vite: {

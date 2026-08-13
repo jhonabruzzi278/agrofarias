@@ -9,6 +9,12 @@ import type { ProductoWC } from '../lib/types';
 
 export const prerender = false;
 
+// El mismo despliegue sirve la tienda y el panel. En el subdominio de
+// administración, la raíz debe renderizar el panel sin duplicar sus APIs.
+if (Astro.url.hostname === 'admin.agrofarias.cl') {
+  return Astro.rewrite('/admin/cotizador');
+}
+
 let foliaresProductos: ProductoWC[] = [];
 let rodenticidaProductos: ProductoWC[] = [];
 let fertilizantesProductos: ProductoWC[] = [];
